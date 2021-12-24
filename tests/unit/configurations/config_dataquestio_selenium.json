@@ -1,0 +1,48 @@
+{
+    "driver": {
+        "package": "selenium",
+        "headers": {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "accept-language": "nl,en-US;q=0.7,en;q=0.3",
+            "accept-encoding": "gzip, deflate, br"
+        },
+        "filename": "D:\\Projects\\Python\\projects\\scrape\\drivers\\geckodriver.exe",
+        "log": "D:\\Projects\\Python\\projects\\scrape\\drivers\\geckodriver.log",
+        "timeout": 10,
+        "sleep": {
+            "1": 1,
+            "200": 3600
+        },
+        "headless": true
+    },
+    "website": {
+        "parser": "html.parser",
+        "id": "Collection",
+        "rows": {
+            "elem": "li",
+            "class": "grid__item grid__item--collection-template small--one-half medium-up--one-quarter"
+        },
+        "columns": {
+            "title": {
+                "elem": "a",
+                "class": "grid-view-item__link grid-view-item__image-container full-width-link"
+            },
+            "price": {
+                "elem": "div",
+                "class": "price__regular"
+            }
+        },
+        "page": {
+            "id": "Collection",
+            "elem": "ul",
+            "class": "list--inline pagination"
+        }
+    },
+    "dataset": {
+        "filename": ".\\results\\dataquestio.csv",
+        "date_format": "%Y%m%d",
+        "overwrite": true
+    },
+    "url": "http://dataquestio.github.io/web-scraping-pages/simple.html"
+}

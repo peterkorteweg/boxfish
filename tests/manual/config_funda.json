@@ -1,0 +1,58 @@
+{
+    "url": "https://www.funda.nl/koop/schoorl/beschikbaar/",
+    "driver": {
+        "package": "requests",
+        "headers": {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "accept-language": "nl,en-US;q=0.7,en;q=0.3",
+            "accept-encoding": "gzip, deflate, br"
+        },
+        "filename": "",
+        "log": "",
+        "timeout": 10,
+        "sleep": {
+            "1": 1,
+            "200": 3600
+        },
+        "headless": true
+    },
+    "website": {
+        "parser": "html.parser",
+        "id": "content",
+        "rows": {
+            "elem": "div",
+            "class": "search-result-main"
+        },
+        "columns": {
+            "adres": {
+                "elem": "h2",
+                "class": "search-result__header-title fd-m-none"
+            },
+            "postcode": {
+                "elem": "h4",
+                "class": "search-result__header-subtitle fd-m-none"
+            },
+            "kenmerken": {
+                "elem": "ul",
+                "class": "search-result-kenmerken"
+            },
+            "link": {
+                "elem": "div",
+                "class": "search-result__header-title-col",
+                "href": ""
+            }
+        },
+        "page": {
+            "id": {},
+            "elem": {},
+            "class": {}
+        },
+        "url": "https://www.funda.nl/koop/schoorl/beschikbaar/"
+    },
+    "dataset": {
+        "filename": "",
+        "date_format": "%Y%m%d",
+        "overwrite": false
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "website": {
+        "id": "card-view-panel",
+        "rows": {
+            "elem": "div",
+            "class": "results-card"
+        },
+        "columns": {
+            "title": {
+                "elem": "h2",
+                "class": "card-title"
+            },
+            "company": {
+                "elem": "h3",
+                "class": "card-companyname"
+            },
+            "location": {
+                "elem": "span",
+                "class": "card-job-location"
+            },
+            "link": {
+                "elem": "div",
+                "class": "results-card",
+                "href": ""
+            }
+        },
+        "page": {
+            "id": "loadMoreJobs",
+            "elem": "",
+            "class": ""
+        },
+        "parser": "html.parser"
+    },
+    "urlparts": {
+        "url": "https://www.monster.com",
+        "path": {
+            "jobs": "jobs",
+            "search": "search"
+        },
+        "query": {
+            "q": "",
+            "where": ""
+        }
+    },
+    "dataset": {
+        "filename": "monster.csv",
+        "date_format": "%Y%m%d",
+        "overwrite": true
+    }
+}
