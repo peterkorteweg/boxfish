@@ -68,6 +68,31 @@ def test_request_page():
     scrape.drivers.driver_stop(adriver)
 
 
+def test_request_page_selenium():
+    """ Test request_page for specific driver
+
+    Function tested:
+    request_page
+
+    Args:
+
+    Returns:
+        assert
+    """
+    config = get_config()
+
+    config['driver']['headless'] = False
+    config['driver']['package'] = 'selenium'
+
+    params = config['driver']
+
+    # Test URL HTTP
+    url = LINK_URL
+    page = scrape.drivers.get_page(url=url, params = params)
+    assert isinstance(page, str)
+
+
+
 def test_request_page_sleep():
     config = get_config()
 
