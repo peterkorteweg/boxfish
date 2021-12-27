@@ -159,6 +159,9 @@ def driver_start(params=None):
                 driver = webdriver.Chrome(executable_path=params['filename'],
                                           service_args=["--verbose", str_log],
                                           options=options)
+            else:
+                #TODO error handling
+                print('Driver not found')
     return driver
 
 
