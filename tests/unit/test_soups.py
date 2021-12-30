@@ -8,8 +8,9 @@ import re
 import scrape
 from scrape.utils.utils import read
 
+# BS4 Default example
 FILE_DORMOUSE = r'.\data\dormouse.html'
-FILE_NARREN = r'.\data\narren.html'
+ROWS_DORMOUSE = {"elem": "a", "class": "sister"}
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
     <p class="title"><b>The Dormouse's story</b></p>
@@ -22,25 +23,35 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
 
     <p class="story">...</p>
     """
-ROWS_NARREN = {"elem": "li",
-               "class": "grid__item grid__item--collection-template small--one-half medium-up--one-quarter"
-               }
-ROWS_DORMOUSE = {"elem": "a", "class": "sister"}
 
-COLS_NARREN = {"title": {"elem": "a",
-                         "class": "grid-view-item__link grid-view-item__image-container full-width-link"
+
+# Books to scrape example
+FILE_BOOKS = r'.\data\bookstoscrape.html'
+ID_BOOKS = 'default'
+ROWS_PARENT_NAME_BOOKS = 'ol'
+ROWS_PARENT_CLASS_BOOKS = ['row']
+ROWS_BOOKS = {"elem": "li",
+              "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
+              }
+COLS_BOOKS = {"rating": {"elem": "p",
+                         "class": "star-rating"
                          },
-               "price": {"elem": "div",
-                         "class": "price__regular"
-                         }
-               }
-COLS_NARREN_NO_MATCH = {"title": {"elem": "p",
-                                  "class": "grid-view-item__link grid-view-item__image-container full-width-link"
-                                  },
-                        "price": {"elem": "p",
-                                  "class": "price__regular"
-                                  }
+              "price": {"elem": "p",
+                        "class": "price_color"
                         }
+              }
+COLS_BOOKS_NO_MATCH = {"rating": {"elem": "a",
+                                  "class": "star-rating"
+                                  },
+                       "price": {"elem": "a",
+                                 "class": "price_color"
+                                 }
+                       }
+ITEMS_ON_PAGE_BOOKS = 20
+COLUMNS_BOOKS = 4
+
+# Wikipedia lists
+FILE_WIKI = r'.\data\ISO3166.html'
 
 
 # Helper functions
@@ -92,13 +103,13 @@ def test_get_table_rows_success():
     assert len(atable) == 3
 
     # Example, rows
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
+    rows = ROWS_BOOKS
     atable, _ = scrape.soups.get_table(soup, rows=rows)
     aitem = atable[0]
-    assert len(atable) == 32
-    assert len(aitem) == 8
+    assert len(atable) == ITEMS_ON_PAGE_BOOKS
+    assert len(aitem) == COLUMNS_BOOKS
 
 
 def test_get_table_rows_no_match():
@@ -121,48 +132,41 @@ def test_get_table_rows_no_match():
 
 def test_get_table_rows_cols():
     # Example, rows and cols
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
-    cols = COLS_NARREN
+    rows = ROWS_BOOKS
+    cols = COLS_BOOKS
     atable, _ = scrape.soups.get_table(soup, rows=rows, cols=cols)
     aitem = atable[0]
-    assert len(atable) == 32
-    assert len(aitem) == 2
+    assert len(atable) == ITEMS_ON_PAGE_BOOKS
+    assert len(aitem) == len(cols.keys())
 
 
 def test_get_table_rows_cols_no_match():
     # Example, rows and cols
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
-    cols = COLS_NARREN_NO_MATCH
+    rows = ROWS_BOOKS
+    cols = COLS_BOOKS_NO_MATCH
     atable, _ = scrape.soups.get_table(soup, rows=rows, cols=cols)
     assert len(atable) == 0
 
 
 def test_get_table_id_rows():
-    # Simple example, rows
-    page = get_page(filename=FILE_DORMOUSE)
-    soup = scrape.soups.get_soup(page)
-    id_ = "Collection"
-    rows = ROWS_DORMOUSE
-    atable, _ = scrape.soups.get_table(soup, rows=rows)
-    assert len(atable) == 3
-
     # Example, rows
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
+    id_ = ID_BOOKS
+    rows = ROWS_BOOKS
     atable, _ = scrape.soups.get_table(soup, id_=id_, rows=rows)
     aitem = atable[0]
-    assert len(atable) == 32
-    assert len(aitem) == 8
+    assert len(atable) == ITEMS_ON_PAGE_BOOKS
+    assert len(aitem) == COLUMNS_BOOKS
 
 
 def test_to_table_single_row():
     # See also content tests test_get_text and test_get_subtext
-    page = get_page()
+    page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find('a')
     atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_hrefs=False)
@@ -177,7 +181,7 @@ def test_to_table_single_row():
 
 def test_to_table_multiple_rows():
     # See also content tests test_get_text and test_get_subtext
-    page = get_page()
+    page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find_all('a')
     atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_hrefs=False)
@@ -192,11 +196,11 @@ def test_to_table_multiple_rows():
 
 def test_to_table_colnames():
     # Test column names
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
+    rows = ROWS_BOOKS
     aitem = scrape.soups.find_items(soup, rows)
-    cols = COLS_NARREN
+    cols = COLS_BOOKS
     atable, colnames = scrape.soups.to_table(aitem, cols=cols)
     assert isinstance(colnames, list)
     assert len(colnames) == len(cols)
@@ -318,7 +322,7 @@ def test_write():
     pass
 
 
-# Extraction functions
+# Search functions
 def test_find_items_elem_class():
     soup = scrape.soups.get_soup(get_page(filename=FILE_DORMOUSE))
     afilter = ROWS_DORMOUSE
@@ -388,18 +392,19 @@ def test_find_item():
 
 
 def test_find_common_parent():
-    soup = scrape.soups.get_soup(get_page(FILE_NARREN))
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
 
     # Example same soup, exists
-    afilter = ROWS_NARREN
+    afilter = ROWS_BOOKS
     results = scrape.soups.find_items(soup, afilter)
     aitem1 = results[0]
     aitem2 = results[1]
     ritem = scrape.soups.find_common_parent(aitem1, aitem2)
-    assert ritem.name == 'ul' and ritem["class"] == ['grid', 'grid--uniform', 'grid--view-items']
+    assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
+
 
     # Example same soup, parent is soup
-    afilter = ROWS_NARREN
+    afilter = ROWS_BOOKS
     aitem1 = scrape.soups.find_item(soup, afilter)
 
     afilter = {'elem': 'title'}
@@ -415,10 +420,10 @@ def test_find_common_parent():
 
 
 def test_find_descendants():
-    soup = scrape.soups.get_soup(get_page(FILE_NARREN))
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
 
     # Example same soup, exists
-    afilter = ROWS_NARREN
+    afilter = ROWS_BOOKS
     results = scrape.soups.find_items(soup, afilter)
     aitem1 = results[0]
     aitem2 = results[1]
@@ -434,10 +439,26 @@ def test_find_descendants():
     assert len(adescendants) == 2
 
     # Example: no parent
-    adescendants = scrape.soups.find_descendants(aitem1,aitem2)
+    adescendants = scrape.soups.find_descendants(aitem1, aitem2)
     assert len(adescendants) == 0
 
 
+def test_find_lists():
+    soup = scrape.soups.get_soup(get_page(filename=FILE_WIKI))
+
+    # All lists
+    results = scrape.soups.find_lists(soup)
+    alist = scrape.soups.get_strings(results)
+    assert len(alist) == 44
+
+    # Subset of lists
+    afilter = {"class": "vector-menu-content-list"}
+    results = scrape.soups.find_lists(soup, afilter=afilter)
+    alist = scrape.soups.get_strings(results)
+    assert len(alist) == 11
+
+
+# Extraction functions
 def test_get_text():
     page = get_page()
     soup = scrape.soups.get_soup(page)
@@ -450,10 +471,10 @@ def test_get_text():
 
 
 def test_get_subtext():
-    page = get_page(filename=FILE_NARREN)
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    rows = ROWS_NARREN
-    cols = COLS_NARREN
+    rows = ROWS_BOOKS
+    cols = COLS_BOOKS
 
     results = scrape.soups.find_items(soup, rows)
 

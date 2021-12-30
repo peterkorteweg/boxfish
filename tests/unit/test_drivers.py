@@ -7,10 +7,11 @@ import requests
 from selenium import webdriver
 import time
 
-LINK_URL = 'http://books.toscrape.com'
-LINK_FILE = r'.\data\bookstoscrape.html'
+PAGE_URL = 'http://books.toscrape.com'
+PAGE_FILE = r'.\data\bookstoscrape.html'
 
 CONFIG_SELENIUM = r'.\\configurations\config_bookstoscrape.json'
+
 
 # Helper functions
 def get_config(filename=CONFIG_SELENIUM):
@@ -31,7 +32,7 @@ def test_get_page():
 
     Returns:
     """
-    url = LINK_URL
+    url = PAGE_URL
     page = scrape.drivers.get_page(url)
     assert isinstance(page, str)
 
@@ -55,12 +56,12 @@ def test_request_page():
     adriver = scrape.drivers.driver_start(params)
 
     # Test URL HTTP
-    url = LINK_URL
+    url = PAGE_URL
     page = scrape.drivers.request_page(adriver, url)
     assert isinstance(page, str)
 
     # Test from file
-    url = LINK_FILE
+    url = PAGE_FILE
     page = scrape.drivers.request_page(adriver, url)
     assert isinstance(page, str)
 
@@ -86,7 +87,7 @@ def test_request_page_selenium():
     params = config['driver']
 
     # Test URL HTTP
-    url = LINK_URL
+    url = PAGE_URL
     page = scrape.drivers.get_page(url=url, params=params)
     assert isinstance(page, str)
 
@@ -99,7 +100,7 @@ def test_request_page_sleep():
     params['sleep'] = {"1": 2}
 
     # Test URL HTTP
-    url = LINK_URL
+    url = PAGE_URL
     adriver = scrape.drivers.driver_start(params)
     start = time.time()
     scrape.drivers.request_page(adriver, url, params=params, count=1)
