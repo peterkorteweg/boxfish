@@ -5,9 +5,14 @@
 import scrape
 from scrape.utils import drivers
 
-FILE_NARREN = r'.\data\narren.html'
-STR_NARREN1 = 'Amsterdam Aanzicht vanaf het IJ'
-STR_NARREN2 = 'Amsterdam Stadsplattegrond in vogelvluchtperspectief'
+FILE_ZYTE = r'.\data\bookstoscrape.html'
+STR_ZYTE_TITLE1 = 'A Light in the ...'
+STR_ZYTE_PRICE1 = '£51.77'
+STR_ZYTE_TITLE2 = 'Tipping the Velvet'
+STR_ZYTE_PRICE2 = '£53.74'
+
+CONFIG_ZYTE_ELEM = 'li'
+CONFIG_ZYTE_CLASS = ['col-xs-6', 'col-sm-4', 'col-md-3', 'col-lg-3']
 
 
 # Helper functions
@@ -57,11 +62,34 @@ def test_process_non_keys():
 
 def test_build_rows():
     config = scrape.config.create('')
-    aurl = FILE_NARREN
-    astr1 = STR_NARREN1
-    astr2 = STR_NARREN2
+    aurl = FILE_ZYTE
+
+    # Build two titles
+    astr1 = STR_ZYTE_TITLE1
+    astr2 = STR_ZYTE_TITLE2
     scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['website']['rows']['elem'] == 'li'
+    assert config['website']['rows']['elem'] == CONFIG_ZYTE_ELEM
+    assert config['website']['rows']['class'] == CONFIG_ZYTE_CLASS
+
+    # Build two prices
+    astr1 = STR_ZYTE_PRICE1
+    astr2 = STR_ZYTE_PRICE2
+    scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
+    adict = config['website']['rows']
+    assert adict is not None
+    assert 'elem' in adict and 'class' in adict
+    assert config['website']['rows']['elem'] == CONFIG_ZYTE_ELEM
+    assert config['website']['rows']['class'] == CONFIG_ZYTE_CLASS
+
+    # Build 1 title and 1 price
+    astr1 = STR_ZYTE_TITLE1
+    astr2 = STR_ZYTE_PRICE2
+    scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
+    adict = config['website']['rows']
+    assert adict is not None
+    assert 'elem' in adict and 'class' in adict
+    assert config['website']['rows']['elem'] == CONFIG_ZYTE_ELEM
+    assert config['website']['rows']['class'] == CONFIG_ZYTE_CLASS
