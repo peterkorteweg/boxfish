@@ -88,9 +88,8 @@ def test_request_page_selenium():
 
     # Test URL HTTP
     url = LINK_URL
-    page = scrape.drivers.get_page(url=url, params = params)
+    page = scrape.drivers.get_page(url=url, params=params)
     assert isinstance(page, str)
-
 
 
 def test_request_page_sleep():
@@ -104,7 +103,7 @@ def test_request_page_sleep():
     url = LINK_URL
     adriver = scrape.drivers.driver_start(params)
     start = time.time()
-    scrape.drivers.request_page(adriver, url,params=params,count=1)
+    scrape.drivers.request_page(adriver, url, params=params, count=1)
     end = time.time()
     scrape.drivers.driver_stop(adriver)
 
