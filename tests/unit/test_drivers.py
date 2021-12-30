@@ -7,11 +7,10 @@ import requests
 from selenium import webdriver
 import time
 
-LINK_URL = 'http://dataquestio.github.io/web-scraping-pages/simple.html'
-LINK_FILE = r'.\data\narren.html'
+LINK_URL = 'http://books.toscrape.com'
+LINK_FILE = r'.\data\bookstoscrape.html'
 
-CONFIG_SELENIUM = r'.\\configurations\config_dataquestio_selenium.json'
-
+CONFIG_SELENIUM = r'.\\configurations\config_bookstoscrape.json'
 
 # Helper functions
 def get_config(filename=CONFIG_SELENIUM):
