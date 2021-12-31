@@ -81,6 +81,10 @@ def read(filename):
     """
 
     config = read_json(filename)
+    if config is None:
+        # TODO Error handling
+        print('Cannot find' + filename)
+
     process(config)
     return config
 
