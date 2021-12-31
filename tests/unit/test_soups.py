@@ -52,6 +52,11 @@ COLUMNS_BOOKS = 4
 
 # Wikipedia lists
 FILE_WIKI = r'.\data\ISO3166.html'
+ITEMS_ON_PAGE_WIKI = 44
+FILTER_WIKI = {"class": "vector-menu-content-list"}
+ITEMS_ON_PAGE_FILTER_WIKI = 11
+FILTER_ELEM_WIKI = {"elem": "ul"}
+ITEMS_ON_PAGE_FILTER_ELEM_WIKI = 11
 
 
 # Helper functions
@@ -402,7 +407,6 @@ def test_find_common_parent():
     ritem = scrape.soups.find_common_parent(aitem1, aitem2)
     assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
 
-
     # Example same soup, parent is soup
     afilter = ROWS_BOOKS
     aitem1 = scrape.soups.find_item(soup, afilter)
@@ -449,13 +453,13 @@ def test_find_lists():
     # All lists
     results = scrape.soups.find_lists(soup)
     alist = scrape.soups.get_strings(results)
-    assert len(alist) == 44
+    assert len(alist) == ITEMS_ON_PAGE_WIKI
 
     # Subset of lists
-    afilter = {"class": "vector-menu-content-list"}
+    afilter = FILTER_WIKI
     results = scrape.soups.find_lists(soup, afilter=afilter)
     alist = scrape.soups.get_strings(results)
-    assert len(alist) == 11
+    assert len(alist) == ITEMS_ON_PAGE_FILTER_WIKI
 
 
 # Extraction functions

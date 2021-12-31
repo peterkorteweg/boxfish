@@ -99,7 +99,7 @@ def get_table(soup, **kwargs):
 
 
 def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
-    """ Convert aitem tot list
+    """ Convert aitem to a table
 
     [atable, colnames] = to_table(aitem, cols=None, include_strings=True, include_hrefs=False)
 
@@ -334,7 +334,7 @@ def write(filename, page):
     _write(filename, page)
 
 
-# Extraction functions
+# Search functions
 def find_items(aitem, afilter=None, astr=''):
     """ Find items from atag based on filter and/or string
 
@@ -343,7 +343,7 @@ def find_items(aitem, afilter=None, astr=''):
     Args:
         aitem(soup or tag or ResultSet): BS4 object
         afilter (dict): BS4 filter on keys "elem" and "class"
-        astr (str): string or regular expressiom for filer on aitem.string
+        astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
         ritems (ResultSet): BS4 resultset
@@ -375,7 +375,7 @@ def find_item(aitem, afilter=None, astr=''):
     Args:
         aitem(soup or tag or ResultSet): BS4 object
         afilter (dict): Keys "elem" and "class"
-        astr (str): string or regular expressiom for filer on aitem.string
+        astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
         ritem (tag): BS4 tag
@@ -445,6 +445,27 @@ def find_descendants(aparent, adescendant):
     return rlist
 
 
+def find_lists(aitem, afilter=None, astr=''):
+    """ Find all lists in aitem. Lists are defined as HTML elements <dl>, <ol>, or <ul>
+
+    ritems = find_lists(aitems)
+
+    Args:
+        aitem(soup or tag or ResultSet): BS4 object
+        afilter (dict): Keys "elem" and "class"
+        astr (str): string or regular expressiom for filter on aitem.string
+
+    Returns:
+        ritems (ResultSet): BS4 resultset
+    """
+
+    afilter = {} if afilter is None else afilter
+    afilter.update({"elem": ["dl", "ol", "ul"]})
+    ritems = find_items(aitem, afilter=afilter, astr=astr)
+    return ritems
+
+
+# Extraction functions
 def get_text(aitem, include_strings=True, include_hrefs=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.
 
