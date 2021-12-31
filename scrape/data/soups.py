@@ -465,6 +465,26 @@ def find_lists(aitem, afilter=None, astr=''):
     return ritems
 
 
+def find_tables(aitem, afilter=None, astr=''):
+    """ Find all tables in aitem. Tables are defined as HTML elements <table>
+
+    ritems = find_tables(aitems)
+
+    Args:
+        aitem(soup or tag or ResultSet): BS4 object
+        afilter (dict): Keys "elem" and "class"
+        astr (str): string or regular expressiom for filter on aitem.string
+
+    Returns:
+        ritems (ResultSet): BS4 resultset
+    """
+
+    afilter = {} if afilter is None else afilter
+    afilter.update({"elem": ["table"]})
+    ritems = find_items(aitem, afilter=afilter, astr=astr)
+    return ritems
+
+
 # Extraction functions
 def get_text(aitem, include_strings=True, include_hrefs=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.

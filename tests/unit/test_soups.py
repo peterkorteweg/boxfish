@@ -52,11 +52,15 @@ COLUMNS_BOOKS = 4
 
 # Wikipedia lists
 FILE_WIKI = r'.\data\ISO3166.html'
-ITEMS_ON_PAGE_WIKI = 44
-FILTER_WIKI = {"class": "vector-menu-content-list"}
-ITEMS_ON_PAGE_FILTER_WIKI = 11
-FILTER_ELEM_WIKI = {"elem": "ul"}
-ITEMS_ON_PAGE_FILTER_ELEM_WIKI = 11
+LISTS_NUMBER_WIKI = 44
+
+LISTS_FILTER_WIKI = {"class": "vector-menu-content-list"}
+LISTS_FILTER_NUMBER_WIKI = 11
+
+LISTS_FILTER_ELEM_WIKI = {"elem": "ul"}
+LISTS_FILTER_ELEM_NUMBER_WIKI = 11
+
+TABLE_NUMBER_WIKI = 2
 
 
 # Helper functions
@@ -453,13 +457,22 @@ def test_find_lists():
     # All lists
     results = scrape.soups.find_lists(soup)
     alist = scrape.soups.get_strings(results)
-    assert len(alist) == ITEMS_ON_PAGE_WIKI
+    assert len(alist) == LISTS_NUMBER_WIKI
 
     # Subset of lists
-    afilter = FILTER_WIKI
+    afilter = LISTS_FILTER_WIKI
     results = scrape.soups.find_lists(soup, afilter=afilter)
     alist = scrape.soups.get_strings(results)
-    assert len(alist) == ITEMS_ON_PAGE_FILTER_WIKI
+    assert len(alist) == LISTS_FILTER_NUMBER_WIKI
+
+
+def test_find_tables():
+    soup = scrape.soups.get_soup(get_page(filename=FILE_WIKI))
+
+    # All lists
+    results = scrape.soups.find_tables(soup)
+    alist = scrape.soups.get_strings(results)
+    assert len(alist) == TABLE_NUMBER_WIKI
 
 
 # Extraction functions
