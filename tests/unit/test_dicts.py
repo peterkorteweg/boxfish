@@ -1,6 +1,4 @@
 # test_dicts.py
-# Created 6/12/2021
-# Author P. Korteweg
 
 import scrape
 

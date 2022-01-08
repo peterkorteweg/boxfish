@@ -1,10 +1,6 @@
 # lists.py
-# Created 12-06-2021
-# Author P. Korteweg
 
-"""Lists is a module that contains functions for lists
-
-"""
+"""Lists is a module that contains functions for lists"""
 
 
 # General

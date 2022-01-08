@@ -1,16 +1,11 @@
 # drivers.py
-# Created 3/6/2021
-# Author P. Korteweg
 
-"""Drivers is a module that contains functions to access HTML pages via HTTP.
-
-"""
+"""Drivers is a module that contains functions to access HTML pages via HTTP."""
 
 import os
 import requests
 from selenium import webdriver
 from scrape import utils
-
 
 DRIVERKEYS = ['package', 'headers', 'filename', 'log', 'timeout', 'sleep', 'headless']
 MIN_TIMEOUT = 10
@@ -160,7 +155,7 @@ def driver_start(params=None):
                                           service_args=["--verbose", str_log],
                                           options=options)
             else:
-                #TODO error handling
+                # TODO error handling
                 print('Driver not found')
     return driver
 

@@ -1,10 +1,6 @@
 # times.py
-# Created 8-11-2020
-# Author P. Korteweg
 
-"""Times is a module that contains functions that interact with times and dates
-
-"""
+"""Times is a module that contains functions that interact with times and dates"""
 
 import time
 

@@ -1,6 +1,4 @@
 # strings.py
-# Created 1/24/2021
-# Author P. Korteweg
 
 import scrape
 
@@ -47,7 +45,7 @@ def test_to_int():
     aint = scrape.utils.strings.to_int(astr)
     assert isinstance(aint, int)
 
-    #String with float
+    # String with float
     astr = '-4.2'
     aint = scrape.utils.strings.to_int(astr)
     assert isinstance(aint, int)
@@ -64,7 +62,7 @@ def test_to_float():
     aint = scrape.utils.strings.to_float(astr)
     assert isinstance(aint, float)
 
-    #String with float
+    # String with float
     astr = '-4.2'
     aint = scrape.utils.strings.to_float(astr)
     assert isinstance(aint, float)

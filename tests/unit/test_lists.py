@@ -1,6 +1,4 @@
 # test_lists.py
-# Created 12-06-2021
-# Author P. Korteweg
 
 import scrape
 
@@ -62,7 +60,6 @@ def test_flatten():
     assert (flist[0:len(blist)] == blist) and (flist[len(blist):] == clist)
 
 
-
 def test_unique():
     """ Test unique
 
@@ -95,10 +92,10 @@ def test_is_equal_length():
     blist = [2, 4, 6, 8, 10]
     clist = [2, 4, 6, 8, 12]
     dlist = [2, 4, 6, 8]
-    tf = scrape.utils.lists.is_equal_length(alist,blist,clist)
+    tf = scrape.utils.lists.is_equal_length(alist, blist, clist)
     assert tf
 
-    tf = scrape.utils.lists.is_equal_length(alist, blist, clist,dlist)
+    tf = scrape.utils.lists.is_equal_length(alist, blist, clist, dlist)
     assert not tf
 
 

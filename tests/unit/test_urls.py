@@ -1,6 +1,4 @@
 # test_urls.py
-# Created 8-11-2020
-# Author P. Korteweg
 
 import scrape
 

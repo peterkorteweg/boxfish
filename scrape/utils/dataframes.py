@@ -1,6 +1,4 @@
 # dataframes.py
-# Created 6/12/2021
-# Author P. Korteweg
 
 """Dataframes is a module that contains functions for pandas dataframes
 

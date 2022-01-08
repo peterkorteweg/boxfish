@@ -1,6 +1,4 @@
 # test_soups.py
-# Created 2/28/2021
-# Author P. Korteweg
 
 import bs4
 from bs4 import BeautifulSoup

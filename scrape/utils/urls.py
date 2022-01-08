@@ -1,6 +1,4 @@
 # urls.py
-# Created 11-10-2020
-# Author P. Korteweg
 
 """ urls contains functions to parse url strings """
 

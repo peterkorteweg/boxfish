@@ -1,6 +1,4 @@
 # test_drivers.py
-# Created 3/6/2021
-# Author P. Korteweg
 
 import scrape
 import requests

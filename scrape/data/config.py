@@ -1,10 +1,6 @@
 # config.py
-# Created 11-10-2020
-# Author P. Korteweg
 
-"""Config is a module that contains functions for scrape configuration
-
-"""
+"""Config is a module that contains functions for scrape configuration"""
 
 import os
 import re

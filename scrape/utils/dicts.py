@@ -1,10 +1,6 @@
 # dicts.py
-# Created 12-06-2021
-# Author P. Korteweg
 
-"""Dicts is a module that contains functions for dictionaries
-
-"""
+"""Dicts is a module that contains functions for dictionaries"""
 
 
 def get_subset(adict, akeys):

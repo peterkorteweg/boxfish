@@ -1,6 +1,4 @@
 # test_times.py
-# Created 5/13/2021
-# Author P. Korteweg
 
 import scrape
 import time

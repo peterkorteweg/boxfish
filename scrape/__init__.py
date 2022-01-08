@@ -1,6 +1,5 @@
 # __init__.py
-# Created 22-8-2020
-# Author P. Korteweg
+
 
 from scrape.data import config
 from scrape.data import soups

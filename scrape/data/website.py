@@ -1,7 +1,6 @@
 # website.py
-# Created 27-9-2020
-# Author P. Korteweg
 
+""" Website is a module that contains functions for extracting tables from websites. """
 
 from scrape.utils import dataframes
 from scrape.utils.dicts import extract_values

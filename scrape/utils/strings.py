@@ -1,10 +1,6 @@
 # strings.py
-# Created 1/24/2021
-# Author P. Korteweg
 
-"""Strings is a module that contains general functions for working with strings
-
-"""
+"""Strings is a module that contains general functions for working with strings"""
 
 import os
 import time

@@ -1,6 +1,5 @@
 # test_config.py
-# Created 1/1/2021
-# Author P. Korteweg
+
 
 import scrape
 from scrape.utils import drivers

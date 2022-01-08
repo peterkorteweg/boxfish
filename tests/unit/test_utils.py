@@ -1,6 +1,4 @@
 # test_utils.py
-# Created 3/7/2021
-# Author P. Korteweg
 
 import os
 import scrape
@@ -29,20 +27,20 @@ def test_read_file_text():
     """
     filename = r'.\data\read_text.txt'
     text = scrape.utils.utils.read(filename)
-    assert isinstance(text,str)
-    assert len(text)>0
+    assert isinstance(text, str)
+    assert len(text) > 0
 
 
 def test_read_json():
     filename = r'.\data\read_json.json'
 
     # General
-    text = scrape.utils.utils.read(filename,filetype='json')
-    assert isinstance(text,dict)
+    text = scrape.utils.utils.read(filename, filetype='json')
+    assert isinstance(text, dict)
 
     # Specific function
     text = scrape.utils.utils.read_json(filename)
-    assert isinstance(text,dict)
+    assert isinstance(text, dict)
 
 
 def test_write_file_text():

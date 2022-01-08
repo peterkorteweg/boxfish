@@ -1,10 +1,6 @@
 # utils.py
-# Created 8-11-2020
-# Author P. Korteweg
 
-"""Utils is a module that contains utility functions without need of their own module
-
-"""
+"""Utils is a module that contains utility functions without need of their own module"""
 
 import json
 import os
