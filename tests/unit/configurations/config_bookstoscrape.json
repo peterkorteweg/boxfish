@@ -1,6 +1,6 @@
 {
     "driver": {
-        "package": "selenium",
+        "package": "requests",
         "headers": {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -18,19 +18,19 @@
     },
     "website": {
         "parser": "html.parser",
-        "id": "Collection",
+        "id": "default",
         "rows": {
             "elem": "li",
-            "class": "grid__item grid__item--collection-template small--one-half medium-up--one-quarter"
+            "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
         },
         "columns": {
             "title": {
-                "elem": "a",
-                "class": "grid-view-item__link grid-view-item__image-container full-width-link"
+                "elem": "h3",
+                "class": ""
             },
             "price": {
                 "elem": "div",
-                "class": "price__regular"
+                "class": "product_price"
             }
         },
         "page": {
@@ -41,7 +41,7 @@
     },
     "dataset": {
         "filename": ".\\results\\bookstoscrape.csv",
-        "date_format": "%Y%m%d",
+        "date_format": "",
         "overwrite": true
     },
     "url": "http://http://books.toscrape.com"
