@@ -1,12 +1,9 @@
 # test_website.py
-# Created 8-11-2020
-# Author P. Korteweg
 
 import scrape
 from scrape.utils import drivers
 
 FILE_DORMOUSE = r'.\data\dormouse.html'
-FILE_NARREN = r'.\data\narren.html'
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
     <p class="title"><b>The Dormouse's story</b></p>
@@ -20,16 +17,20 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <p class="story">...</p>
     """
 
+FILE_NARREN = r'.\data\narren.html'
 CONFIG_NARREN = r'.\\configurations\config_narrenschip_test.json'
+
+FILE_BOOKS = r'.\data\bookstoscrape.html'
+CONFIG_BOOKS = r'.\\configurations\config_bookstoscrape.json'
 
 
 # Helper functions
-def get_config(filename=CONFIG_NARREN):
+def get_config(filename=CONFIG_BOOKS):
     if filename is '':
         config = scrape.config.create('')
     else:
         config = scrape.config.read(filename)
-        config["url"] = FILE_NARREN
+        config["url"] = FILE_BOOKS
     return config
 
 
@@ -41,7 +42,7 @@ def get_page(filename=FILE_DORMOUSE):
     return page
 
 
-# def get_page_links(label='narrenschip'):
+# def get_page_links(label='books'):
 #     config = get_config(label=label)
 #     page = get_page(label=label)
 #     params = config['website']['page']
@@ -53,7 +54,7 @@ def get_page(filename=FILE_DORMOUSE):
 # Main functions
 def test_get_website():
     # Happy flow from file
-    config = get_config(CONFIG_NARREN)
+    config = get_config(CONFIG_BOOKS)
     url = config["url"]
     df = scrape.website.get_website(url, config)
     assert len(df) > 0
@@ -61,7 +62,7 @@ def test_get_website():
 
 def test_get_data():
     # Happy flow from file
-    config = get_config(CONFIG_NARREN)
+    config = get_config(CONFIG_BOOKS)
     url = config["url"]
     data, colnames = scrape.website.get_data(url, config)
     assert isinstance(data, list)
@@ -78,8 +79,8 @@ def test_get_data_errors():
 # Beautiful Soup functions
 def test_get_table():
     # Happy flow
-    page = get_page(FILE_NARREN)
-    config = get_config(CONFIG_NARREN)
+    page = get_page(FILE_BOOKS)
+    config = get_config(CONFIG_BOOKS)
     website = config["website"]
     atable = scrape.website.get_table(page, website)
     assert len(atable) > 0
@@ -88,7 +89,7 @@ def test_get_table():
 def test_get_table_empty_page():
     # Empty page
     page = ''
-    config = get_config(CONFIG_NARREN)
+    config = get_config(CONFIG_BOOKS)
     website = config["website"]
     atable, _ = scrape.website.get_table(page, website)
     assert len(atable) == 0
@@ -97,7 +98,7 @@ def test_get_table_empty_page():
 def test_get_table_incorrect_page():
     # Incorrect page string
     page = 'Incorrect'
-    config = get_config(CONFIG_NARREN)
+    config = get_config(CONFIG_BOOKS)
     website = config["website"]
     atable, _ = scrape.website.get_table(page, website)
     assert len(atable) == 0
@@ -107,7 +108,7 @@ def test_get_table_incorrect_website():
     # Incorrect website parameters
     # TODO Exception handling
     # page = 'Incorrect'
-    # config = get_config(CONFIG_NARREN)
+    # config = get_config(CONFIG_BOOKS)
     # website = config["website"]
     # atable = scrape.website.get_table(page, website)
     # assert len(atable) == 0
@@ -115,7 +116,7 @@ def test_get_table_incorrect_website():
 
 
 def test_get_url_next_page():
-    #     label = 'narrenschip'
+    #     label = 'books'
     #     config = get_config(label)
     #     page = get_page(label)
     #
@@ -126,31 +127,6 @@ def test_get_url_next_page():
     # TODO
     assert True
 
-# Function process_next_page(page, website, url)
-# filename = 'config_funda.json'
-# config = scrape.config.read(filename)
-# website = config['website']
-# url = 'https://www.funda.nl/koop/bergen-nh/beschikbaar/'
-#
-# config['driver']['package'] = 'selenium'
-# adriver = scrape.website.driver_start(config['driver'],headless=False)
-#
-# page = scrape.website.request_page(adriver, config['driver'], url, cnt=0)
-#
-# scrape.website.driver_stop(adriver)
-
-# def test_process_page_links():
-#     # labels = 'monster'
-#     # first_links = 'https://www.monster.com/jobs/search?page=2'
-#     labels = 'narrenschip'
-#     first_links = '/collections/amsterdam?page=2'
-#
-#     links = get_page_links(label=labels)
-#     print(links)
-#
-#     assert isinstance(links, list)
-#     assert links[0] == first_links
-
 
 def test_save():
     assert True
@@ -160,7 +136,7 @@ def test_save():
 def test__get_data_from_driver():
     # Happy flow, single page
     # data = _get_data_from_driver(url, config, adriver)
-    config = get_config(CONFIG_NARREN)
+    config = get_config(CONFIG_BOOKS)
     url = config["url"]
     adriver = drivers.driver_start(config['driver'])
     data = scrape.website._get_data_from_driver(url, config, adriver)
