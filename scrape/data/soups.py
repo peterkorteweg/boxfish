@@ -1,6 +1,4 @@
 # soups.py
-# Created 1/24/2021
-# Author P. Korteweg
 
 """Soups is a module that contains functions for the Beautiful Soup library.
 
@@ -24,6 +22,7 @@ from scrape.utils.strings import replace_newlines
 from scrape.utils.utils import read as _read, write as _write
 
 
+# Main functions
 def get_page(aitem):
     """ Get page from soup, tag or ResultSet object
 
@@ -64,6 +63,50 @@ def get_soup(page):
     else:
         soup = None
     return soup
+
+
+def get_template(aitem, astr='', ahref=''):
+    """ Get template from soup or tag
+    A template consists of the bs4 structure with all Navigable strings and hrefs replaced
+    All other attributes, except class, are stripped
+
+    ritem = get_template(aitem)
+
+    Args:
+        aitem : soup or tag
+        astr  : filling string or 'count'
+        ahref : filling href
+
+    Returns:
+
+        ritem : soup or tag
+    """
+
+    ritem = None
+    if is_tag(aitem) or is_soup(aitem):
+        ritem = copy.copy(aitem)
+
+        # strings
+        results = ritem.find_all(text=True)
+        for i, atag in enumerate(results):
+            rstr = str(i) if astr == 'count' else astr
+            _ = atag.string.string.replace_with(rstr)
+
+        # hrefs
+        results = ritem.find_all('a')
+        results.append(ritem)
+        for atag in results:
+            if 'href' in atag.attrs:
+                atag['href'] = ahref
+
+        # Other attributes
+        results = ritem.find_all()
+        for atag in results:
+            for att in atag.attrs:
+                if att not in ('class', 'href'):
+                    atag[att] = ''
+
+    return ritem
 
 
 def get_table(soup, **kwargs):
@@ -139,6 +182,7 @@ def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
     return atable, acolnames
 
 
+# Editing functions - deep copy
 def set_base(page, url):
     """ Set <base> in page with url
 
@@ -171,7 +215,6 @@ def set_base(page, url):
     return bpage
 
 
-# Editing functions - deep copy
 def split(soup):
     """ Split HTML soup into objects meta and body. Meta and body are deep copies.
 
@@ -282,7 +325,7 @@ def unpack_hrefs(tag):
 def remove_navigable_string_items(results):
     """ Remove navigable string items from ResultSet
     The function removes list item of type Navigable String.
-    Tag items which contain Nagigable Strings are not rremoved.
+    Tag items which contain Navigable Strings are not removed.
 
     results = remove_navigable_string_items(results)
 
@@ -485,6 +528,25 @@ def find_tables(aitem, afilter=None, astr=''):
     return ritems
 
 
+def get_filter(aitem):
+    """ Get filter for aitem
+
+    afilter = get_filter(aitem)
+
+    Args:
+        aitem(tag): BS4 object
+
+    Returns:
+        afilter (dict): dict with keys 'elem' and 'class'
+    """
+    afilter = {'elem': '', 'class': ''}
+    if is_tag(aitem):
+        afilter['elem'] = aitem.name
+        afilter['class'] = aitem['class']
+    return afilter
+
+
+
 # Extraction functions
 def get_text(aitem, include_strings=True, include_hrefs=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.
@@ -497,7 +559,7 @@ def get_text(aitem, include_strings=True, include_hrefs=False):
         include_hrefs (boolean): Include hrefs as strings if true
 
     Returns:
-        alist (list): alist (list): List of strings
+        alist (list): List of strings
     """
     alist = []
     if include_strings:
@@ -508,8 +570,8 @@ def get_text(aitem, include_strings=True, include_hrefs=False):
 
 
 def get_subtext(aitem, cols):
-    """ Get text from soup objects. Text consists of strings and/or hrefs. Relevant
-    text is specified by cols
+    """ Get text from soup objects. Text consists of strings and/or hrefs.
+    Relevant text is specified by cols
 
     alist = get_text(aitem, cols)
 
@@ -579,24 +641,6 @@ def get_hrefs(aitem):
     return alist
 
 
-def get_filter(aitem):
-    """ Get filter for aitem
-
-    afilter = get_filter(aitem)
-
-    Args:
-        aitem(tag): BS4 object
-
-    Returns:
-        afilter (dict): dict with keys 'elem' and 'class_'
-    """
-    afilter = {'elem': '', 'class': ''}
-    if is_tag(aitem):
-        afilter['elem'] = aitem.name
-        afilter['class'] = aitem['class']
-    return afilter
-
-
 # Identification functions
 def is_tag(aitem):
     """ Returns true if aitem is bs4.element.Tag
@@ -643,15 +687,29 @@ def is_soup(aitem):
 def is_navigable_string(aitem):
     """ Returns true if aitem is BS4 NavigableString
 
-    tf = is_naviagble_string(aitem)
+    tf = is_navigable_string(aitem)
 
     Args:
-        aitem: BS4 object
+        aitem(soup or tag or ResultSet): BS4 object
 
     Returns:
         tf (bool): True if aitem is BS4 Navigable String, False otherwise
     """
     return isinstance(aitem, bs4.element.NavigableString)
+
+
+def is_leaf(aitem):
+    """ Returns true if aitem is a leaf bs4.element.Tag.
+
+    tf = is_leaf(aitem)
+
+    Args:
+        aitem(soup or tag or ResultSet): BS4 object
+
+    Returns:
+        tf (bool): True if aitem is leaf BS4 tag, False otherwise
+    """
+    return is_tag(aitem) and is_navigable_string(aitem.next)
 
 
 # Private functions

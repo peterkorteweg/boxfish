@@ -76,6 +76,7 @@ def test_get_helper():
     pass
 
 
+# Main functions
 def test_get_page():
     page = get_page()
     soup = scrape.soups.get_soup(page)
@@ -99,6 +100,37 @@ def test_get_soup():
     page = get_page()
     soup = scrape.soups.get_soup(page)
     assert isinstance(soup, bs4.BeautifulSoup)
+
+
+def test_get_template():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Tag
+    afilter = ROWS_DORMOUSE
+    ritem = scrape.soups.find_item(soup, afilter=afilter)
+    titem = scrape.soups.get_template(ritem)
+    assert titem.string == '' and titem['href'] == ''
+
+    # Tag with child tags
+    afilter = ROWS_DORMOUSE
+    titem = scrape.soups.get_template(soup)
+    ritem = scrape.soups.find_item(titem, afilter=afilter)
+    assert ritem.string == '' and ritem['href'] == ''
+
+    # Results
+    afilter = ROWS_DORMOUSE
+    ritem = scrape.soups.find_items(soup, afilter=afilter)
+    titem = scrape.soups.get_template(ritem)
+    assert titem is None
+
+
+def test_get_template_temp():
+    # Temporary test function
+    # TODO Remove
+    page = get_page()
+    soup = scrape.soups.get_soup(page)
+    titem = scrape.soups.get_template(soup)
+    pass
 
 
 def test_get_table_rows_success():
@@ -128,13 +160,15 @@ def test_get_table_rows_no_match():
     assert len(atable) == 0
 
 
-# def test_get_table_rows_non_dict():
-#     # Simple example, rows
-#     page = get_page()
-#     soup = scrape.soups.get_soup(page)
-#     rows = []
-#     atable, _ = scrape.soups.get_table(soup, rows=rows)
-#     assert len(atable) == 0
+def test_get_table_rows_non_dict():
+    # TODO
+    #     # Simple example, rows
+    #     page = get_page()
+    #     soup = scrape.soups.get_soup(page)
+    #     rows = []
+    #     atable, _ = scrape.soups.get_table(soup, rows=rows)
+    #     assert len(atable) == 0
+    pass
 
 
 def test_get_table_rows_cols():
@@ -213,6 +247,7 @@ def test_to_table_colnames():
     assert len(colnames) == len(cols)
 
 
+# Editing functions
 def test_set_base():
     page = get_page(filename=FILE_DORMOUSE)
     url = 'https://www.crummy.com/'
@@ -224,7 +259,6 @@ def test_set_base():
     assert abase["href"] == url
 
 
-# Editing functions
 def test_split_soup():
     soup = scrape.soups.get_soup(get_page())
     [meta, body] = scrape.soups.split(soup)
@@ -473,6 +507,13 @@ def test_find_tables():
     assert len(alist) == TABLE_NUMBER_WIKI
 
 
+def test_get_filter():
+    soup = scrape.soups.get_soup(get_page())
+    tag = soup.find(id="link1")
+    afilter = scrape.soups.get_filter(tag)
+    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+
+
 # Extraction functions
 def test_get_text():
     page = get_page()
@@ -559,13 +600,6 @@ def test_get_hrefs_from_results():
     results = soup.find_all(class_="sister")
     alist = scrape.soups.get_hrefs(results)
     assert len(alist) == len(results) and alist[0][0] == 'http://example.com/elsie'
-
-
-def test_get_filter():
-    soup = scrape.soups.get_soup(get_page())
-    tag = soup.find(id="link1")
-    afilter = scrape.soups.get_filter(tag)
-    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
 
 
 # Identification functions
