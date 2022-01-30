@@ -23,6 +23,11 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     """
 
 
+# BS4 Tree example
+FILE_TREE = r'.\data\tree.html'
+ID1_TREE = 'tree1'
+ID2_TREE = 'tree2'
+
 # Books to scrape example
 FILE_BOOKS = r'.\data\bookstoscrape.html'
 ID_BOOKS = 'default'
@@ -100,37 +105,6 @@ def test_get_soup():
     page = get_page()
     soup = scrape.soups.get_soup(page)
     assert isinstance(soup, bs4.BeautifulSoup)
-
-
-def test_get_template():
-    soup = scrape.soups.get_soup(get_page())
-
-    # Tag
-    afilter = ROWS_DORMOUSE
-    ritem = scrape.soups.find_item(soup, afilter=afilter)
-    titem = scrape.soups.get_template(ritem)
-    assert titem.string == '' and titem['href'] == ''
-
-    # Tag with child tags
-    afilter = ROWS_DORMOUSE
-    titem = scrape.soups.get_template(soup)
-    ritem = scrape.soups.find_item(titem, afilter=afilter)
-    assert ritem.string == '' and ritem['href'] == ''
-
-    # Results
-    afilter = ROWS_DORMOUSE
-    ritem = scrape.soups.find_items(soup, afilter=afilter)
-    titem = scrape.soups.get_template(ritem)
-    assert titem is None
-
-
-def test_get_template_temp():
-    # Temporary test function
-    # TODO Remove
-    page = get_page()
-    soup = scrape.soups.get_soup(page)
-    titem = scrape.soups.get_template(soup)
-    pass
 
 
 def test_get_table_rows_success():
@@ -602,6 +576,38 @@ def test_get_hrefs_from_results():
     assert len(alist) == len(results) and alist[0][0] == 'http://example.com/elsie'
 
 
+# Stencil functions
+def test_get_stencil():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Tag
+    afilter = ROWS_DORMOUSE
+    ritem = scrape.soups.find_item(soup, afilter=afilter)
+    titem = scrape.soups.get_stencil(ritem)
+    assert titem.string == '' and titem['href'] == ''
+
+    # Tag with child tags
+    afilter = ROWS_DORMOUSE
+    titem = scrape.soups.get_stencil(soup)
+    ritem = scrape.soups.find_item(titem, afilter=afilter)
+    assert ritem.string == '' and ritem['href'] == ''
+
+    # Results
+    afilter = ROWS_DORMOUSE
+    ritem = scrape.soups.find_items(soup, afilter=afilter)
+    titem = scrape.soups.get_stencil(ritem)
+    assert titem is None
+
+
+# def test_get_stencil_temp():
+#     # Temporary test function
+#     # TODO Remove
+#     page = get_page()
+#     soup = scrape.soups.get_soup(page)
+#     titem = scrape.soups.get_stencil(soup)
+#     pass
+
+
 # Identification functions
 def test_is_tag():
     soup = scrape.soups.get_soup(get_page())
@@ -655,11 +661,12 @@ def test_is_navigable_string():
     assert not scrape.soups.is_navigable_string(results)
 
 
+# Xpath functions
 def test_get_xpath():
     soup = scrape.soups.get_soup(get_page())
 
     # Test soup
-    # assert scrape.soups.get_xpath(soup) == 0
+    assert scrape.soups.get_xpath(soup) == ''
 
     # Test single item
     afilter = {'elem': 'b'}
@@ -674,6 +681,47 @@ def test_get_xpath():
     aitem2 = aresults[1]
     assert scrape.soups.get_xpath(aitem2) == '/html/body/p[2]/a[2]'
 
+    # test single item relative
+    afilter = {'elem': 'a'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    aparent = aitem1.parent
+    agrandparent = aparent.parent
+    assert scrape.soups.get_xpath(aitem1, root=aparent) == '//a[1]'
+    assert scrape.soups.get_xpath(aitem1, root=agrandparent) == '//p[2]/a[1]'
+
+    # test first_index= True
+    afilter = {'elem': 'body'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem1 = aresults[0]
+    assert scrape.soups.get_xpath(aitem1, first_index=True) == '/html[1]/body[1]'
+
+    # test single item relative, first_index= True
+    afilter = {'elem': 'body'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem1 = aresults[0]
+    aparent = aitem1.parent
+    assert scrape.soups.get_xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
+
+
+def test_xpath_descendants():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Test soup
+    alist = scrape.soups.get_xpath_descendants(soup)
+    assert len(alist) == 11
+
+    # Test item
+    afilter = {'elem': 'p', 'class': 'story'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+
+    # Absolute
+    alist1 = scrape.soups.get_xpath_descendants(aitem1)
+    assert len(alist1) == 3
+
+    # Relative
+    alist2 = scrape.soups.get_xpath_descendants(aitem1, root=aitem1)
+    assert len(alist2) == 3
+
 
 def test_get_xpath_index():
     soup = scrape.soups.get_soup(get_page())
@@ -686,6 +734,11 @@ def test_get_xpath_index():
     aitem1 = scrape.soups.find_item(soup, afilter=afilter)
     assert scrape.soups.get_xpath_index(aitem1) == 0
 
+    # Test single item, first_index = True
+    afilter = {'elem': 'b'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    assert scrape.soups.get_xpath_index(aitem1, first_index=True) == 1
+
     # Test multiple items
     afilter = {'elem': 'a'}
     aresults = scrape.soups.find_items(soup, afilter=afilter)
@@ -693,3 +746,23 @@ def test_get_xpath_index():
     assert scrape.soups.get_xpath_index(aitem1) == 1
     aitem2 = aresults[1]
     assert scrape.soups.get_xpath_index(aitem2) == 2
+
+
+def test_xpath_union():
+    soup = scrape.soups.get_soup(get_page(FILE_TREE))
+
+    # Compare two trees
+    aitem1 = soup.find(id=ID1_TREE)
+    aitem2 = soup.find(id=ID2_TREE)
+    ulist = scrape.soups.get_xpath_union(aitem1, aitem2, relative=True)
+    assert len(ulist) == 6  # 6 Nodes
+
+
+def test_xpath_intersect():
+    soup = scrape.soups.get_soup(get_page(FILE_TREE))
+
+    # Compare two trees
+    aitem1 = soup.find(id=ID1_TREE)
+    aitem2 = soup.find(id=ID2_TREE)
+    ulist = scrape.soups.get_xpath_intersect(aitem1, aitem2, relative=True)
+    assert len(ulist) == 4  # 4 nodes

@@ -65,50 +65,6 @@ def get_soup(page):
     return soup
 
 
-def get_template(aitem, astr='', ahref=''):
-    """ Get template from soup or tag
-    A template consists of the bs4 structure with all Navigable strings and hrefs replaced
-    All other attributes, except class, are stripped
-
-    ritem = get_template(aitem)
-
-    Args:
-        aitem : soup or tag
-        astr  : filling string or 'count'
-        ahref : filling href
-
-    Returns:
-
-        ritem : soup or tag
-    """
-
-    ritem = None
-    if is_tag(aitem) or is_soup(aitem):
-        ritem = copy.copy(aitem)
-
-        # strings
-        results = ritem.find_all(text=True)
-        for i, atag in enumerate(results):
-            rstr = str(i) if astr == 'count' else astr
-            _ = atag.string.string.replace_with(rstr)
-
-        # hrefs
-        results = ritem.find_all('a')
-        results.append(ritem)
-        for atag in results:
-            if 'href' in atag.attrs:
-                atag['href'] = ahref
-
-        # Other attributes
-        results = ritem.find_all()
-        for atag in results:
-            for att in atag.attrs:
-                if att not in ('class', 'href'):
-                    atag[att] = ''
-
-    return ritem
-
-
 def get_table(soup, **kwargs):
     """ Get table from soup
 
@@ -640,6 +596,53 @@ def get_hrefs(aitem):
     return alist
 
 
+# Stencil functions
+# A stencil provdes a bs4 structre without content
+
+def get_stencil(aitem, astr='', ahref=''):
+    """ Get stencil from soup or tag
+    A stencil consists of the bs4 structure with all Navigable strings and hrefs replaced
+    All other attributes, except class, are stripped
+
+    ritem = get_stencil(aitem)
+
+    Args:
+        aitem : soup or tag
+        astr  : filling string or 'count'
+        ahref : filling href
+
+    Returns:
+
+        ritem : soup or tag
+    """
+
+    ritem = None
+    if is_tag(aitem) or is_soup(aitem):
+        ritem = copy.copy(aitem)
+
+        # strings
+        results = ritem.find_all(text=True)
+        for i, atag in enumerate(results):
+            rstr = str(i) if astr == 'count' else astr
+            _ = atag.string.string.replace_with(rstr)
+
+        # hrefs
+        results = ritem.find_all('a')
+        results.append(ritem)
+        for atag in results:
+            if 'href' in atag.attrs:
+                atag['href'] = ahref
+
+        # Other attributes
+        results = ritem.find_all()
+        for atag in results:
+            for att in atag.attrs:
+                if att not in ('class', 'href'):
+                    atag[att] = ''
+
+    return ritem
+
+
 # Identification functions
 def is_tag(aitem):
     """ Returns true if aitem is bs4.element.Tag
@@ -711,37 +714,71 @@ def is_leaf(aitem):
     return is_tag(aitem) and is_navigable_string(aitem.next)
 
 
-def get_xpath(aitem):
-    """ Returns xpath of aitem or list of xpath in case aitem is list
+# Xpath functions
+def get_xpath(aitem, root=None, first_index=False):
+    """ Returns xpath of aitem.
+    Returns absolute path or relative path to root
 
-    xpath = get_xpath(aitem)
+    xpath = get_xpath(aitem, root, first_index)
 
     Args:
-        aitem(soup or tag or ResultSet): BS4 object
+        aitem(tag): BS4 object
+        root(tag): BS4 tag (optional)
+        first_index(bool): include first index if true
 
     Returns:
         xpath (str or list): xpath of aitem
     """
     xpath = ''
     if is_tag(aitem) and not is_soup(aitem):
+        # Absolute
         rlist = [parent for parent in reversed(list(aitem.parents))]
         rlist.pop(0)
         rlist.append(aitem)
         for aparent in rlist:
-            idx = get_xpath_index(aparent)
+            idx = get_xpath_index(aparent, first_index=first_index)
             sidx = '[' + str(idx) + ']' if idx > 0 else ''
             xpath = xpath + '/' + aparent.name + sidx
+
+        # Relative
+        if is_tag(root):
+            xpath_root = get_xpath(root, first_index=first_index)
+            xpath = xpath.replace(xpath_root, '/') if xpath.startswith(xpath_root) else ''
     return xpath
 
 
-def get_xpath_index(aitem):
-    """ Returns xpath index. A positive index represents k-th index
-    A zero index represents first index with no further occurences of same name
+def get_xpath_descendants(aitem, root=None, first_index=False):
+    """ Returns list of xpaths of all descendant tags
 
-    xpi = get_xpath_index(aitem)
+    alist = get_xpath_descendants(aitem, root, first_index)
 
     Args:
         aitem(tag): BS4 object
+        root(tag): BS4 tag (optional)
+        first_index(bool): include first index if true
+
+    Returns:
+        alist (list): xpaths of all descendant tags
+    """
+    alist = []
+    if is_tag(aitem):
+        # if not is_soup(aitem):
+        #     alist.append(get_xpath(aitem, root=root))
+        for atag in aitem.descendants:
+            if is_tag(atag):
+                alist.append(get_xpath(atag, root=root, first_index=first_index))
+    return alist
+
+
+def get_xpath_index(aitem, first_index=False):
+    """ Returns xpath index. A positive index represents k-th index
+    A zero index represents first index with no further occurences of same name
+
+    xpi = get_xpath_index(aitem, first_index)
+
+    Args:
+        aitem(tag): BS4 object
+        first_index(bool): include first index if true
 
     Returns:
         xpi (int): xpath index of aitem
@@ -757,8 +794,68 @@ def get_xpath_index(aitem):
                     nitems = nitems + 1
                     if citem == aitem:
                         xpi = nitems
-        xpi = xpi if nitems > 1 else 0
+        xpi = xpi if (nitems > 1 or first_index) else 0
     return xpi
+
+
+def get_xpath_union(aitem1, aitem2, relative=False):
+    """ Returns an unordered list with union of xpaths in aitem1 and aitem2
+    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+
+    alist = union(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        relative(bool): Relative or Absolute.
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on union
+    """
+    return _get_xpath_set(aitem1, aitem2, operation='union', relative=relative)
+
+
+def get_xpath_intersect(aitem1, aitem2, relative=False):
+    """ Returns an unordered list with intersection of xpaths in aitem1 and aitem2
+    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+
+    alist = union(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        relative(bool): Relative or Absolute.
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on intersection
+    """
+    return _get_xpath_set(aitem1, aitem2, operation='intersect', relative=relative)
+
+
+def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
+    """ Returns an unordered list with set operation on xpaths in aitem1 and aitem2
+
+    alist = _get_xpath_set(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        operation(str): 'union', 'intersect' or 'diff'
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on operation
+    """
+
+    xpath1 = get_xpath_descendants(aitem1, root=(aitem1 if relative else None), first_index=True)
+    xpath2 = get_xpath_descendants(aitem2, root=(aitem2 if relative else None), first_index=True)
+
+    if operation == 'union':
+        alist = list(set(xpath1) | set(xpath2))
+    elif operation == 'intersect':
+        alist = list(set(xpath1) & set(xpath2))
+    else:
+        alist = []
+    return alist
 
 
 # Private functions

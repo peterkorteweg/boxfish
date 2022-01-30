@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample tree
+    </title>
+    <!-- CSS text-indent property
+    https://developer.mozilla.org/en-US/docs/Web/CSS/length
+    -->
+    <style>
+        .tab {
+            text-indent: 50px;
+        }
+
+        .tabp {
+            text-indent: 40%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Actual Tree -->
+    <h1>Tree strings</h1>
+    <p id="tree1">
+        <span id="A">a1
+            <span id="B">b1
+                <span id="C">c1
+                </span>b2
+                <span id="D">d1
+                </span>b3
+            </span>
+            <span id="E">e1
+            </span>a2
+        </span>
+    </p>
+    <p id="tree2">
+        <span id="AT">a1
+            <span id="BT">b1
+                <span id="CT">c1
+                </span>b2
+            </span>
+            <span id="ET">e1
+                <span id="FT">f1
+                </span>e2
+            </span>a2
+        </span>
+    </p>
+    <h1>Tree ids</h1>
+    <p id="tree_ids">
+        <span id="AI">A<br>
+            <span id="BI">B<br>
+                <span id="CI">C<br>
+                </span>
+                <span id="DI">D<br>
+                </span>
+            </span>
+            <span id="EI">E<br>
+            </span>
+        </span>
+    </p>
+    <p id="tree2_ids">
+        <span id="ATI">A<br>
+            <span id="BTI">B<br>
+                <span id="CTI">C<br>
+                </span>
+            </span>
+            <span id="ETI">E<br>
+                <span id="FTI">F<br>
+                </span>
+            </span>
+        </span>
+    </p>
+    <h1>Tree nodes</h1>
+    Tree 1 contains edge B>D but misses edge E>F
+    <p id="tree_nodes">
+        <span id="AE">A<br>
+            <span id="BE">A>B<br>
+                <span id="CE">B>C<br>
+                </span>
+                <span id="DE">B>D<br>
+                </span>
+            </span>
+            <span id="EE">A>E<br>
+            </span>
+        </span>
+    </p>
+    Tree 2 contains edge E>F but misses edge B>D
+    <p id="tree2_nodes">
+        <span id="ATE">A<br>
+            <span id="BTE">A>B<br>
+                <span id="CTE">B>C<br>
+                </span>
+            </span>
+            <span id="ETE">A>E<br>
+                <span id="FTE">E>F<br>
+                </span>
+            </span>
+        </span>
+    </p>
+</body>
+<!--
+A
+A>B
+A>E
+B>C
+B>D
+
+A
+A>B
+A>E
+B>C
+E>F
+-->
+</html>
