@@ -546,7 +546,6 @@ def get_filter(aitem):
     return afilter
 
 
-
 # Extraction functions
 def get_text(aitem, include_strings=True, include_hrefs=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.
@@ -710,6 +709,56 @@ def is_leaf(aitem):
         tf (bool): True if aitem is leaf BS4 tag, False otherwise
     """
     return is_tag(aitem) and is_navigable_string(aitem.next)
+
+
+def get_xpath(aitem):
+    """ Returns xpath of aitem or list of xpath in case aitem is list
+
+    xpath = get_xpath(aitem)
+
+    Args:
+        aitem(soup or tag or ResultSet): BS4 object
+
+    Returns:
+        xpath (str or list): xpath of aitem
+    """
+    xpath = ''
+    if is_tag(aitem) and not is_soup(aitem):
+        rlist = [parent for parent in reversed(list(aitem.parents))]
+        rlist.pop(0)
+        rlist.append(aitem)
+        for aparent in rlist:
+            idx = get_xpath_index(aparent)
+            sidx = '[' + str(idx) + ']' if idx > 0 else ''
+            xpath = xpath + '/' + aparent.name + sidx
+    return xpath
+
+
+def get_xpath_index(aitem):
+    """ Returns xpath index. A positive index represents k-th index
+    A zero index represents first index with no further occurences of same name
+
+    xpi = get_xpath_index(aitem)
+
+    Args:
+        aitem(tag): BS4 object
+
+    Returns:
+        xpi (int): xpath index of aitem
+    """
+    xpi = 0
+    if is_tag(aitem) and not is_soup(aitem):
+        aname = aitem.name
+        nitems = 0
+        aparent = next(aitem.parents)
+        for citem in aparent.children:
+            if is_tag(citem):
+                if citem.name == aname:
+                    nitems = nitems + 1
+                    if citem == aitem:
+                        xpi = nitems
+        xpi = xpi if nitems > 1 else 0
+    return xpi
 
 
 # Private functions

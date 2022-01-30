@@ -653,3 +653,43 @@ def test_is_navigable_string():
     # Example FALSE
     assert not scrape.soups.is_navigable_string(tag)
     assert not scrape.soups.is_navigable_string(results)
+
+
+def test_get_xpath():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Test soup
+    # assert scrape.soups.get_xpath(soup) == 0
+
+    # Test single item
+    afilter = {'elem': 'b'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    assert scrape.soups.get_xpath(aitem1) == '/html/body/p[1]/b'
+
+    # Test multiple items
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem1 = aresults[0]
+    assert scrape.soups.get_xpath(aitem1) == '/html/body/p[2]/a[1]'
+    aitem2 = aresults[1]
+    assert scrape.soups.get_xpath(aitem2) == '/html/body/p[2]/a[2]'
+
+
+def test_get_xpath_index():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Test soup
+    assert scrape.soups.get_xpath_index(soup) == 0
+
+    # Test single item
+    afilter = {'elem': 'b'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    assert scrape.soups.get_xpath_index(aitem1) == 0
+
+    # Test multiple items
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem1 = aresults[0]
+    assert scrape.soups.get_xpath_index(aitem1) == 1
+    aitem2 = aresults[1]
+    assert scrape.soups.get_xpath_index(aitem2) == 2
