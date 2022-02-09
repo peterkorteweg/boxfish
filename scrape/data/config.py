@@ -184,10 +184,10 @@ def build_rows(config, url='', slist=None):
             aitem1 = soups.find_item(soup, astr=str1)
             str2 = re.compile(slist[1])
             aitem2 = soups.find_item(soup, astr=str2)
-            aparent = soups.find_common_parent(aitem1, aitem2)
+            aparent = soups.find_common_ancestor(aitem1, aitem2)
             if aparent:
-                adescendants = soups.find_descendants(aparent, aitem1)
-                aitem = adescendants[0]
+                alineage = soups.find_lineage(aparent, aitem1)
+                aitem = alineage[0]
 
                 if aitem:
                     afilter = soups.get_filter(aitem)

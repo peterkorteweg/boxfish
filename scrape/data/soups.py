@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 import copy
 from scrape.utils.dicts import extract_values
 from scrape.utils.lists import is_empty
-from scrape.utils.strings import replace_newlines
+from scrape.utils.strings import replace_newlines, to_int
 from scrape.utils.utils import read as _read, write as _write
 
 
@@ -334,6 +334,26 @@ def write(filename, page):
 
 
 # Search functions
+def find_soup(aitem):
+    """ Find soup of aitem
+
+    asoup = find_soupd(aitem)
+
+    Args:
+        aitem(tag or soup): BS4 object
+
+    Returns:
+        asoup (soup): BS4 soup object
+    """
+    asoup = None
+    if is_soup(aitem):
+        asoup = aitem
+    elif is_tag(aitem):
+        rlist = list(reversed(list(aitem.parents)))
+        asoup = rlist[0]
+    return asoup
+
+
 def find_items(aitem, afilter=None, astr=''):
     """ Find items from atag based on filter and/or string
 
@@ -398,8 +418,48 @@ def find_item(aitem, afilter=None, astr=''):
     return ritem
 
 
-def find_common_parent(aitem1, aitem2):
-    """ Find parent tag whose descendants contain both str1 and str2
+def find_item_by_xpath(aitem, xpath='', relative=True):
+    """ Find single item from aitem based on xpath
+
+    ritem = find_item_by_xpath(aitem, xpath=xpath)
+
+    Args:
+        aitem(tag): BS4 object
+        xpath (str): xpath
+
+    Returns:
+        ritem (tag): BS4 tag
+    """
+    # TODO
+    if not relative:
+        asoup = find_soup(aitem)
+        ritem = find_item_by_xpath(asoup, xpath=xpath, relative=True)
+    else:
+        [names, idx] = _xpath_split(xpath)
+        tf = True
+        ritem = aitem
+        while tf:
+            if len(names) == 0:
+                tf = False
+            else:
+                names_i = names.pop(0)
+                idx_i = idx.pop(0)
+                if idx_i == 1:
+                    ritem = aitem.find(names_i)
+                    if ritem is None:
+                        tf = False
+                else:
+                    next_items = aitem.find_all(names_i)
+                    if len(next_items)>=idx_i:
+                        ritem = next_items[idx_i-1]
+                    else:
+                        ritem = None
+                        tf = False
+    return ritem
+
+
+def find_common_ancestor(aitem1, aitem2):
+    """ Find tag whose descendants contain both str1 and str2
 
     ritem = find_item(asoup, aitem1, aitem2)
 
@@ -410,37 +470,52 @@ def find_common_parent(aitem1, aitem2):
     Returns:
         ritem (tag): BS4 tag
     """
-    # TODO
+
     aitem = None
     if is_tag(aitem1) and is_tag(aitem2):
-        parents1 = [parent for parent in reversed(list(aitem1.parents))]
-        parents2 = [parent for parent in reversed(list(aitem2.parents))]
+        parents1 = list(reversed(list(aitem1.parents)))
+        parents2 = list(reversed(list(aitem2.parents)))
         for p1, p2 in zip(parents1, parents2):
             if p1 == p2:
                 aitem = p1
     return aitem
 
 
-def find_descendants(aparent, adescendant):
-    """ Finds all descendants from aparent up to adescendant
-    Returns an ordered list of descendants
+def find_ancestors(aitem):
+    """ Find all ancestor tags on direct line between soup and aitem (exclude both)
+       Returns an ordered list of tags
 
-    rlist = find_descendants(aparent, adescendant)
+       rlist = find_ancestors(aitem)
+
+       Args:
+           aitem (tag): BS4 tag
+
+       Returns:
+           rlist (list): List of BS4 tag
+       """
+    alist = list(reversed(list(aitem.parents)))
+    alist.pop(0)
+    return alist
+
+
+def find_lineage(aancestor, adescendant):
+    """ Find all tags on direct line of descent between ancestor and descendant (exclude both)
+    Returns an ordered list of tags
+
+    rlist = find_lineage(aancestor, adescendant)
 
     Args:
-        aparent (tag): BS4 tag
+        aancestor (tag): BS4 tag
         adescendant (tag): BS4 tag
 
     Returns:
-        rlist (list): List of BS4 tag
+        rlist (list): List of BS4 tags
     """
-    rlist = [parent for parent in reversed(list(adescendant.parents))]
+    rlist = find_ancestors(adescendant)
     tf = False
     while not tf and len(rlist) > 0:
         curr_parent = rlist.pop(0)
-        tf = (curr_parent == aparent)
-    if tf:
-        rlist.append(adescendant)
+        tf = (curr_parent == aancestor)
     return rlist
 
 
@@ -597,14 +672,47 @@ def get_hrefs(aitem):
 
 
 # Stencil functions
-# A stencil provdes a bs4 structre without content
+# A stencil provides a tag with mask layout filled with strings and hrefs content from aitem.
+# A mask consists of a bs4 structure without content
 
-def get_stencil(aitem, astr='', ahref=''):
+
+def stencil(aitem, amask):
     """ Get stencil from soup or tag
-    A stencil consists of the bs4 structure with all Navigable strings and hrefs replaced
+    # A stencil provides a tag with mask layout filled with strings and hrefs content from aitem.
+
+    sitem = stencil(aitem, amask)
+
+    Args:
+        aitem : soup or tag
+        amask : tag
+
+    Returns:
+        sitem : tag
+    """
+
+    # A21. Copy aitem.
+    sitem = copy.copy(aitem)
+    # A22. Find all tags in aitem not in template (xpath diff folded roots) -> delete from aitem
+    xd_item = get_xpath_descendants(aitem, root=aitem, first_index=True)
+    xd_mask = get_xpath_descendants(amask, root=amask, first_index=True)
+    xpaths_redundant = get_xpath_difference(xd_item, xd_mask, relative=True)
+    # TODO
+    # tags_redundant = [atag for atag=find_item(sitem,xpath=xpath) for xpath in xpaths_redundant]
+
+    # A23. Find all tags in atemplate not in aitem (xpath diff folded roots) -> add in correct position with ''
+    xpaths_missing = get_xpath_difference(xd_mask, xd_item, relative=True)
+    # tags_missing = [atag for atag = find_item(sitem, xpath=xpath)
+
+    return sitem
+
+
+def get_mask(aitem, astr='', ahref=''):
+    """ Get Mask from soup or tag
+    A mask consists of a bs4 structure without content
+    Navigable strings and hrefs values are replaced
     All other attributes, except class, are stripped
 
-    ritem = get_stencil(aitem)
+    ritem = get_mask(aitem)
 
     Args:
         aitem : soup or tag
@@ -732,11 +840,10 @@ def get_xpath(aitem, root=None, first_index=False):
     xpath = ''
     if is_tag(aitem) and not is_soup(aitem):
         # Absolute
-        rlist = [parent for parent in reversed(list(aitem.parents))]
-        rlist.pop(0)
+        rlist = find_ancestors(aitem)
         rlist.append(aitem)
         for aparent in rlist:
-            idx = get_xpath_index(aparent, first_index=first_index)
+            idx = _get_xpath_index(aparent, first_index=first_index)
             sidx = '[' + str(idx) + ']' if idx > 0 else ''
             xpath = xpath + '/' + aparent.name + sidx
 
@@ -770,11 +877,64 @@ def get_xpath_descendants(aitem, root=None, first_index=False):
     return alist
 
 
-def get_xpath_index(aitem, first_index=False):
+# Xpath set functions
+def get_xpath_union(aitem1, aitem2, relative=False):
+    """ Returns an unordered list with union of xpaths in aitem1 and aitem2
+    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+
+    alist = get_xpath_union(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        relative(bool): Relative or Absolute.
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on union
+    """
+    return _get_xpath_set(aitem1, aitem2, operation='union', relative=relative)
+
+
+def get_xpath_intersect(aitem1, aitem2, relative=False):
+    """ Returns an unordered list with intersection of xpaths in aitem1 and aitem2
+    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+
+    alist = get_xpath_intersect(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        relative(bool): Relative or Absolute.
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on intersection
+    """
+    return _get_xpath_set(aitem1, aitem2, operation='intersect', relative=relative)
+
+
+def get_xpath_difference(aitem1, aitem2, relative=False):
+    """ Returns an unordered list with difference of xpaths in aitem1 and aitem2
+    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+
+    alist = get_xpath_difference(aitem1, aitem2)
+
+    Args:
+        aitem1(tag): BS4 object
+        aitem2(tag): BS4 object
+        relative(bool): Relative or Absolute.
+
+    Returns:
+        alist (list): list with xpaths from of aitem1 and aitem2 based on difference
+    """
+    return _get_xpath_set(aitem1, aitem2, operation='difference', relative=relative)
+
+
+# Private xpath functions
+def _get_xpath_index(aitem, first_index=False):
     """ Returns xpath index. A positive index represents k-th index
     A zero index represents first index with no further occurences of same name
 
-    xpi = get_xpath_index(aitem, first_index)
+    xpi = _get_xpath_index(aitem, first_index)
 
     Args:
         aitem(tag): BS4 object
@@ -798,40 +958,6 @@ def get_xpath_index(aitem, first_index=False):
     return xpi
 
 
-def get_xpath_union(aitem1, aitem2, relative=False):
-    """ Returns an unordered list with union of xpaths in aitem1 and aitem2
-    When relative is true relative xpaths are relative to root of aitem1 and aitem2
-
-    alist = union(aitem1, aitem2)
-
-    Args:
-        aitem1(tag): BS4 object
-        aitem2(tag): BS4 object
-        relative(bool): Relative or Absolute.
-
-    Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on union
-    """
-    return _get_xpath_set(aitem1, aitem2, operation='union', relative=relative)
-
-
-def get_xpath_intersect(aitem1, aitem2, relative=False):
-    """ Returns an unordered list with intersection of xpaths in aitem1 and aitem2
-    When relative is true relative xpaths are relative to root of aitem1 and aitem2
-
-    alist = union(aitem1, aitem2)
-
-    Args:
-        aitem1(tag): BS4 object
-        aitem2(tag): BS4 object
-        relative(bool): Relative or Absolute.
-
-    Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on intersection
-    """
-    return _get_xpath_set(aitem1, aitem2, operation='intersect', relative=relative)
-
-
 def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
     """ Returns an unordered list with set operation on xpaths in aitem1 and aitem2
 
@@ -840,7 +966,7 @@ def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
     Args:
         aitem1(tag): BS4 object
         aitem2(tag): BS4 object
-        operation(str): 'union', 'intersect' or 'diff'
+        operation(str): 'union', 'intersect' or 'difference'
 
     Returns:
         alist (list): list with xpaths from of aitem1 and aitem2 based on operation
@@ -853,9 +979,38 @@ def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
         alist = list(set(xpath1) | set(xpath2))
     elif operation == 'intersect':
         alist = list(set(xpath1) & set(xpath2))
+    elif operation == 'difference':
+        alist = list(set(xpath1).difference(set(xpath2)))
     else:
         alist = []
     return alist
+
+
+def _xpath_split(xpath):
+    """ Returns two lists with xpath name attributes and indices
+
+    [anames aindices] = _xpath_split(xpath)
+
+    Args:
+        xpath(str): Xpath
+
+    Returns:
+        anames (list): list with names
+        aindices (list): list with indices
+    """
+    anames = xpath.split('/')
+    aindices = [1] * len(anames)
+    for i in range(len(anames)-1, -1, -1):
+        if anames[i] == '':
+            anames.pop(i)
+            aindices.pop(i)
+        else:
+            tlist = anames[i].replace('[',']').split(sep=']')
+            anames[i] = tlist[0]
+            if len(tlist)>1:
+                index = to_int(tlist[1])
+                aindices[i] = index if index else 1
+    return anames, aindices
 
 
 # Private functions

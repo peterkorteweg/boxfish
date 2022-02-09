@@ -338,6 +338,14 @@ def test_write():
 
 
 # Search functions
+def test_find_soup():
+    soup = scrape.soups.get_soup(get_page(filename=FILE_DORMOUSE))
+    afilter = ROWS_DORMOUSE
+    ritem = scrape.soups.find_item(soup, afilter=afilter)
+    asoup = scrape.soups.find_soup(ritem)
+    assert scrape.soups.is_soup(asoup)
+
+
 def test_find_items_elem_class():
     soup = scrape.soups.get_soup(get_page(filename=FILE_DORMOUSE))
     afilter = ROWS_DORMOUSE
@@ -406,7 +414,19 @@ def test_find_item():
     assert ritem1 == ritem2 == ritem3
 
 
-def test_find_common_parent():
+def text_find_item_by_xpath():
+    # TODO
+    # Absolute find item. Exist
+    # Absolute find item. Exist. Self
+    # Absolute find item. Not exist
+    # Relative find item. Exist 1 level deep
+    # Relative find item. Exist 2 levels deep
+    # Relative find item. Exist. Self
+    # Relative find item. Not exist
+    pass
+
+
+def test_find_common_ancestor():
     soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
 
     # Example same soup, exists
@@ -414,7 +434,7 @@ def test_find_common_parent():
     results = scrape.soups.find_items(soup, afilter)
     aitem1 = results[0]
     aitem2 = results[1]
-    ritem = scrape.soups.find_common_parent(aitem1, aitem2)
+    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
     assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
 
     # Example same soup, parent is soup
@@ -424,16 +444,25 @@ def test_find_common_parent():
     afilter = {'elem': 'title'}
     aitem2 = scrape.soups.find_item(soup, afilter)
 
-    ritem = scrape.soups.find_common_parent(aitem1, aitem2)
+    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
     assert ritem.name == 'html' and ritem["class"] == ['no-js']
 
     # Different soup
     aitem2 = BeautifulSoup('<body>', 'html.parser').find("body")
-    ritem = scrape.soups.find_common_parent(aitem1, aitem2)
+    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
     assert ritem is None
 
 
-def test_find_descendants():
+def test_find_ancestors():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem = results[0]
+    ancestors = scrape.soups.find_ancestors(aitem)
+    assert len(ancestors) == 9
+
+
+def test_find_lineage():
     soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
 
     # Example same soup, exists
@@ -441,20 +470,20 @@ def test_find_descendants():
     results = scrape.soups.find_items(soup, afilter)
     aitem1 = results[0]
     aitem2 = results[1]
-    aparent = scrape.soups.find_common_parent(aitem1, aitem2)
-
-    # Example: direct parent
-    adescendants = scrape.soups.find_descendants(aparent, aitem1)
-    assert len(adescendants) == 1
-
-    # Example: non-direct parent
+    aparent = scrape.soups.find_common_ancestor(aitem1, aitem2)
     agrandparent = next(aparent.parents)
-    adescendants = scrape.soups.find_descendants(agrandparent, aitem1)
-    assert len(adescendants) == 2
 
-    # Example: no parent
-    adescendants = scrape.soups.find_descendants(aitem1, aitem2)
-    assert len(adescendants) == 0
+    # Example: ancestor is direct parent
+    alineage = scrape.soups.find_lineage(aparent, aitem1)
+    assert len(alineage) == 0
+
+    # Example: ancestor is non-direct parent
+    alineage = scrape.soups.find_lineage(agrandparent, aitem1)
+    assert len(alineage) == 1
+
+    # Example: no ancestor
+    alineage = scrape.soups.find_lineage(aitem1, aitem2)
+    assert len(alineage) == 0
 
 
 def test_find_lists():
@@ -577,35 +606,38 @@ def test_get_hrefs_from_results():
 
 
 # Stencil functions
-def test_get_stencil():
+def test_get_mask():
     soup = scrape.soups.get_soup(get_page())
 
     # Tag
     afilter = ROWS_DORMOUSE
     ritem = scrape.soups.find_item(soup, afilter=afilter)
-    titem = scrape.soups.get_stencil(ritem)
+    titem = scrape.soups.get_mask(ritem)
     assert titem.string == '' and titem['href'] == ''
 
     # Tag with child tags
     afilter = ROWS_DORMOUSE
-    titem = scrape.soups.get_stencil(soup)
+    titem = scrape.soups.get_mask(soup)
     ritem = scrape.soups.find_item(titem, afilter=afilter)
     assert ritem.string == '' and ritem['href'] == ''
 
     # Results
     afilter = ROWS_DORMOUSE
     ritem = scrape.soups.find_items(soup, afilter=afilter)
-    titem = scrape.soups.get_stencil(ritem)
+    titem = scrape.soups.get_mask(ritem)
     assert titem is None
 
 
-# def test_get_stencil_temp():
-#     # Temporary test function
-#     # TODO Remove
-#     page = get_page()
-#     soup = scrape.soups.get_soup(page)
-#     titem = scrape.soups.get_stencil(soup)
-#     pass
+def test_get_stencil():
+    # TODO
+    page = get_page(FILE_TREE)
+    soup = scrape.soups.get_soup(page)
+    aitem1 = soup.find(id=ID1_TREE)
+    aitem2 = soup.find(id=ID2_TREE)
+    amask = scrape.soups.get_mask(aitem1)
+    # astencil = scrape.soups.stencil(aitem2, amask)
+    # Check that astencil contains the same tags as amask
+    pass
 
 
 # Identification functions
@@ -723,31 +755,7 @@ def test_xpath_descendants():
     assert len(alist2) == 3
 
 
-def test_get_xpath_index():
-    soup = scrape.soups.get_soup(get_page())
-
-    # Test soup
-    assert scrape.soups.get_xpath_index(soup) == 0
-
-    # Test single item
-    afilter = {'elem': 'b'}
-    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
-    assert scrape.soups.get_xpath_index(aitem1) == 0
-
-    # Test single item, first_index = True
-    afilter = {'elem': 'b'}
-    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
-    assert scrape.soups.get_xpath_index(aitem1, first_index=True) == 1
-
-    # Test multiple items
-    afilter = {'elem': 'a'}
-    aresults = scrape.soups.find_items(soup, afilter=afilter)
-    aitem1 = aresults[0]
-    assert scrape.soups.get_xpath_index(aitem1) == 1
-    aitem2 = aresults[1]
-    assert scrape.soups.get_xpath_index(aitem2) == 2
-
-
+# Xpath set functions
 def test_xpath_union():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
@@ -766,3 +774,50 @@ def test_xpath_intersect():
     aitem2 = soup.find(id=ID2_TREE)
     ulist = scrape.soups.get_xpath_intersect(aitem1, aitem2, relative=True)
     assert len(ulist) == 4  # 4 nodes
+
+
+# Xpath private functions
+def test_get_xpath_index():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Test soup
+    assert scrape.soups._get_xpath_index(soup) == 0
+
+    # Test single item
+    afilter = {'elem': 'b'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    assert scrape.soups._get_xpath_index(aitem1) == 0
+
+    # Test single item, first_index = True
+    afilter = {'elem': 'b'}
+    aitem1 = scrape.soups.find_item(soup, afilter=afilter)
+    assert scrape.soups._get_xpath_index(aitem1, first_index=True) == 1
+
+    # Test multiple items
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem1 = aresults[0]
+    assert scrape.soups._get_xpath_index(aitem1) == 1
+    aitem2 = aresults[1]
+    assert scrape.soups._get_xpath_index(aitem2) == 2
+
+
+def test_xpath_split():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Test single item
+    afilter = {'elem': 'b'}
+    aitem = scrape.soups.find_item(soup, afilter=afilter)
+    xpath = scrape.soups.get_xpath(aitem)
+    [names, indices] = scrape.soups._xpath_split(xpath)
+    assert names == ['html', 'body', 'p', 'b']
+    assert indices == [1, 1, 1, 1]
+
+    # Test multiple items
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem = aresults[1]
+    xpath = scrape.soups.get_xpath(aitem)
+    [names, indices] = scrape.soups._xpath_split(xpath)
+    assert names == ['html', 'body', 'p', 'a']
+    assert indices == [1, 1, 2, 2]
