@@ -53,11 +53,6 @@ def save(df, filename, date_format='%Y%m%d', overwrite=False):
         fullname: Full filename including date
 
     Example:
-        df = list_to_dataframe([1,2,3],['Col1'])
-        >>    Col1
-        >>0      1
-        >>1      2
-        >>3      3
     """
     if (df is not None) and os.path.basename(filename):
         create_folder_if_not_exist(os.path.dirname(filename))
