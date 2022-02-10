@@ -606,6 +606,18 @@ def test_get_hrefs_from_results():
 
 
 # Stencil functions
+def test_stencil():
+    # TODO
+    page = get_page(FILE_TREE)
+    soup = scrape.soups.get_soup(page)
+    aitem1 = soup.find(id=ID1_TREE)
+    aitem2 = soup.find(id=ID2_TREE)
+    amask = scrape.soups.get_mask(aitem1)
+    # astencil = scrape.soups.stencil(aitem2, amask)
+    # Check that astencil contains the same tags as amask
+    pass
+
+
 def test_get_mask():
     soup = scrape.soups.get_soup(get_page())
 
@@ -626,18 +638,6 @@ def test_get_mask():
     ritem = scrape.soups.find_items(soup, afilter=afilter)
     titem = scrape.soups.get_mask(ritem)
     assert titem is None
-
-
-def test_get_stencil():
-    # TODO
-    page = get_page(FILE_TREE)
-    soup = scrape.soups.get_soup(page)
-    aitem1 = soup.find(id=ID1_TREE)
-    aitem2 = soup.find(id=ID2_TREE)
-    amask = scrape.soups.get_mask(aitem1)
-    # astencil = scrape.soups.stencil(aitem2, amask)
-    # Check that astencil contains the same tags as amask
-    pass
 
 
 # Identification functions
@@ -776,6 +776,11 @@ def test_xpath_intersect():
     assert len(ulist) == 4  # 4 nodes
 
 
+def test_xpath_diff():
+    # TODO
+    pass
+
+
 # Xpath private functions
 def test_get_xpath_index():
     soup = scrape.soups.get_soup(get_page())
@@ -800,6 +805,11 @@ def test_get_xpath_index():
     assert scrape.soups._get_xpath_index(aitem1) == 1
     aitem2 = aresults[1]
     assert scrape.soups._get_xpath_index(aitem2) == 2
+
+
+def test_get_xpath_set():
+    # TODO
+    pass
 
 
 def test_xpath_split():
