@@ -459,7 +459,7 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
 
 
 def find_common_ancestor(aitem1, aitem2):
-    """ Find tag whose descendants contain both str1 and str2
+    """ Find tag whose descendants contain both aitem1 and aitem2
 
     ritem = find_item(asoup, aitem1, aitem2)
 
@@ -1005,9 +1005,9 @@ def _xpath_split(xpath):
             anames.pop(i)
             aindices.pop(i)
         else:
-            tlist = anames[i].replace('[',']').split(sep=']')
+            tlist = anames[i].replace('[', ']').split(sep=']')
             anames[i] = tlist[0]
-            if len(tlist)>1:
+            if len(tlist) > 1:
                 index = to_int(tlist[1])
                 aindices[i] = index if index else 1
     return anames, aindices
