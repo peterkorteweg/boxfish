@@ -17,7 +17,7 @@ import bs4
 from bs4 import BeautifulSoup
 import copy
 from scrape.utils.dicts import extract_values
-from scrape.utils.lists import is_empty
+from scrape.utils.lists import is_empty, to_list
 from scrape.utils.strings import replace_newlines, to_int
 from scrape.utils.utils import read as _read, write as _write
 
@@ -411,14 +411,14 @@ def find_item(aitem, afilter=None, astr=''):
     return ritem
 
 
-def find_item_by_xpath(aitem, xpath='', relative=True):
+def find_item_by_xpath(aitem, axpath='', relative=True):
     """ Find single item from aitem based on xpath
 
     ritem = find_item_by_xpath(aitem, xpath=xpath)
 
     Args:
         aitem(tag): BS4 object
-        xpath (str): xpath
+        axpath (str): xpath
         relative (bool): xpath is relative to aitem if true, absolute otherwise
 
     Returns:
@@ -427,9 +427,9 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
 
     if not relative:
         asoup = find_soup(aitem)
-        ritem = find_item_by_xpath(asoup, xpath=xpath, relative=True) if is_soup(asoup) else None
+        ritem = find_item_by_xpath(asoup, axpath=axpath, relative=True) if is_soup(asoup) else None
     else:
-        [names, idx] = _xpath_split(xpath)
+        [names, idx] = _xpath_split(axpath)
         tf = True
         ritem = aitem
         # Iterate over xpath items and update ritem each step
@@ -707,16 +707,18 @@ def stencil(aitem, amask):
 
     # A21. Copy aitem.
     sitem = copy.copy(aitem)
-    # A22. Find all tags in aitem not in template (xpath diff folded roots) -> delete from aitem
-    xd_item = xpaths(aitem, root=aitem, first_index=True)
-    xd_mask = xpaths(amask, root=amask, first_index=True)
-    xpaths_redundant = get_xpath_difference(xd_item, xd_mask, relative=True)
-    # TODO
-    # tags_redundant = [atag for atag=find_item(sitem,xpath=xpath) for xpath in xpaths_redundant]
-
-    # A23. Find all tags in atemplate not in aitem (xpath diff folded roots) -> add in correct position with ''
-    xpaths_missing = get_xpath_difference(xd_mask, xd_item, relative=True)
-    # tags_missing = [atag for atag = find_item(sitem, xpath=xpath)
+    #
+    # # A22. Find all tags in aitem not in amask (xpath diff folded roots) -> delete these tags from aitem
+    # xd_item = xpaths(aitem, root=aitem, first_index=True)
+    # xd_mask = xpaths(amask, root=amask, first_index=True)
+    # xpaths_redundant = xpaths_difference(xd_item, xd_mask, relative=True)
+    #
+    # # TODO
+    # # tags_redundant = [atag for atag=find_item(sitem,xpath=xpath) for xpath in xpaths_redundant]
+    #
+    # # A23. Find all tags in atemplate not in aitem (xpath diff folded roots) -> add in correct position with ''
+    # xpaths_missing = xpaths_difference(xd_mask, xd_item, relative=True)
+    # # tags_missing = [atag for atag = find_item(sitem, xpath=xpath)
 
     return sitem
 
@@ -869,7 +871,45 @@ def xpath(aitem, root=None, first_index=False):
     return axpath
 
 
-# Xpaths. Xpath set functions
+# Xpath list functions
+def xpath_ischild(axpath, axpaths):
+    """ Returns true is axpath is a child from an item in axpaths
+
+        tf = xpath_ischild(axpath, axpaths)
+
+        Args:
+            axpath(str): xpath
+            axpaths(str or list): xpath list
+
+        Returns:
+            tf (bool): true if axpath is a child of item in axpaths
+        """
+    axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
+    tf = False
+    i = 0
+    while not tf and i < len(axpaths):
+        tf = _xpath_ischild(axpath, axpaths[i])
+        i = i + 1
+    return tf
+
+
+def xpath_isdescendant(axpath, axpaths):
+    """ Returns true is axpath is a child from an item in axpaths
+
+        tf = xpath_ischild(axpath, axpaths)
+
+        Args:
+            axpath(str): xpath
+            axpaths(str or list): xpath list
+
+        Returns:
+            tf (bool): true if axpath is a descendant of item in axpaths
+        """
+    # TODO
+    pass
+
+
+# Xpaths. Xpath set functions.
 def xpaths(aitem, root=None, first_index=False):
     """ Returns list of xpaths of all descendant tags
 
@@ -1001,7 +1041,7 @@ def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
     return alist
 
 
-def _xpath_split(xpath):
+def _xpath_split(axpath):
     """ Returns two lists with xpath name attributes and indices
 
     [anames aindices] = _xpath_split(xpath)
@@ -1013,7 +1053,7 @@ def _xpath_split(xpath):
         anames (list): list with names
         aindices (list): list with indices
     """
-    anames = xpath.split('/')
+    anames = axpath.split('/')
     aindices = [1] * len(anames)
     for i in range(len(anames)-1, -1, -1):
         if anames[i] == '':
@@ -1026,6 +1066,28 @@ def _xpath_split(xpath):
                 index = to_int(tlist[1])
                 aindices[i] = index if index else 1
     return anames, aindices
+
+
+def _xpath_ischild(axpath, bxpath):
+    """ Returns true if axpath is a child of bxpath
+
+     tf = _xpath_ischild(axpath, bxpath)
+
+     Args:
+         axpath(str): xpath
+         bxpath(str): xpath
+
+     Returns:
+         tf (bool): true if axpath is achild of bxpath
+     """
+
+    [anames, aidx] = _xpath_split(axpath)
+    [bnames, bidx] = _xpath_split(bxpath)
+    tf = len(anames) == len(bnames) + 1
+    if tf:
+        tf = tf and anames[:-1] == bnames
+        tf = tf and aidx[:-1] == bidx
+    return tf
 
 
 # Private functions

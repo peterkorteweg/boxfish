@@ -419,20 +419,21 @@ def test_find_item_by_xpath():
     aitem1 = soup.find(id=ID1_TREE)
 
     # Absolute ===
-    xpaths = scrape.soups.xpath(soup)
     xpath1 = scrape.soups.xpath(aitem1)
 
     # Absolute find item. Exist
-    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpath1, relative=False)
+    fitem = scrape.soups.find_item_by_xpath(soup, axpath=xpath1, relative=False)
     assert fitem == aitem1
 
-    # Absolute find item. Exist. Self
-    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpaths, relative=False)
-    assert fitem == soup
+    # # Absolute find item. Exist. Self
+    # 2022-02-12. No xpath for soup
+    # xpaths = scrape.soups.xpath(soup)
+    # fitem = scrape.soups.find_item_by_xpath(soup, axpath=xpaths, relative=False)
+    # assert fitem == soup
 
     # Absolute find item. Not exist
     xpathn = xpath1 + '/b[1]'
-    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpathn, relative=False)
+    fitem = scrape.soups.find_item_by_xpath(soup, axpath=xpathn, relative=False)
     assert fitem is None
 
     # Relative ===
@@ -449,19 +450,19 @@ def test_find_item_by_xpath():
     xpathn = xpath_level3 + '/b[1]'
 
     # Relative find item. Exist 1 level deep
-    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level1, relative=True)
+    fitem = scrape.soups.find_item_by_xpath(aitem1, axpath=xpath_level1, relative=True)
     assert fitem == alevel1
 
     # Relative find item. Exist 3 levels deep
-    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level3, relative=True)
+    fitem = scrape.soups.find_item_by_xpath(aitem1, axpath=xpath_level3, relative=True)
     assert fitem == alevel3
 
     # Relative find item. Exist. Self
-    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_self, relative=True)
+    fitem = scrape.soups.find_item_by_xpath(aitem1, axpath=xpath_self, relative=True)
     assert fitem == aitem1
 
     # Relative find item. Not exist
-    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpathn, relative=True)
+    fitem = scrape.soups.find_item_by_xpath(aitem1, axpath=xpathn, relative=True)
     assert fitem is None
 
 
@@ -787,7 +788,36 @@ def test_xpath():
     assert scrape.soups.xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
 
 
-def test_xpath_descendants():
+def test_xpath_ischild():
+    soup = scrape.soups.get_soup(get_page())
+    alist = scrape.soups.xpaths(soup)
+
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem = aresults[1]
+    aparent = aitem.parent
+    gparent = aparent.parent
+
+    axpath = scrape.soups.xpath(aitem)
+    pxpath = scrape.soups.xpath(aparent)
+    pxpaths = scrape.soups.xpaths(aparent)
+    gxpaths = scrape.soups.xpaths(gparent)
+
+
+    # Xpath is child
+    axpaths = list(set(gxpaths) - {axpath})
+    assert scrape.soups.xpath_ischild(axpath, axpaths)
+
+    # Xpath is in axpaths but not a child
+    axpaths = pxpaths
+    assert not scrape.soups.xpath_ischild(axpath, axpaths)
+
+    # Xpath is not in axpath and not a child
+    axpaths = list(set(pxpaths) - {axpath})
+    assert not scrape.soups.xpath_ischild(axpath, axpaths)
+
+
+def test_xpaths():
     soup = scrape.soups.get_soup(get_page())
 
     # Test soup
@@ -890,3 +920,5 @@ def test_xpath_split():
     [names, indices] = scrape.soups._xpath_split(xpath)
     assert names == ['html', 'body', 'p', 'a']
     assert indices == [1, 1, 2, 2]
+
+
