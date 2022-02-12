@@ -425,7 +425,7 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
     Returns:
         ritem (tag): BS4 tag
     """
-    # TODO
+
     if not relative:
         asoup = find_soup(aitem)
         ritem = find_item_by_xpath(asoup, xpath=xpath, relative=True) if is_soup(asoup) else None
@@ -441,11 +441,11 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
                 names_i = names.pop(0)
                 idx_i = idx.pop(0)
                 if idx_i == 1:
-                    ritem = aitem.find(names_i)
+                    ritem = ritem.find(names_i)
                     if ritem is None:
                         tf = False
                 else:
-                    next_items = aitem.find_all(names_i)
+                    next_items = ritem.find_all(names_i)
                     if len(next_items) >= idx_i:
                         ritem = next_items[idx_i-1]
                     else:
@@ -687,6 +687,7 @@ def get_hrefs(aitem):
 
 
 # Stencil functions
+
 # A stencil provides a tag with mask layout filled with strings and hrefs content from aitem.
 # A mask consists of a bs4 structure without content
 

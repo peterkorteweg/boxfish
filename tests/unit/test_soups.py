@@ -436,30 +436,33 @@ def test_find_item_by_xpath():
     assert fitem is None
 
     # Relative ===
-    ichildren = aitem1.children
-    _ = next(ichildren)
-    alevel1 = next(ichildren)
-    igchildren = alevel1.children
-    alevel2 = next(igchildren)
+    achildren1 = scrape.soups.children(aitem1)
+    alevel1 = achildren1[0]
+    achildren2 = scrape.soups.children(alevel1)
+    alevel2 = achildren2[0]
+    achildren3 = scrape.soups.children(alevel2)
+    alevel3 = achildren3[1]
 
     xpath_self = scrape.soups.get_xpath(aitem1, root=aitem1)
     xpath_level1 = scrape.soups.get_xpath(alevel1, root=aitem1)
-    xpath_level2 = scrape.soups.get_xpath(alevel2, root=aitem1)
+    xpath_level3 = scrape.soups.get_xpath(alevel3, root=aitem1)
+    xpathn = xpath_level3 + '/b[1]'
 
     # Relative find item. Exist 1 level deep
     fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level1, relative=True)
     assert fitem == alevel1
 
-    # Relative find item. Exist 2 levels deep
-    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level2, relative=True)
-    assert fitem == alevel2
+    # Relative find item. Exist 3 levels deep
+    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level3, relative=True)
+    assert fitem == alevel3
 
     # Relative find item. Exist. Self
     fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_self, relative=True)
     assert fitem == aitem1
 
     # Relative find item. Not exist
-    # TODO
+    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpathn, relative=True)
+    assert fitem is None
 
 
 def test_find_lists():
