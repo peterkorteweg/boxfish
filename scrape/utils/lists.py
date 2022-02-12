@@ -163,8 +163,8 @@ def intersect(alist, blist):
 
 
     Example:
-        alist = (1,2,3,4,5)
-        blist = (2,4,6)
+        alist = [1,2,3,4,5]
+        blist = [2,4,6]
         clist = intesect(alist, blist)
         >> clist = (2,4)
     """
@@ -184,8 +184,8 @@ def union(alist, blist):
 
 
     Example:
-        alist = (1,2,3,3,4,5)
-        blist = (2,4,6)
+        alist = [1,2,3,3,4,5]
+        blist = [2,4,6]
         clist = union(alist, blist)
         >> clist = (1,2,3,4,5,6)
     """
@@ -205,8 +205,8 @@ def difference(alist, blist):
 
 
     Example:
-        alist = (1,2,3,3,4,5)
-        blist = (2,4,6)
+        alist = [1,2,3,3,4,5]
+        blist = [2,4,6]
         clist = difference(alist, blist)
         >> clist = (1,3,5)
     """
@@ -226,8 +226,8 @@ def is_subset(alist, blist):
 
 
     Example:
-        alist = (1,2,3)
-        blist = (6,5,4,3,2,1)
+        alist = [1,2,3]
+        blist = [6,5,4,3,2,1]
         tf = is_subset(alist, blist)
         >> tf = True
     """
