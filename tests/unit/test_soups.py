@@ -788,7 +788,7 @@ def test_xpath():
     assert scrape.soups.xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
 
 
-def test_xpath_ischild():
+def test_xpath_is_child():
     soup = scrape.soups.get_soup(get_page())
     alist = scrape.soups.xpaths(soup)
 
@@ -806,15 +806,55 @@ def test_xpath_ischild():
 
     # Xpath is child
     axpaths = list(set(gxpaths) - {axpath})
-    assert scrape.soups.xpath_ischild(axpath, axpaths)
+    assert scrape.soups.xpath_is_child(axpath, axpaths)
 
     # Xpath is in axpaths but not a child
     axpaths = pxpaths
-    assert not scrape.soups.xpath_ischild(axpath, axpaths)
+    assert not scrape.soups.xpath_is_child(axpath, axpaths)
 
     # Xpath is not in axpath and not a child
     axpaths = list(set(pxpaths) - {axpath})
-    assert not scrape.soups.xpath_ischild(axpath, axpaths)
+    assert not scrape.soups.xpath_is_child(axpath, axpaths)
+
+
+def test_xpath_is_descendant():
+    soup = scrape.soups.get_soup(get_page())
+    alist = scrape.soups.xpaths(soup)
+
+    afilter = {'elem': 'a'}
+    aresults = scrape.soups.find_items(soup, afilter=afilter)
+    aitem = aresults[1]
+    parent1 = aitem.parent
+    parent2 = parent1.parent
+    parent3 = parent2.parent
+
+    axpath = scrape.soups.xpath(aitem)
+    pxpath1 = scrape.soups.xpath(parent1)
+    pxpath2 = scrape.soups.xpath(parent2)
+    pxpaths1 = scrape.soups.xpaths(parent1)
+    pxpaths2 = scrape.soups.xpaths(parent2)
+    pxpaths3 = scrape.soups.xpaths(parent3)
+
+    # Xpath is descendant (level 1)
+    axpaths = [pxpath1]
+    assert scrape.soups.xpath_is_descendant(axpath, axpaths)
+
+    axpaths = pxpaths2
+    assert scrape.soups.xpath_is_descendant(axpath, axpaths)
+
+    # Xpath is descendant (level 2)
+    axpaths = [pxpath2]
+    assert scrape.soups.xpath_is_descendant(axpath, axpaths)
+
+    axpaths = pxpaths3
+    assert scrape.soups.xpath_is_descendant(axpath, axpaths)
+
+    # Xpath is not a desdendant
+    axpaths = [axpath]
+    assert not scrape.soups.xpath_is_descendant(axpath, axpaths)
+
+    axpaths = pxpaths1
+    assert not scrape.soups.xpath_is_descendant(axpath, axpaths)
 
 
 def test_xpaths():

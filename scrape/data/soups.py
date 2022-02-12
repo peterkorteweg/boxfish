@@ -872,10 +872,10 @@ def xpath(aitem, root=None, first_index=False):
 
 
 # Xpath list functions
-def xpath_ischild(axpath, axpaths):
+def xpath_is_child(axpath, axpaths):
     """ Returns true is axpath is a child from an item in axpaths
 
-        tf = xpath_ischild(axpath, axpaths)
+        tf = xpath_is_child(axpath, axpaths)
 
         Args:
             axpath(str): xpath
@@ -888,15 +888,15 @@ def xpath_ischild(axpath, axpaths):
     tf = False
     i = 0
     while not tf and i < len(axpaths):
-        tf = _xpath_ischild(axpath, axpaths[i])
+        tf = _xpath_is_child(axpath, axpaths[i])
         i = i + 1
     return tf
 
 
-def xpath_isdescendant(axpath, axpaths):
-    """ Returns true is axpath is a child from an item in axpaths
+def xpath_is_descendant(axpath, axpaths):
+    """ Returns true is axpath is a descdendant from an item in axpaths
 
-        tf = xpath_ischild(axpath, axpaths)
+        tf = xpath_is_child(axpath, axpaths)
 
         Args:
             axpath(str): xpath
@@ -905,8 +905,13 @@ def xpath_isdescendant(axpath, axpaths):
         Returns:
             tf (bool): true if axpath is a descendant of item in axpaths
         """
-    # TODO
-    pass
+    axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
+    tf = False
+    i = 0
+    while not tf and i < len(axpaths):
+        tf = _xpath_is_descendant(axpath, axpaths[i])
+        i = i + 1
+    return tf
 
 
 # Xpaths. Xpath set functions.
@@ -1068,17 +1073,17 @@ def _xpath_split(axpath):
     return anames, aindices
 
 
-def _xpath_ischild(axpath, bxpath):
+def _xpath_is_child(axpath, bxpath):
     """ Returns true if axpath is a child of bxpath
 
-     tf = _xpath_ischild(axpath, bxpath)
+     tf = _xpath_is_child(axpath, bxpath)
 
      Args:
          axpath(str): xpath
          bxpath(str): xpath
 
      Returns:
-         tf (bool): true if axpath is achild of bxpath
+         tf (bool): true if axpath is a child of bxpath
      """
 
     [anames, aidx] = _xpath_split(axpath)
@@ -1088,6 +1093,30 @@ def _xpath_ischild(axpath, bxpath):
         tf = tf and anames[:-1] == bnames
         tf = tf and aidx[:-1] == bidx
     return tf
+
+
+def _xpath_is_descendant(axpath, bxpath):
+    """ Returns true if axpath is a descendant of bxpath
+
+     tf = _xpath_is_descendant(axpath, bxpath)
+
+     Args:
+         axpath(str): xpath
+         bxpath(str): xpath
+
+     Returns:
+         tf (bool): true if axpath is a desdendant of bxpath
+     """
+
+    [anames, aidx] = _xpath_split(axpath)
+    [bnames, bidx] = _xpath_split(bxpath)
+    levels = len(anames) - len(bnames)
+    tf = levels >= 1
+    if tf:
+        tf = tf and anames[:-levels] == bnames
+        tf = tf and aidx[:-levels] == bidx
+    return tf
+
 
 
 # Private functions
