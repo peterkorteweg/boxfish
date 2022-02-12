@@ -368,9 +368,6 @@ def find_items(aitem, afilter=None, astr=''):
         ritems (ResultSet): BS4 resultset
     """
 
-    # if not isinstance(afilter, dict):
-    # TODO Raise error
-
     afilter = {} if afilter is None else afilter
     has_item = "elem" in afilter
     has_class = "class" in afilter
@@ -400,9 +397,6 @@ def find_item(aitem, afilter=None, astr=''):
         ritem (tag): BS4 tag
     """
 
-    # if not isinstance(afilter, dict):
-    # TODO Raise error
-
     afilter = {} if afilter is None else afilter
     has_item = "elem" in afilter
     has_class = "class" in afilter
@@ -426,6 +420,7 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
     Args:
         aitem(tag): BS4 object
         xpath (str): xpath
+        relative (bool): xpath is relative to aitem if true, absolute otherwise
 
     Returns:
         ritem (tag): BS4 tag
@@ -433,11 +428,12 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
     # TODO
     if not relative:
         asoup = find_soup(aitem)
-        ritem = find_item_by_xpath(asoup, xpath=xpath, relative=True)
+        ritem = find_item_by_xpath(asoup, xpath=xpath, relative=True) if is_soup(asoup) else None
     else:
         [names, idx] = _xpath_split(xpath)
         tf = True
         ritem = aitem
+        # Iterate over xpath items and update ritem each step
         while tf:
             if len(names) == 0:
                 tf = False
@@ -450,73 +446,12 @@ def find_item_by_xpath(aitem, xpath='', relative=True):
                         tf = False
                 else:
                     next_items = aitem.find_all(names_i)
-                    if len(next_items)>=idx_i:
+                    if len(next_items) >= idx_i:
                         ritem = next_items[idx_i-1]
                     else:
                         ritem = None
                         tf = False
     return ritem
-
-
-def find_common_ancestor(aitem1, aitem2):
-    """ Find tag whose descendants contain both aitem1 and aitem2
-
-    ritem = find_item(asoup, aitem1, aitem2)
-
-    Args:
-        aitem1 (tag): BS4 tag
-        aitem2 (tag): BS4 tag
-
-    Returns:
-        ritem (tag): BS4 tag
-    """
-
-    aitem = None
-    if is_tag(aitem1) and is_tag(aitem2):
-        parents1 = list(reversed(list(aitem1.parents)))
-        parents2 = list(reversed(list(aitem2.parents)))
-        for p1, p2 in zip(parents1, parents2):
-            if p1 == p2:
-                aitem = p1
-    return aitem
-
-
-def find_ancestors(aitem):
-    """ Find all ancestor tags on direct line between soup and aitem (exclude both)
-       Returns an ordered list of tags
-
-       rlist = find_ancestors(aitem)
-
-       Args:
-           aitem (tag): BS4 tag
-
-       Returns:
-           rlist (list): List of BS4 tag
-       """
-    alist = list(reversed(list(aitem.parents)))
-    alist.pop(0)
-    return alist
-
-
-def find_lineage(aancestor, adescendant):
-    """ Find all tags on direct line of descent between ancestor and descendant (exclude both)
-    Returns an ordered list of tags
-
-    rlist = find_lineage(aancestor, adescendant)
-
-    Args:
-        aancestor (tag): BS4 tag
-        adescendant (tag): BS4 tag
-
-    Returns:
-        rlist (list): List of BS4 tags
-    """
-    rlist = find_ancestors(adescendant)
-    tf = False
-    while not tf and len(rlist) > 0:
-        curr_parent = rlist.pop(0)
-        tf = (curr_parent == aancestor)
-    return rlist
 
 
 def find_lists(aitem, afilter=None, astr=''):
@@ -577,7 +512,87 @@ def get_filter(aitem):
     return afilter
 
 
-# Extraction functions
+# Tree functions
+def common_ancestor(aitem1, aitem2):
+    """ Find tag whose descendants contain both aitem1 and aitem2
+
+    ritem = find_item(asoup, aitem1, aitem2)
+
+    Args:
+        aitem1 (tag): BS4 tag
+        aitem2 (tag): BS4 tag
+
+    Returns:
+        ritem (tag): BS4 tag
+    """
+
+    aitem = None
+    if is_tag(aitem1) and is_tag(aitem2):
+        parents1 = list(reversed(list(aitem1.parents)))
+        parents2 = list(reversed(list(aitem2.parents)))
+        for p1, p2 in zip(parents1, parents2):
+            if p1 == p2:
+                aitem = p1
+    return aitem
+
+
+def ancestors(aitem):
+    """ Find all ancestor tags on direct line between soup and aitem (exclude both)
+       Returns an ordered list of tags
+
+       rlist = ancestors(aitem)
+
+       Args:
+           aitem (tag): BS4 tag
+
+       Returns:
+           rlist (list): List of BS4 tag
+       """
+    alist = list(reversed(list(aitem.parents)))
+    alist.pop(0)
+    return alist
+
+
+def children(aitem):
+    """ Find all child tags of aitem
+    Returns an ordered list of tags
+
+    rlist = children(aitem)
+
+    Args:
+       aitem (tag): BS4 tag
+
+    Returns:
+       rlist (list): List of BS4 tag
+    """
+    rlist = []
+    if is_tag(aitem):
+        rlist = [citem for citem in aitem.children if is_tag(citem)]
+    return rlist
+
+
+def lineage(aancestor, adescendant):
+    """ Find all tags on direct line of descent between ancestor and descendant (exclude both)
+    Returns an ordered list of tags
+
+    rlist = lineage(aancestor, adescendant)
+
+    Args:
+        aancestor (tag): BS4 tag
+        adescendant (tag): BS4 tag
+
+    Returns:
+        rlist (list): List of BS4 tags
+    """
+    rlist = ancestors(adescendant)
+    tf = False
+    while not tf and len(rlist) > 0:
+        curr_parent = rlist.pop(0)
+        tf = (curr_parent == aancestor)
+    return rlist
+
+
+# Text extraction functions
 def get_text(aitem, include_strings=True, include_hrefs=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.
 
@@ -840,7 +855,7 @@ def get_xpath(aitem, root=None, first_index=False):
     xpath = ''
     if is_tag(aitem) and not is_soup(aitem):
         # Absolute
-        rlist = find_ancestors(aitem)
+        rlist = ancestors(aitem)
         rlist.append(aitem)
         for aparent in rlist:
             idx = _get_xpath_index(aparent, first_index=first_index)

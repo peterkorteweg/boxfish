@@ -414,76 +414,52 @@ def test_find_item():
     assert ritem1 == ritem2 == ritem3
 
 
-def text_find_item_by_xpath():
-    # TODO
+def test_find_item_by_xpath():
+    soup = scrape.soups.get_soup(get_page(FILE_TREE))
+    aitem1 = soup.find(id=ID1_TREE)
+
+    # Absolute ===
+    xpaths = scrape.soups.get_xpath(soup)
+    xpath1 = scrape.soups.get_xpath(aitem1)
+
     # Absolute find item. Exist
+    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpath1, relative=False)
+    assert fitem == aitem1
+
     # Absolute find item. Exist. Self
+    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpaths, relative=False)
+    assert fitem == soup
+
     # Absolute find item. Not exist
+    xpathn = xpath1 + '/b[1]'
+    fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpathn, relative=False)
+    assert fitem is None
+
+    # Relative ===
+    ichildren = aitem1.children
+    _ = next(ichildren)
+    alevel1 = next(ichildren)
+    igchildren = alevel1.children
+    alevel2 = next(igchildren)
+
+    xpath_self = scrape.soups.get_xpath(aitem1, root=aitem1)
+    xpath_level1 = scrape.soups.get_xpath(alevel1, root=aitem1)
+    xpath_level2 = scrape.soups.get_xpath(alevel2, root=aitem1)
+
     # Relative find item. Exist 1 level deep
+    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level1, relative=True)
+    assert fitem == alevel1
+
     # Relative find item. Exist 2 levels deep
+    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_level2, relative=True)
+    assert fitem == alevel2
+
     # Relative find item. Exist. Self
+    fitem = scrape.soups.find_item_by_xpath(aitem1, xpath=xpath_self, relative=True)
+    assert fitem == aitem1
+
     # Relative find item. Not exist
-    pass
-
-
-def test_find_common_ancestor():
-    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
-
-    # Example same soup, exists
-    afilter = ROWS_BOOKS
-    results = scrape.soups.find_items(soup, afilter)
-    aitem1 = results[0]
-    aitem2 = results[1]
-    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
-    assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
-
-    # Example same soup, parent is soup
-    afilter = ROWS_BOOKS
-    aitem1 = scrape.soups.find_item(soup, afilter)
-
-    afilter = {'elem': 'title'}
-    aitem2 = scrape.soups.find_item(soup, afilter)
-
-    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
-    assert ritem.name == 'html' and ritem["class"] == ['no-js']
-
-    # Different soup
-    aitem2 = BeautifulSoup('<body>', 'html.parser').find("body")
-    ritem = scrape.soups.find_common_ancestor(aitem1, aitem2)
-    assert ritem is None
-
-
-def test_find_ancestors():
-    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
-    afilter = ROWS_BOOKS
-    results = scrape.soups.find_items(soup, afilter)
-    aitem = results[0]
-    ancestors = scrape.soups.find_ancestors(aitem)
-    assert len(ancestors) == 9
-
-
-def test_find_lineage():
-    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
-
-    # Example same soup, exists
-    afilter = ROWS_BOOKS
-    results = scrape.soups.find_items(soup, afilter)
-    aitem1 = results[0]
-    aitem2 = results[1]
-    aparent = scrape.soups.find_common_ancestor(aitem1, aitem2)
-    agrandparent = next(aparent.parents)
-
-    # Example: ancestor is direct parent
-    alineage = scrape.soups.find_lineage(aparent, aitem1)
-    assert len(alineage) == 0
-
-    # Example: ancestor is non-direct parent
-    alineage = scrape.soups.find_lineage(agrandparent, aitem1)
-    assert len(alineage) == 1
-
-    # Example: no ancestor
-    alineage = scrape.soups.find_lineage(aitem1, aitem2)
-    assert len(alineage) == 0
+    # TODO
 
 
 def test_find_lists():
@@ -517,7 +493,80 @@ def test_get_filter():
     assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
 
 
-# Extraction functions
+# Tree functions
+def test_common_ancestor():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+
+    # Example same soup, exists
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem1 = results[0]
+    aitem2 = results[1]
+    ritem = scrape.soups.common_ancestor(aitem1, aitem2)
+    assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
+
+    # Example same soup, parent is soup
+    afilter = ROWS_BOOKS
+    aitem1 = scrape.soups.find_item(soup, afilter)
+
+    afilter = {'elem': 'title'}
+    aitem2 = scrape.soups.find_item(soup, afilter)
+
+    ritem = scrape.soups.common_ancestor(aitem1, aitem2)
+    assert ritem.name == 'html' and ritem["class"] == ['no-js']
+
+    # Different soup
+    aitem2 = BeautifulSoup('<body>', 'html.parser').find("body")
+    ritem = scrape.soups.common_ancestor(aitem1, aitem2)
+    assert ritem is None
+
+
+def test_ancestors():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem = results[0]
+    ancestors = scrape.soups.ancestors(aitem)
+    assert len(ancestors) == 9
+
+
+def test_children():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+
+    # Example same soup, exists
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem1 = results[0]
+    aparent = aitem1.parent
+    achildren = scrape.soups.children(aparent)
+    assert len(achildren) == 20
+
+
+def test_lineage():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+
+    # Example same soup, exists
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem1 = results[0]
+    aitem2 = results[1]
+    aparent = scrape.soups.common_ancestor(aitem1, aitem2)
+    agrandparent = next(aparent.parents)
+
+    # Example: ancestor is direct parent
+    alineage = scrape.soups.lineage(aparent, aitem1)
+    assert len(alineage) == 0
+
+    # Example: ancestor is non-direct parent
+    alineage = scrape.soups.lineage(agrandparent, aitem1)
+    assert len(alineage) == 1
+
+    # Example: no ancestor
+    alineage = scrape.soups.lineage(aitem1, aitem2)
+    assert len(alineage) == 0
+
+
+# Tree extraction functions
 def test_get_text():
     page = get_page()
     soup = scrape.soups.get_soup(page)
@@ -777,8 +826,15 @@ def test_xpath_intersect():
 
 
 def test_xpath_diff():
-    # TODO
-    pass
+    soup = scrape.soups.get_soup(get_page(FILE_TREE))
+
+    # Compare two trees
+    aitem1 = soup.find(id=ID1_TREE)
+    aitem2 = soup.find(id=ID2_TREE)
+    ulist1 = scrape.soups.get_xpath_difference(aitem1, aitem2, relative=True)
+    ulist2 = scrape.soups.get_xpath_difference(aitem2, aitem1, relative=True)
+    assert len(ulist1) == 1  # 1 node
+    assert len(ulist2) == 1  # 1 node
 
 
 # Xpath private functions
@@ -808,7 +864,7 @@ def test_get_xpath_index():
 
 
 def test_get_xpath_set():
-    # TODO
+    # See test_xpath_union, test_xpath_intersect, test_xpath_diff
     pass
 
 
