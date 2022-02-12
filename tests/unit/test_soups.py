@@ -419,8 +419,8 @@ def test_find_item_by_xpath():
     aitem1 = soup.find(id=ID1_TREE)
 
     # Absolute ===
-    xpaths = scrape.soups.get_xpath(soup)
-    xpath1 = scrape.soups.get_xpath(aitem1)
+    xpaths = scrape.soups.xpath(soup)
+    xpath1 = scrape.soups.xpath(aitem1)
 
     # Absolute find item. Exist
     fitem = scrape.soups.find_item_by_xpath(soup, xpath=xpath1, relative=False)
@@ -443,9 +443,9 @@ def test_find_item_by_xpath():
     achildren3 = scrape.soups.children(alevel2)
     alevel3 = achildren3[1]
 
-    xpath_self = scrape.soups.get_xpath(aitem1, root=aitem1)
-    xpath_level1 = scrape.soups.get_xpath(alevel1, root=aitem1)
-    xpath_level3 = scrape.soups.get_xpath(alevel3, root=aitem1)
+    xpath_self = scrape.soups.xpath(aitem1, root=aitem1)
+    xpath_level1 = scrape.soups.xpath(alevel1, root=aitem1)
+    xpath_level3 = scrape.soups.xpath(alevel3, root=aitem1)
     xpathn = xpath_level3 + '/b[1]'
 
     # Relative find item. Exist 1 level deep
@@ -746,52 +746,52 @@ def test_is_navigable_string():
 
 
 # Xpath functions
-def test_get_xpath():
+def test_xpath():
     soup = scrape.soups.get_soup(get_page())
 
     # Test soup
-    assert scrape.soups.get_xpath(soup) == ''
+    assert scrape.soups.xpath(soup) == ''
 
     # Test single item
     afilter = {'elem': 'b'}
     aitem1 = scrape.soups.find_item(soup, afilter=afilter)
-    assert scrape.soups.get_xpath(aitem1) == '/html/body/p[1]/b'
+    assert scrape.soups.xpath(aitem1) == '/html/body/p[1]/b'
 
     # Test multiple items
     afilter = {'elem': 'a'}
     aresults = scrape.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
-    assert scrape.soups.get_xpath(aitem1) == '/html/body/p[2]/a[1]'
+    assert scrape.soups.xpath(aitem1) == '/html/body/p[2]/a[1]'
     aitem2 = aresults[1]
-    assert scrape.soups.get_xpath(aitem2) == '/html/body/p[2]/a[2]'
+    assert scrape.soups.xpath(aitem2) == '/html/body/p[2]/a[2]'
 
     # test single item relative
     afilter = {'elem': 'a'}
     aitem1 = scrape.soups.find_item(soup, afilter=afilter)
     aparent = aitem1.parent
     agrandparent = aparent.parent
-    assert scrape.soups.get_xpath(aitem1, root=aparent) == '//a[1]'
-    assert scrape.soups.get_xpath(aitem1, root=agrandparent) == '//p[2]/a[1]'
+    assert scrape.soups.xpath(aitem1, root=aparent) == '//a[1]'
+    assert scrape.soups.xpath(aitem1, root=agrandparent) == '//p[2]/a[1]'
 
     # test first_index= True
     afilter = {'elem': 'body'}
     aresults = scrape.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
-    assert scrape.soups.get_xpath(aitem1, first_index=True) == '/html[1]/body[1]'
+    assert scrape.soups.xpath(aitem1, first_index=True) == '/html[1]/body[1]'
 
     # test single item relative, first_index= True
     afilter = {'elem': 'body'}
     aresults = scrape.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
     aparent = aitem1.parent
-    assert scrape.soups.get_xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
+    assert scrape.soups.xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
 
 
 def test_xpath_descendants():
     soup = scrape.soups.get_soup(get_page())
 
     # Test soup
-    alist = scrape.soups.get_xpath_descendants(soup)
+    alist = scrape.soups.xpaths(soup)
     assert len(alist) == 11
 
     # Test item
@@ -799,43 +799,43 @@ def test_xpath_descendants():
     aitem1 = scrape.soups.find_item(soup, afilter=afilter)
 
     # Absolute
-    alist1 = scrape.soups.get_xpath_descendants(aitem1)
+    alist1 = scrape.soups.xpaths(aitem1)
     assert len(alist1) == 3
 
     # Relative
-    alist2 = scrape.soups.get_xpath_descendants(aitem1, root=aitem1)
+    alist2 = scrape.soups.xpaths(aitem1, root=aitem1)
     assert len(alist2) == 3
 
 
 # Xpath set functions
-def test_xpath_union():
+def test_xpaths_union():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = scrape.soups.get_xpath_union(aitem1, aitem2, relative=True)
+    ulist = scrape.soups.xpaths_union(aitem1, aitem2, relative=True)
     assert len(ulist) == 6  # 6 Nodes
 
 
-def test_xpath_intersect():
+def test_xpaths_intersect():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = scrape.soups.get_xpath_intersect(aitem1, aitem2, relative=True)
+    ulist = scrape.soups.xpaths_intersect(aitem1, aitem2, relative=True)
     assert len(ulist) == 4  # 4 nodes
 
 
-def test_xpath_diff():
+def test_xpaths_diff():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist1 = scrape.soups.get_xpath_difference(aitem1, aitem2, relative=True)
-    ulist2 = scrape.soups.get_xpath_difference(aitem2, aitem1, relative=True)
+    ulist1 = scrape.soups.xpaths_difference(aitem1, aitem2, relative=True)
+    ulist2 = scrape.soups.xpaths_difference(aitem2, aitem1, relative=True)
     assert len(ulist1) == 1  # 1 node
     assert len(ulist2) == 1  # 1 node
 
@@ -877,7 +877,7 @@ def test_xpath_split():
     # Test single item
     afilter = {'elem': 'b'}
     aitem = scrape.soups.find_item(soup, afilter=afilter)
-    xpath = scrape.soups.get_xpath(aitem)
+    xpath = scrape.soups.xpath(aitem)
     [names, indices] = scrape.soups._xpath_split(xpath)
     assert names == ['html', 'body', 'p', 'b']
     assert indices == [1, 1, 1, 1]
@@ -886,7 +886,7 @@ def test_xpath_split():
     afilter = {'elem': 'a'}
     aresults = scrape.soups.find_items(soup, afilter=afilter)
     aitem = aresults[1]
-    xpath = scrape.soups.get_xpath(aitem)
+    xpath = scrape.soups.xpath(aitem)
     [names, indices] = scrape.soups._xpath_split(xpath)
     assert names == ['html', 'body', 'p', 'a']
     assert indices == [1, 1, 2, 2]

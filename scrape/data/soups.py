@@ -86,7 +86,6 @@ def get_table(soup, **kwargs):
     atable = []
     colnames = []
 
-    # TODO Raise exception if parameters are not available
     if all(val is not None for val in [soup, rows]):
 
         new_soup = soup.find(id=id_) if id_ else None
@@ -709,8 +708,8 @@ def stencil(aitem, amask):
     # A21. Copy aitem.
     sitem = copy.copy(aitem)
     # A22. Find all tags in aitem not in template (xpath diff folded roots) -> delete from aitem
-    xd_item = get_xpath_descendants(aitem, root=aitem, first_index=True)
-    xd_mask = get_xpath_descendants(amask, root=amask, first_index=True)
+    xd_item = xpaths(aitem, root=aitem, first_index=True)
+    xd_mask = xpaths(amask, root=amask, first_index=True)
     xpaths_redundant = get_xpath_difference(xd_item, xd_mask, relative=True)
     # TODO
     # tags_redundant = [atag for atag=find_item(sitem,xpath=xpath) for xpath in xpaths_redundant]
@@ -839,11 +838,11 @@ def is_leaf(aitem):
 
 
 # Xpath functions
-def get_xpath(aitem, root=None, first_index=False):
+def xpath(aitem, root=None, first_index=False):
     """ Returns xpath of aitem.
     Returns absolute path or relative path to root
 
-    xpath = get_xpath(aitem, root, first_index)
+    xpath = xpath(aitem, root, first_index)
 
     Args:
         aitem(tag): BS4 object
@@ -851,9 +850,9 @@ def get_xpath(aitem, root=None, first_index=False):
         first_index(bool): include first index if true
 
     Returns:
-        xpath (str or list): xpath of aitem
+        axpath (str or list): xpath of aitem
     """
-    xpath = ''
+    axpath = ''
     if is_tag(aitem) and not is_soup(aitem):
         # Absolute
         rlist = ancestors(aitem)
@@ -861,19 +860,20 @@ def get_xpath(aitem, root=None, first_index=False):
         for aparent in rlist:
             idx = _get_xpath_index(aparent, first_index=first_index)
             sidx = '[' + str(idx) + ']' if idx > 0 else ''
-            xpath = xpath + '/' + aparent.name + sidx
+            axpath = axpath + '/' + aparent.name + sidx
 
         # Relative
         if is_tag(root):
-            xpath_root = get_xpath(root, first_index=first_index)
-            xpath = xpath.replace(xpath_root, '/') if xpath.startswith(xpath_root) else ''
-    return xpath
+            axpath_root = xpath(root, first_index=first_index)
+            axpath = axpath.replace(axpath_root, '/') if axpath.startswith(axpath_root) else ''
+    return axpath
 
 
-def get_xpath_descendants(aitem, root=None, first_index=False):
+# Xpaths. Xpath set functions
+def xpaths(aitem, root=None, first_index=False):
     """ Returns list of xpaths of all descendant tags
 
-    alist = get_xpath_descendants(aitem, root, first_index)
+    alist = xpaths(aitem, root, first_index)
 
     Args:
         aitem(tag): BS4 object
@@ -886,19 +886,18 @@ def get_xpath_descendants(aitem, root=None, first_index=False):
     alist = []
     if is_tag(aitem):
         # if not is_soup(aitem):
-        #     alist.append(get_xpath(aitem, root=root))
+        #     alist.append(xpath(aitem, root=root))
         for atag in aitem.descendants:
             if is_tag(atag):
-                alist.append(get_xpath(atag, root=root, first_index=first_index))
+                alist.append(xpath(atag, root=root, first_index=first_index))
     return alist
 
 
-# Xpath set functions
-def get_xpath_union(aitem1, aitem2, relative=False):
+def xpaths_union(aitem1, aitem2, relative=False):
     """ Returns an unordered list with union of xpaths in aitem1 and aitem2
     When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
-    alist = get_xpath_union(aitem1, aitem2)
+    alist = xpaths_union(aitem1, aitem2)
 
     Args:
         aitem1(tag): BS4 object
@@ -911,11 +910,11 @@ def get_xpath_union(aitem1, aitem2, relative=False):
     return _get_xpath_set(aitem1, aitem2, operation='union', relative=relative)
 
 
-def get_xpath_intersect(aitem1, aitem2, relative=False):
+def xpaths_intersect(aitem1, aitem2, relative=False):
     """ Returns an unordered list with intersection of xpaths in aitem1 and aitem2
     When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
-    alist = get_xpath_intersect(aitem1, aitem2)
+    alist = xpaths_intersect(aitem1, aitem2)
 
     Args:
         aitem1(tag): BS4 object
@@ -928,11 +927,11 @@ def get_xpath_intersect(aitem1, aitem2, relative=False):
     return _get_xpath_set(aitem1, aitem2, operation='intersect', relative=relative)
 
 
-def get_xpath_difference(aitem1, aitem2, relative=False):
+def xpaths_difference(aitem1, aitem2, relative=False):
     """ Returns an unordered list with difference of xpaths in aitem1 and aitem2
     When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
-    alist = get_xpath_difference(aitem1, aitem2)
+    alist = xpaths_difference(aitem1, aitem2)
 
     Args:
         aitem1(tag): BS4 object
@@ -988,8 +987,8 @@ def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
         alist (list): list with xpaths from of aitem1 and aitem2 based on operation
     """
 
-    xpath1 = get_xpath_descendants(aitem1, root=(aitem1 if relative else None), first_index=True)
-    xpath2 = get_xpath_descendants(aitem2, root=(aitem2 if relative else None), first_index=True)
+    xpath1 = xpaths(aitem1, root=(aitem1 if relative else None), first_index=True)
+    xpath2 = xpaths(aitem2, root=(aitem2 if relative else None), first_index=True)
 
     if operation == 'union':
         alist = list(set(xpath1) | set(xpath2))
