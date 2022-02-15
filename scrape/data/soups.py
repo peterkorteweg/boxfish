@@ -17,9 +17,10 @@ import bs4
 from bs4 import BeautifulSoup
 import copy
 from scrape.utils.dicts import extract_values
-from scrape.utils.lists import is_empty, to_list
-from scrape.utils.strings import replace_newlines, to_int
+from scrape.utils.lists import is_empty
+from scrape.utils.strings import replace_newlines
 from scrape.utils.utils import read as _read, write as _write
+from scrape.utils.xpaths import xpath_split
 
 
 # Main functions
@@ -429,7 +430,7 @@ def find_item_by_xpath(aitem, axpath='', relative=True):
         asoup = find_soup(aitem)
         ritem = find_item_by_xpath(asoup, axpath=axpath, relative=True) if is_soup(asoup) else None
     else:
-        [names, idx] = _xpath_split(axpath)
+        [names, idx] = xpath_split(axpath)
         tf = True
         ritem = aitem
         # Iterate over xpath items and update ritem each step
@@ -871,49 +872,6 @@ def xpath(aitem, root=None, first_index=False):
     return axpath
 
 
-# Xpath list functions
-def xpath_is_child(axpath, axpaths):
-    """ Returns true is axpath is a child from an item in axpaths
-
-        tf = xpath_is_child(axpath, axpaths)
-
-        Args:
-            axpath(str): xpath
-            axpaths(str or list): xpath list
-
-        Returns:
-            tf (bool): true if axpath is a child of item in axpaths
-        """
-    axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
-    tf = False
-    i = 0
-    while not tf and i < len(axpaths):
-        tf = _xpath_is_child(axpath, axpaths[i])
-        i = i + 1
-    return tf
-
-
-def xpath_is_descendant(axpath, axpaths):
-    """ Returns true is axpath is a descdendant from an item in axpaths
-
-        tf = xpath_is_child(axpath, axpaths)
-
-        Args:
-            axpath(str): xpath
-            axpaths(str or list): xpath list
-
-        Returns:
-            tf (bool): true if axpath is a descendant of item in axpaths
-        """
-    axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
-    tf = False
-    i = 0
-    while not tf and i < len(axpaths):
-        tf = _xpath_is_descendant(axpath, axpaths[i])
-        i = i + 1
-    return tf
-
-
 # Xpaths. Xpath set functions.
 def xpaths(aitem, root=None, first_index=False):
     """ Returns list of xpaths of all descendant tags
@@ -1044,79 +1002,6 @@ def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
     else:
         alist = []
     return alist
-
-
-def _xpath_split(axpath):
-    """ Returns two lists with xpath name attributes and indices
-
-    [anames aindices] = _xpath_split(xpath)
-
-    Args:
-        xpath(str): Xpath
-
-    Returns:
-        anames (list): list with names
-        aindices (list): list with indices
-    """
-    anames = axpath.split('/')
-    aindices = [1] * len(anames)
-    for i in range(len(anames)-1, -1, -1):
-        if anames[i] == '':
-            anames.pop(i)
-            aindices.pop(i)
-        else:
-            tlist = anames[i].replace('[', ']').split(sep=']')
-            anames[i] = tlist[0]
-            if len(tlist) > 1:
-                index = to_int(tlist[1])
-                aindices[i] = index if index else 1
-    return anames, aindices
-
-
-def _xpath_is_child(axpath, bxpath):
-    """ Returns true if axpath is a child of bxpath
-
-     tf = _xpath_is_child(axpath, bxpath)
-
-     Args:
-         axpath(str): xpath
-         bxpath(str): xpath
-
-     Returns:
-         tf (bool): true if axpath is a child of bxpath
-     """
-
-    [anames, aidx] = _xpath_split(axpath)
-    [bnames, bidx] = _xpath_split(bxpath)
-    tf = len(anames) == len(bnames) + 1
-    if tf:
-        tf = tf and anames[:-1] == bnames
-        tf = tf and aidx[:-1] == bidx
-    return tf
-
-
-def _xpath_is_descendant(axpath, bxpath):
-    """ Returns true if axpath is a descendant of bxpath
-
-     tf = _xpath_is_descendant(axpath, bxpath)
-
-     Args:
-         axpath(str): xpath
-         bxpath(str): xpath
-
-     Returns:
-         tf (bool): true if axpath is a desdendant of bxpath
-     """
-
-    [anames, aidx] = _xpath_split(axpath)
-    [bnames, bidx] = _xpath_split(bxpath)
-    levels = len(anames) - len(bnames)
-    tf = levels >= 1
-    if tf:
-        tf = tf and anames[:-levels] == bnames
-        tf = tf and aidx[:-levels] == bidx
-    return tf
-
 
 
 # Private functions

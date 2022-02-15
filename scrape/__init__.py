@@ -12,5 +12,6 @@ from scrape.utils import drivers
 from scrape.utils import lists
 from scrape.utils import times
 from scrape.utils import urls
+from scrape.utils import xpaths
 
 print('Initializing scrape ...')
