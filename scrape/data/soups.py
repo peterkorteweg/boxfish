@@ -20,7 +20,7 @@ from scrape.utils.dicts import extract_values
 from scrape.utils.lists import is_empty
 from scrape.utils.strings import replace_newlines
 from scrape.utils.utils import read as _read, write as _write
-from scrape.utils.xpaths import xpath_split
+from scrape.utils import xpaths
 
 
 # Main functions
@@ -430,7 +430,7 @@ def find_item_by_xpath(aitem, axpath='', relative=True):
         asoup = find_soup(aitem)
         ritem = find_item_by_xpath(asoup, axpath=axpath, relative=True) if is_soup(asoup) else None
     else:
-        [names, idx] = xpath_split(axpath)
+        [names, idx] = xpaths.split(axpath)
         tf = True
         ritem = aitem
         # Iterate over xpath items and update ritem each step

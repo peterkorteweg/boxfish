@@ -29,91 +29,68 @@ def get_page(filename=FILE_DORMOUSE):
     return page
 
 
-def test_xpath_is_child():
-    soup = scrape.soups.get_soup(get_page())
-    alist = scrape.soups.xpaths(soup)
+def test_is_child():
+    pxpath = '/html/body/p[2]'
+    npxpath = '/html/body/p[1]'
+    npxpath2 = '/html/body/b[1]'
+    axpath = pxpath + '/a[2]'
 
-    afilter = {'elem': 'a'}
-    aresults = scrape.soups.find_items(soup, afilter=afilter)
-    aitem = aresults[1]
-    aparent = aitem.parent
-    gparent = aparent.parent
-
-    axpath = scrape.soups.xpath(aitem)
-    pxpath = scrape.soups.xpath(aparent)
-    pxpaths = scrape.soups.xpaths(aparent)
-    gxpaths = scrape.soups.xpaths(gparent)
-
+    pxpaths = [axpath]
 
     # Xpath is child
-    axpaths = list(set(gxpaths) - {axpath})
-    assert scrape.xpaths.xpath_is_child(axpath, axpaths)
+    axpaths = [npxpath, pxpath]
+    assert scrape.xpaths.is_child(axpath, axpaths)
 
     # Xpath is in axpaths but not a child
-    axpaths = pxpaths
-    assert not scrape.xpaths.xpath_is_child(axpath, axpaths)
+    axpaths = [npxpath, axpath, npxpath2]
+    assert not scrape.xpaths.is_child(axpath, axpaths)
 
     # Xpath is not in axpath and not a child
-    axpaths = list(set(pxpaths) - {axpath})
-    assert not scrape.xpaths.xpath_is_child(axpath, axpaths)
+    axpaths = [npxpath, npxpath2]
+    assert not scrape.xpaths.is_child(axpath, axpaths)
 
 
-def test_xpath_is_descendant():
-    soup = scrape.soups.get_soup(get_page())
-    alist = scrape.soups.xpaths(soup)
+def test_is_descendant():
 
-    afilter = {'elem': 'a'}
-    aresults = scrape.soups.find_items(soup, afilter=afilter)
-    aitem = aresults[1]
-    parent1 = aitem.parent
-    parent2 = parent1.parent
-    parent3 = parent2.parent
+    gxpath = '/html/body/'
+    pxpath = gxpath + '/p[2]'
+    axpath = pxpath + '/a[2]'
 
-    axpath = scrape.soups.xpath(aitem)
-    pxpath1 = scrape.soups.xpath(parent1)
-    pxpath2 = scrape.soups.xpath(parent2)
-    pxpaths1 = scrape.soups.xpaths(parent1)
-    pxpaths2 = scrape.soups.xpaths(parent2)
-    pxpaths3 = scrape.soups.xpaths(parent3)
+    pxpaths1 = ['/html/body/p[2]/a[1]', axpath, '/html/body/p[2]/a[3]']
+    pxpaths2 =['/html/body/p[1]', pxpath, '/html/body/p[3]']
+    pxpaths3 = ['/html/head', '/html/head/title', gxpath]
 
     # Xpath is descendant (level 1)
-    axpaths = [pxpath1]
-    assert scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    axpaths = [pxpath]
+    assert scrape.xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths2
-    assert scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    assert scrape.xpaths.is_descendant(axpath, axpaths)
 
     # Xpath is descendant (level 2)
-    axpaths = [pxpath2]
-    assert scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    axpaths = [gxpath]
+    assert scrape.xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths3
-    assert scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    assert scrape.xpaths.is_descendant(axpath, axpaths)
 
     # Xpath is not a desdendant
     axpaths = [axpath]
-    assert not scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    assert not scrape.xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths1
-    assert not scrape.xpaths.xpath_is_descendant(axpath, axpaths)
+    assert not scrape.xpaths.is_descendant(axpath, axpaths)
 
 
-def test_xpath_split():
-    soup = scrape.soups.get_soup(get_page())
-
+def test_split():
     # Test single item
-    afilter = {'elem': 'b'}
-    aitem = scrape.soups.find_item(soup, afilter=afilter)
-    xpath = scrape.soups.xpath(aitem)
-    [names, indices] = scrape.xpaths.xpath_split(xpath)
+    axpath = '/html/body/p[1]/b'
+    [names, indices] = scrape.xpaths.split(axpath)
     assert names == ['html', 'body', 'p', 'b']
     assert indices == [1, 1, 1, 1]
 
     # Test multiple items
-    afilter = {'elem': 'a'}
-    aresults = scrape.soups.find_items(soup, afilter=afilter)
-    aitem = aresults[1]
-    xpath = scrape.soups.xpath(aitem)
-    [names, indices] = scrape.xpaths.xpath_split(xpath)
+    axpath = '/html/body/p[2]/a[2]'
+    [names, indices] = scrape.xpaths.split(axpath)
     assert names == ['html', 'body', 'p', 'a']
     assert indices == [1, 1, 2, 2]

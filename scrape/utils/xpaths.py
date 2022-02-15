@@ -8,10 +8,10 @@ from scrape.utils.strings import to_int
 
 
 # Xpath list functions
-def xpath_is_child(axpath, axpaths):
+def is_child(axpath, axpaths):
     """ Returns true is axpath is a child from an item in axpaths
 
-        tf = xpath_is_child(axpath, axpaths)
+        tf = is_child(axpath, axpaths)
 
         Args:
             axpath(str): xpath
@@ -24,15 +24,15 @@ def xpath_is_child(axpath, axpaths):
     tf = False
     i = 0
     while not tf and i < len(axpaths):
-        tf = _xpath_is_child(axpath, axpaths[i])
+        tf = _is_child(axpath, axpaths[i])
         i = i + 1
     return tf
 
 
-def xpath_is_descendant(axpath, axpaths):
+def is_descendant(axpath, axpaths):
     """ Returns true is axpath is a descdendant from an item in axpaths
 
-        tf = xpath_is_child(axpath, axpaths)
+        tf = is_child(axpath, axpaths)
 
         Args:
             axpath(str): xpath
@@ -45,18 +45,18 @@ def xpath_is_descendant(axpath, axpaths):
     tf = False
     i = 0
     while not tf and i < len(axpaths):
-        tf = _xpath_is_descendant(axpath, axpaths[i])
+        tf = _is_descendant(axpath, axpaths[i])
         i = i + 1
     return tf
 
 
-def xpath_split(axpath):
+def split(axpath):
     """ Returns two lists with xpath name attributes and indices
 
-    [anames aindices] = xpath_split(xpath)
+    [anames aindices] = split(xpath)
 
     Args:
-        xpath(str): Xpath
+        axpath(str): Xpath
 
     Returns:
         anames (list): list with names
@@ -79,10 +79,10 @@ def xpath_split(axpath):
 
 # Private functions
 
-def _xpath_is_child(axpath, bxpath):
+def _is_child(axpath, bxpath):
     """ Returns true if axpath is a child of bxpath
 
-     tf = _xpath_is_child(axpath, bxpath)
+     tf = _is_child(axpath, bxpath)
 
      Args:
          axpath(str): xpath
@@ -92,8 +92,8 @@ def _xpath_is_child(axpath, bxpath):
          tf (bool): true if axpath is a child of bxpath
      """
 
-    [anames, aidx] = xpath_split(axpath)
-    [bnames, bidx] = xpath_split(bxpath)
+    [anames, aidx] = split(axpath)
+    [bnames, bidx] = split(bxpath)
     tf = len(anames) == len(bnames) + 1
     if tf:
         tf = tf and anames[:-1] == bnames
@@ -101,10 +101,10 @@ def _xpath_is_child(axpath, bxpath):
     return tf
 
 
-def _xpath_is_descendant(axpath, bxpath):
+def _is_descendant(axpath, bxpath):
     """ Returns true if axpath is a descendant of bxpath
 
-     tf = _xpath_is_descendant(axpath, bxpath)
+     tf = _is_descendant(axpath, bxpath)
 
      Args:
          axpath(str): xpath
@@ -114,12 +114,11 @@ def _xpath_is_descendant(axpath, bxpath):
          tf (bool): true if axpath is a desdendant of bxpath
      """
 
-    [anames, aidx] = xpath_split(axpath)
-    [bnames, bidx] = xpath_split(bxpath)
+    [anames, aidx] = split(axpath)
+    [bnames, bidx] = split(bxpath)
     levels = len(anames) - len(bnames)
     tf = levels >= 1
     if tf:
         tf = tf and anames[:-levels] == bnames
         tf = tf and aidx[:-levels] == bidx
     return tf
-
