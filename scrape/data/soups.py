@@ -17,10 +17,10 @@ import bs4
 from bs4 import BeautifulSoup
 import copy
 from scrape.utils.dicts import extract_values
-from scrape.utils.lists import is_empty
+from scrape.utils.lists import is_empty, union, intersect, difference
 from scrape.utils.strings import replace_newlines
 from scrape.utils.utils import read as _read, write as _write
-from scrape.utils import xpaths
+from scrape.utils.xpaths import split as xsplit
 
 
 # Main functions
@@ -430,7 +430,7 @@ def find_item_by_xpath(aitem, axpath='', relative=True):
         asoup = find_soup(aitem)
         ritem = find_item_by_xpath(asoup, axpath=axpath, relative=True) if is_soup(asoup) else None
     else:
-        [names, idx] = xpaths.split(axpath)
+        [names, idx] = xsplit(axpath)
         tf = True
         ritem = aitem
         # Iterate over xpath items and update ritem each step
@@ -896,55 +896,34 @@ def xpaths(aitem, root=None, first_index=False):
     return alist
 
 
-def xpaths_union(aitem1, aitem2, relative=False):
-    """ Returns an unordered list with union of xpaths in aitem1 and aitem2
-    When relative is true relative xpaths are relative to root of aitem1 and aitem2
+def xpaths_set(aitem1, aitem2, operation=None, relative=False):
+    """ Returns an unordered list with set operation on xpaths in aitem1 and aitem2
+     When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
-    alist = xpaths_union(aitem1, aitem2)
-
-    Args:
-        aitem1(tag): BS4 object
-        aitem2(tag): BS4 object
-        relative(bool): Relative or Absolute.
-
-    Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on union
-    """
-    return _get_xpath_set(aitem1, aitem2, operation='union', relative=relative)
-
-
-def xpaths_intersect(aitem1, aitem2, relative=False):
-    """ Returns an unordered list with intersection of xpaths in aitem1 and aitem2
-    When relative is true relative xpaths are relative to root of aitem1 and aitem2
-
-    alist = xpaths_intersect(aitem1, aitem2)
+    alist = xpaths_set(aitem1, aitem2)
 
     Args:
         aitem1(tag): BS4 object
         aitem2(tag): BS4 object
-        relative(bool): Relative or Absolute.
+        operation(str): 'union', 'intersect' or 'difference'
+        relative (bool): Abolute (False) or relative (True)
 
     Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on intersection
+        alist (list): list with xpaths from of aitem1 and aitem2 based on operation
     """
-    return _get_xpath_set(aitem1, aitem2, operation='intersect', relative=relative)
 
+    xpath1 = xpaths(aitem1, root=(aitem1 if relative else None), first_index=True)
+    xpath2 = xpaths(aitem2, root=(aitem2 if relative else None), first_index=True)
 
-def xpaths_difference(aitem1, aitem2, relative=False):
-    """ Returns an unordered list with difference of xpaths in aitem1 and aitem2
-    When relative is true relative xpaths are relative to root of aitem1 and aitem2
-
-    alist = xpaths_difference(aitem1, aitem2)
-
-    Args:
-        aitem1(tag): BS4 object
-        aitem2(tag): BS4 object
-        relative(bool): Relative or Absolute.
-
-    Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on difference
-    """
-    return _get_xpath_set(aitem1, aitem2, operation='difference', relative=relative)
+    if operation == 'union':
+        alist = union(xpath1, xpath2)
+    elif operation == 'intersect':
+        alist = intersect(xpath1, xpath2)
+    elif operation == 'difference':
+        alist = difference(xpath1, xpath2)
+    else:
+        alist = []
+    return alist
 
 
 # Private xpath functions
@@ -974,34 +953,6 @@ def _get_xpath_index(aitem, first_index=False):
                         xpi = nitems
         xpi = xpi if (nitems > 1 or first_index) else 0
     return xpi
-
-
-def _get_xpath_set(aitem1, aitem2, operation=None, relative=False):
-    """ Returns an unordered list with set operation on xpaths in aitem1 and aitem2
-
-    alist = _get_xpath_set(aitem1, aitem2)
-
-    Args:
-        aitem1(tag): BS4 object
-        aitem2(tag): BS4 object
-        operation(str): 'union', 'intersect' or 'difference'
-
-    Returns:
-        alist (list): list with xpaths from of aitem1 and aitem2 based on operation
-    """
-
-    xpath1 = xpaths(aitem1, root=(aitem1 if relative else None), first_index=True)
-    xpath2 = xpaths(aitem2, root=(aitem2 if relative else None), first_index=True)
-
-    if operation == 'union':
-        alist = list(set(xpath1) | set(xpath2))
-    elif operation == 'intersect':
-        alist = list(set(xpath1) & set(xpath2))
-    elif operation == 'difference':
-        alist = list(set(xpath1).difference(set(xpath2)))
-    else:
-        alist = []
-    return alist
 
 
 # Private functions

@@ -809,34 +809,34 @@ def test_xpaths():
 
 
 # Xpath set functions
-def test_xpaths_union():
+def test_xpaths_set_union():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = scrape.soups.xpaths_union(aitem1, aitem2, relative=True)
+    ulist = scrape.soups.xpaths_set(aitem1, aitem2, operation='union', relative=True)
     assert len(ulist) == 6  # 6 Nodes
 
 
-def test_xpaths_intersect():
+def test_xpaths_set_intersect():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = scrape.soups.xpaths_intersect(aitem1, aitem2, relative=True)
+    ulist = scrape.soups.xpaths_set(aitem1, aitem2, operation='intersect', relative=True)
     assert len(ulist) == 4  # 4 nodes
 
 
-def test_xpaths_diff():
+def test_xpaths_set_difference():
     soup = scrape.soups.get_soup(get_page(FILE_TREE))
 
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist1 = scrape.soups.xpaths_difference(aitem1, aitem2, relative=True)
-    ulist2 = scrape.soups.xpaths_difference(aitem2, aitem1, relative=True)
+    ulist1 = scrape.soups.xpaths_set(aitem1, aitem2, operation='difference', relative=True)
+    ulist2 = scrape.soups.xpaths_set(aitem2, aitem1, operation='difference', relative=True)
     assert len(ulist1) == 1  # 1 node
     assert len(ulist2) == 1  # 1 node
 
