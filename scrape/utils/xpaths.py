@@ -50,6 +50,22 @@ def is_descendant(axpath, axpaths):
     return tf
 
 
+def parent(axpath):
+    """ Returns xpath of parent of axpath
+
+        pxpath = parent(axpath)
+
+        Args:
+            axpath(str): xpath
+
+        Returns:
+            pxpath(str): xpath parent
+        """
+    sep  = '/'
+    stripped = axpath.split(sep,-1)
+    return sep.join(stripped[:-1])
+
+
 def split(axpath):
     """ Returns two lists with xpath name attributes and indices
 

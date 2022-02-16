@@ -52,7 +52,7 @@ def test_is_child():
 
 def test_is_descendant():
 
-    gxpath = '/html/body/'
+    gxpath = '/html/body'
     pxpath = gxpath + '/p[2]'
     axpath = pxpath + '/a[2]'
 
@@ -80,6 +80,30 @@ def test_is_descendant():
 
     axpaths = pxpaths1
     assert not scrape.xpaths.is_descendant(axpath, axpaths)
+
+
+def test_parent():
+    gxpath = '/html/body'
+    pxpath = gxpath + '/p[2]'
+    axpath = pxpath + '/a[2]'
+
+    # Parent 1
+    aparent = scrape.xpaths.parent(axpath)
+    assert aparent == pxpath
+
+    # Parent 2
+    aparent = scrape.xpaths.parent(aparent)
+    assert aparent == gxpath
+
+
+    # Invalid xpath ending in /
+    aparent = scrape.xpaths.parent(axpath + '/')
+    assert aparent == axpath
+
+    # Invalid xpath without /
+    aparent = scrape.xpaths.parent('Hello World')
+    assert aparent == ''
+
 
 
 def test_split():
