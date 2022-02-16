@@ -553,21 +553,22 @@ def ancestors(aitem):
     return alist
 
 
-def children(aitem):
-    """ Find all child tags of aitem
+def children(aitem, include_navs=False):
+    """ Find all children of aitem
     Returns an ordered list of tags
 
-    rlist = children(aitem)
+    rlist = children(aitem, include_navs=False)
 
     Args:
        aitem (tag): BS4 tag
+       include_navs (bool): Include navstrings if True
 
     Returns:
        rlist (list): List of BS4 tag
     """
     rlist = []
     if is_tag(aitem):
-        rlist = [citem for citem in aitem.children if is_tag(citem)]
+        rlist = [citem for citem in aitem.children if is_tag(citem) or include_navs]
     return rlist
 
 
@@ -590,6 +591,26 @@ def lineage(aancestor, adescendant):
         curr_parent = rlist.pop(0)
         tf = (curr_parent == aancestor)
     return rlist
+
+
+def position(aitem, include_navs=False):
+    """ Position of aitem in children list of parent
+
+    idx = position(aitem, include_navs=False)
+
+    Args:
+       aitem (tag): BS4 tag
+       include_navs (bool): Include navstrings if True
+
+    Returns:
+       idx (int): index of aitem in children of aparent
+    """
+    idx = None
+    if is_tag(aitem) and not is_soup(aitem):
+        aparent = aitem.parent
+        achildren = children(aparent, include_navs=include_navs)
+        idx = achildren.index(aitem)
+    return idx
 
 
 # Text extraction functions
@@ -694,7 +715,7 @@ def get_hrefs(aitem):
 
 def stencil(aitem, amask):
     """ Get stencil from soup or tag
-    # A stencil provides a tag with mask layout filled with strings and hrefs content from aitem.
+    # A stencil returns tag sitem with mask layout filled with strings and hrefs content from aitem.
 
     sitem = stencil(aitem, amask)
 
@@ -706,20 +727,26 @@ def stencil(aitem, amask):
         sitem : tag
     """
 
-    # A21. Copy aitem.
+    # 1. Copy aitem to sitem
     sitem = copy.copy(aitem)
-    #
-    # # A22. Find all tags in aitem not in amask (xpath diff folded roots) -> delete these tags from aitem
-    # xd_item = xpaths(aitem, root=aitem, first_index=True)
-    # xd_mask = xpaths(amask, root=amask, first_index=True)
-    # xpaths_redundant = xpaths_difference(xd_item, xd_mask, relative=True)
-    #
-    # # TODO
-    # # tags_redundant = [atag for atag=find_item(sitem,xpath=xpath) for xpath in xpaths_redundant]
-    #
-    # # A23. Find all tags in atemplate not in aitem (xpath diff folded roots) -> add in correct position with ''
-    # xpaths_missing = xpaths_difference(xd_mask, xd_item, relative=True)
-    # # tags_missing = [atag for atag = find_item(sitem, xpath=xpath)
+
+    xd_item = xpaths(sitem, root=sitem, first_index=True)
+    xd_mask = xpaths(amask, root=amask, first_index=True)
+
+    # 2. Find all tags in sitem not in amask and delete these tags from aitem
+    xpaths_redundant = xpaths_set(xd_item, xd_mask, operation='difference', relative=True)
+    for ax in xpaths_redundant:
+        ritem = find_item_by_xpath(sitem, axpath=ax, relative=True)
+        ritem.decompose() if ritem else None
+
+    # 3. Find all tags in atemplate not in aitem and add in correct position with ''
+    xpaths_missing = xpaths_set(xd_mask, xd_item, operation='difference', relative=True)
+    for ax in xpaths_missing:
+        # Add in correct position
+        # Get elem
+        # Create tag
+        # Fill content of tag
+        pass
 
     return sitem
 

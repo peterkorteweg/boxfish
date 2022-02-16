@@ -545,6 +545,10 @@ def test_children():
     achildren = scrape.soups.children(aparent)
     assert len(achildren) == 20
 
+    # Example same soup, exists, include_navs
+    achildren = scrape.soups.children(aparent,include_navs = True)
+    assert len(achildren) == 41
+
 
 def test_lineage():
     soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
@@ -568,6 +572,24 @@ def test_lineage():
     # Example: no ancestor
     alineage = scrape.soups.lineage(aitem1, aitem2)
     assert len(alineage) == 0
+
+
+def test_position():
+    soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
+
+    # Example same soup, exists
+    afilter = ROWS_BOOKS
+    results = scrape.soups.find_items(soup, afilter)
+    aitem1 = results[0]
+
+    #Include_navs = False
+    idx = scrape.soups.position(aitem1)
+    assert idx == 0
+
+    # Include_navs = True
+    idx = scrape.soups.position(aitem1, include_navs=True)
+    assert idx == 1
+
 
 
 # Tree extraction functions
