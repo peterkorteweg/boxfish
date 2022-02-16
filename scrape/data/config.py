@@ -184,9 +184,9 @@ def build_rows(config, url='', slist=None):
             aitem1 = soups.find_item(soup, astr=str1)
             str2 = re.compile(slist[1])
             aitem2 = soups.find_item(soup, astr=str2)
-            aparent = soups.find_common_ancestor(aitem1, aitem2)
+            aparent = soups.common_ancestor(aitem1, aitem2)
             if aparent:
-                alineage = soups.find_lineage(aparent, aitem1)
+                alineage = soups.lineage(aparent, aitem1)
                 aitem = alineage[0]
 
                 if aitem:
