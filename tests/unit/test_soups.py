@@ -2,6 +2,7 @@
 
 import bs4
 from bs4 import BeautifulSoup
+import copy
 import re
 import scrape
 from scrape.utils.utils import read
@@ -533,6 +534,21 @@ def test_ancestors():
     ancestors = scrape.soups.ancestors(aitem)
     assert len(ancestors) == 9
 
+    # Ancestors for copied items
+    # 1. Non Copy
+    ancestor_non_copy = ancestors[4]
+    achildren = scrape.soups.children(ancestor_non_copy)
+    achild = achildren[0]
+    nancestors = scrape.soups.ancestors(achild)
+    assert len(nancestors) == 5
+
+    # 2. Copy
+    ancestor_copy = copy.copy(ancestors[4])
+    achildren = scrape.soups.children(ancestor_copy)
+    achild = achildren[0]
+    nancestors = scrape.soups.ancestors(achild)
+    assert len(nancestors) == 1
+
 
 def test_children():
     soup = scrape.soups.get_soup(get_page(FILE_BOOKS))
@@ -546,7 +562,7 @@ def test_children():
     assert len(achildren) == 20
 
     # Example same soup, exists, include_navs
-    achildren = scrape.soups.children(aparent,include_navs = True)
+    achildren = scrape.soups.children(aparent, include_navs=True)
     assert len(achildren) == 41
 
 
@@ -582,14 +598,13 @@ def test_position():
     results = scrape.soups.find_items(soup, afilter)
     aitem1 = results[0]
 
-    #Include_navs = False
+    # Include_navs = False
     idx = scrape.soups.position(aitem1)
     assert idx == 0
 
     # Include_navs = True
     idx = scrape.soups.position(aitem1, include_navs=True)
     assert idx == 1
-
 
 
 # Tree extraction functions
@@ -682,13 +697,14 @@ def test_get_hrefs_from_results():
 
 # Stencil functions
 def test_stencil():
-    # TODO
     page = get_page(FILE_TREE)
     soup = scrape.soups.get_soup(page)
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
     amask = scrape.soups.get_mask(aitem1)
-    # astencil = scrape.soups.stencil(aitem2, amask)
+
+    # TODO NOT WORKING YET
+    astencil = scrape.soups.stencil(aitem2, amask)
     # Check that astencil contains the same tags as amask
     pass
 
@@ -793,7 +809,11 @@ def test_xpath():
     aitem1 = scrape.soups.find_item(soup, afilter=afilter)
     aparent = aitem1.parent
     agrandparent = aparent.parent
+    # self
+    assert scrape.soups.xpath(aitem1, root=aitem1) == '//'
+    # parent
     assert scrape.soups.xpath(aitem1, root=aparent) == '//a[1]'
+    # grandparent
     assert scrape.soups.xpath(aitem1, root=agrandparent) == '//p[2]/a[1]'
 
     # test first_index= True

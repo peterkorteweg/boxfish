@@ -549,7 +549,8 @@ def ancestors(aitem):
            rlist (list): List of BS4 tag
        """
     alist = list(reversed(list(aitem.parents)))
-    alist.pop(0)
+    if is_soup(alist[0]):
+        alist.pop(0)
     return alist
 
 
@@ -727,6 +728,8 @@ def stencil(aitem, amask):
         sitem : tag
     """
 
+    # TODO
+
     # 1. Copy aitem to sitem
     sitem = copy.copy(aitem)
 
@@ -742,7 +745,13 @@ def stencil(aitem, amask):
     # 3. Find all tags in atemplate not in aitem and add in correct position with ''
     xpaths_missing = xpaths_set(xd_mask, xd_item, operation='difference', relative=True)
     for ax in xpaths_missing:
-        # Add in correct position
+        ditem = find_item_by_xpath(amask, axpath=ax, relative=True)
+        idx = position(ditem, include_navs=True)
+
+        nitem = copy.copy(ditem)
+
+        # TODO
+
         # Get elem
         # Create tag
         # Fill content of tag
@@ -884,18 +893,21 @@ def xpath(aitem, root=None, first_index=False):
     """
     axpath = ''
     if is_tag(aitem) and not is_soup(aitem):
-        # Absolute
-        rlist = ancestors(aitem)
-        rlist.append(aitem)
-        for aparent in rlist:
-            idx = _get_xpath_index(aparent, first_index=first_index)
-            sidx = '[' + str(idx) + ']' if idx > 0 else ''
-            axpath = axpath + '/' + aparent.name + sidx
+        if aitem == root:
+            axpath = '//'
+        else:
+            # Absolute
+            rlist = ancestors(aitem)
+            rlist.append(aitem)
+            for aparent in rlist:
+                idx = _get_xpath_index(aparent, first_index=first_index)
+                sidx = '[' + str(idx) + ']' if idx > 0 else ''
+                axpath = axpath + '/' + aparent.name + sidx
 
-        # Relative
-        if is_tag(root):
-            axpath_root = xpath(root, first_index=first_index)
-            axpath = axpath.replace(axpath_root, '/') if axpath.startswith(axpath_root) else ''
+            # Relative
+            if is_tag(root):
+                axpath_root = xpath(root, first_index=first_index)
+                axpath = axpath.replace(axpath_root, '/') if axpath.startswith(axpath_root) else ''
     return axpath
 
 
