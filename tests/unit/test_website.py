@@ -30,7 +30,7 @@ def get_config(filename=CONFIG_BOOKS):
         config = scrape.config.create('')
     else:
         config = scrape.config.read(filename)
-        config["url"] = FILE_BOOKS
+        config["website"]["url"] = FILE_BOOKS
     return config
 
 
@@ -55,7 +55,7 @@ def get_page(filename=FILE_DORMOUSE):
 def test_get_website():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config["url"]
+    url = config["website"]["url"]
     df = scrape.website.get_website(url, config)
     assert len(df) > 0
 
@@ -63,7 +63,7 @@ def test_get_website():
 def test_get_data():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config["url"]
+    url = config["website"]["url"]
     data, colnames = scrape.website.get_data(url, config)
     assert isinstance(data, list)
     assert isinstance(colnames, list)
@@ -137,7 +137,7 @@ def test__get_data_from_driver():
     # Happy flow, single page
     # data = _get_data_from_driver(url, config, adriver)
     config = get_config(CONFIG_BOOKS)
-    url = config["url"]
+    url = config["website"]["url"]
     adriver = drivers.driver_start(config['driver'])
     data = scrape.website._get_data_from_driver(url, config, adriver)
     drivers.driver_stop(adriver)

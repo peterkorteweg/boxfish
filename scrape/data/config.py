@@ -10,8 +10,8 @@ from scrape.utils.utils import read_json, write_json, flip
 from scrape import utils
 
 
-CONFIGKEYS = ['url', 'driver', 'website', 'dataset']
-WEBSITEKEYS = ['parser', 'id', 'rows', 'columns', 'page']
+CONFIGKEYS = ['driver', 'website', 'dataset']
+WEBSITEKEYS = ['url', 'parser', 'id', 'rows', 'columns', 'page']
 DATASETKEYS = ['filename', 'date_format', 'overwrite']
 
 BACKUP_EXT = '.bak'
@@ -38,8 +38,6 @@ def create(url=''):
 
     config = dict.fromkeys(CONFIGKEYS, {})
 
-    config['url'] = url
-
     config['driver'] = utils.drivers.create_params(package='requests',
                                                    headers=HEADERS,
                                                    timeout=10,
@@ -49,6 +47,7 @@ def create(url=''):
                                                    headless=True)
 
     config['website'] = dict.fromkeys(WEBSITEKEYS, {})
+    config['website']['url'] = url
     config['website']['parser'] = 'html.parser'
     config['website']['id'] = ''
     config['website']['rows'] = dict.fromkeys(['elem', 'class'], {})
