@@ -59,14 +59,14 @@ def test_process_non_keys():
     assert sorted(list(aconfig.keys())) == sorted(scrape.config.CONFIGKEYS)
 
 
-def test_build_rows():
+def test_build():
     config = scrape.config.create('')
     aurl = FILE_BOOKS
 
     # Build two titles
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_TITLE2
-    scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
+    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
@@ -76,7 +76,7 @@ def test_build_rows():
     # Build two prices
     astr1 = STR_BOOKS_PRICE1
     astr2 = STR_BOOKS_PRICE2
-    scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
+    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
@@ -86,7 +86,7 @@ def test_build_rows():
     # Build 1 title and 1 price
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_PRICE2
-    scrape.config.build_rows(config, url=aurl, slist=[astr1, astr2])
+    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
