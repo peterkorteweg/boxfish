@@ -185,7 +185,7 @@ def test_to_table_single_row():
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find('a')
-    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_hrefs=False)
+    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 1
@@ -200,7 +200,7 @@ def test_to_table_multiple_rows():
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find_all('a')
-    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_hrefs=False)
+    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 3
@@ -637,7 +637,7 @@ def test_get_text():
     page = get_page()
     soup = scrape.soups.get_soup(page)
     aitem = soup.find('a')
-    alist = scrape.soups.get_text(aitem, include_strings=True, include_hrefs=True)
+    alist = scrape.soups.get_text(aitem, include_strings=True, include_links=True)
 
     ncols = len(alist)
     assert ncols == 2
@@ -681,11 +681,11 @@ def test_get_strings_from_tag():
     assert len(alist) == 1 and alist[0] == "Elsie"
 
 
-def test_get_strings_from_tag_include_hrefs():
+def test_get_strings_from_tag_include_links():
     # Function returns a list of strings
     soup = scrape.soups.get_soup(get_page())
     tag = soup.find(id="link1")
-    alist = scrape.soups.get_strings(tag, include_hrefs=True)
+    alist = scrape.soups.get_strings(tag, include_links=True)
     assert len(alist) == 2 and alist[0] == "Elsie" and alist[1] == "http://example.com/elsie"
 
 

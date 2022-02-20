@@ -97,10 +97,10 @@ def get_table(soup, **kwargs):
     return atable, colnames
 
 
-def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
+def to_table(aitem, cols=None, include_strings=True, include_links=False):
     """ Convert aitem to a table
 
-    [atable, colnames] = to_table(aitem, cols=None, include_strings=True, include_hrefs=False)
+    [atable, colnames] = to_table(aitem, cols=None, include_strings=True, include_links=False)
 
     Args:
         aitem(tag or ResultSet): BS4 object
@@ -108,7 +108,7 @@ def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
         cols (dict): dict of dict with keys {'elem','class','href' (optional)} or None
         # Extract all strings
         include_strings (boolean): Include hrefs as strings if true
-        include_hrefs (boolean): Include hrefs as strings if true
+        include_links (boolean): Include hrefs as strings if true
     Returns:
         atable (list): List of rows (list) of columns (str)
         acolnames (list): Column names
@@ -121,7 +121,7 @@ def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
     for record in aitem:
         if cols is None or not cols:
             # Extract all strings
-            row = get_text(record, include_strings=include_strings, include_hrefs=include_hrefs)
+            row = get_text(record, include_strings=include_strings, include_links=include_links)
         else:
             # Extract subset of strings
             row = get_subtext(record, cols)
@@ -639,23 +639,23 @@ def position(aitem, include_navs=False):
 
 
 # Text extraction functions
-def get_text(aitem, include_strings=True, include_hrefs=False):
+def get_text(aitem, include_strings=True, include_links=False):
     """ Get text from soup objects. Text consists of strings and/or hrefs.
 
     alist = get_text(aitem)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        include_strings (boolean): Include hrefs as strings if true
-        include_hrefs (boolean): Include hrefs as strings if true
+        include_strings (boolean): Include strings if true
+        include_links (boolean): Include hrefs as strings if true
 
     Returns:
         alist (list): List of strings
     """
     alist = []
     if include_strings:
-        alist = get_strings(aitem, include_hrefs=include_hrefs)
-    elif not include_strings and include_hrefs:
+        alist = get_strings(aitem, include_links=include_links)
+    elif not include_strings and include_links:
         alist = get_hrefs(aitem)
     return alist
 
@@ -693,23 +693,23 @@ def get_subtext(aitem, cols):
     return row
 
 
-def get_strings(aitem, include_hrefs=False):
+def get_strings(aitem, include_links=False):
     """ Get strings from soup objects
 
     alist = get_strings(aitem)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        include_hrefs (boolean): Include hrefs as strings if true
+        include_links (boolean): Include hrefs as strings if true
 
     Returns:
         alist (list): List of strings
     """
     alist = []
     if is_tag(aitem):
-        alist = _get_strings_from_tag(aitem, include_hrefs)
+        alist = _get_strings_from_tag(aitem, include_links)
     elif is_results(aitem):
-        alist = _get_strings_from_results(aitem, include_hrefs)
+        alist = _get_strings_from_results(aitem, include_links)
     return alist
 
 
@@ -1032,19 +1032,19 @@ def _get_colnames(ncols):
     return ['Col' + str(i + 1) for i in range(ncols)]
 
 
-def _get_strings_from_results(results, include_hrefs=False):
+def _get_strings_from_results(results, include_links=False):
     """ Get strings from results
 
     alist = _get_strings_from_results(results)
 
     Args:
         results (ResultSet): BS4 result set
-        include_hrefs (boolean): Include hrefs as strings if true
+        include_links (boolean): Include hrefs as strings if true
 
     Returns:
         alist (list): List of strings
     """
-    return [_get_strings_from_tag(tag, include_hrefs) for tag in results]
+    return [_get_strings_from_tag(tag, include_links) for tag in results]
 
 
 def _get_hrefs_from_results(results):
@@ -1062,19 +1062,19 @@ def _get_hrefs_from_results(results):
 
 
 # Tag functions
-def _get_strings_from_tag(tag, include_hrefs=False):
+def _get_strings_from_tag(tag, include_links=False):
     """ Get strings from tag
 
     alist = _get_strings_from_tag(tag)
 
     Args:
         tag (tag): BS4 tag
-        include_hrefs (boolean): Include hrefs as strings if true
+        include_links (boolean): Include hrefs as strings if true
 
     Returns:
         alist (list): List of strings
     """
-    if include_hrefs:
+    if include_links:
         atag = copy.copy(tag)
         unpack_hrefs(atag)
     else:
