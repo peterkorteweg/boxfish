@@ -107,8 +107,8 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
         # Extract subset of strings
         cols (dict): dict of dict with keys {'elem','class','href' (optional)} or None
         # Extract all strings
-        include_strings (boolean): Include hrefs as strings if true
-        include_links (boolean): Include hrefs as strings if true
+        include_strings (boolean): Include strings if true
+        include_links (boolean): Include links if true
     Returns:
         atable (list): List of rows (list) of columns (str)
         acolnames (list): Column names
@@ -640,14 +640,14 @@ def position(aitem, include_navs=False):
 
 # Text extraction functions
 def get_text(aitem, include_strings=True, include_links=False):
-    """ Get text from soup objects. Text consists of strings and/or hrefs.
+    """ Get text from soup objects. Text consists of strings and/or links.
 
     alist = get_text(aitem)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
         include_strings (boolean): Include strings if true
-        include_links (boolean): Include hrefs as strings if true
+        include_links (boolean): Include links if true
 
     Returns:
         alist (list): List of strings
@@ -656,12 +656,12 @@ def get_text(aitem, include_strings=True, include_links=False):
     if include_strings:
         alist = get_strings(aitem, include_links=include_links)
     elif not include_strings and include_links:
-        alist = get_hrefs(aitem)
+        alist = get_links(aitem)
     return alist
 
 
 def get_subtext(aitem, cols):
-    """ Get text from soup objects. Text consists of strings and/or hrefs.
+    """ Get text from soup objects. Text consists of strings and/or links.
     Relevant text is specified by cols
 
     alist = get_text(aitem, cols)
@@ -700,7 +700,7 @@ def get_strings(aitem, include_links=False):
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        include_links (boolean): Include hrefs as strings if true
+        include_links (boolean): Include links as strings if true
 
     Returns:
         alist (list): List of strings
@@ -713,10 +713,10 @@ def get_strings(aitem, include_links=False):
     return alist
 
 
-def get_hrefs(aitem):
-    """ Get hrefs from soup objects
+def get_links(aitem):
+    """ Get links from soup objects
 
-    alist = get_hrefs(aitem)
+    alist = get_links(aitem)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
@@ -726,21 +726,21 @@ def get_hrefs(aitem):
     """
     alist = []
     if is_tag(aitem) or is_soup(aitem):
-        alist = _get_hrefs_from_tag(aitem)
+        alist = _get_links_from_tag(aitem)
     elif is_results(aitem):
-        alist = _get_hrefs_from_results(aitem)
+        alist = _get_links_from_results(aitem)
     return alist
 
 
 # Stencil functions
 
-# A stencil provides a tag with mask layout filled with strings and hrefs content from aitem.
+# A stencil provides a tag with mask layout filled with strings and links content from aitem.
 # A mask consists of a bs4 structure without content
 
 
 def stencil(aitem, amask):
     """ Get stencil from soup or tag
-    # A stencil returns tag sitem with mask layout filled with strings and hrefs content from aitem.
+    # A stencil returns tag sitem with mask layout filled with strings and links content from aitem.
 
     sitem = stencil(aitem, amask)
 
@@ -1047,10 +1047,10 @@ def _get_strings_from_results(results, include_links=False):
     return [_get_strings_from_tag(tag, include_links) for tag in results]
 
 
-def _get_hrefs_from_results(results):
+def _get_links_from_results(results):
     """ Get strings with hrefs from results
 
-    alist = _get_hrefs_from_results(results)
+    alist = _get_links_from_results(results)
 
     Args:
         results (ResultSet): BS4 result set
@@ -1058,7 +1058,7 @@ def _get_hrefs_from_results(results):
     Returns:
         alist (list): List of href strings
     """
-    return [_get_hrefs_from_tag(tag) for tag in results]
+    return [_get_links_from_tag(tag) for tag in results]
 
 
 # Tag functions
@@ -1082,10 +1082,10 @@ def _get_strings_from_tag(tag, include_links=False):
     return [text for text in atag.stripped_strings]
 
 
-def _get_hrefs_from_tag(tag):
+def _get_links_from_tag(tag):
     """ Get href strings from tag
 
-    alist = _get_hrefs_from_tag(tag)
+    alist = _get_links_from_tag(tag)
 
     Args:
         tag (tag): BS4 tag

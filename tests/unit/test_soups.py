@@ -697,26 +697,26 @@ def test_get_strings_from_results():
     assert len(alist) == len(results) and alist[0][0] == "Elsie"
 
 
-def test_get_hrefs_from_soup():
+def test_get_links_from_soup():
     # Function returns a list of href strings
     soup = scrape.soups.get_soup(get_page())
-    alist = scrape.soups.get_hrefs(soup)
+    alist = scrape.soups.get_links(soup)
     assert len(alist) == 3 and alist[0] == 'http://example.com/elsie'
 
 
-def test_get_hrefs_from_tag():
+def test_get_links_from_tag():
     # Function returns a single href string
     soup = scrape.soups.get_soup(get_page())
     tag = soup.find(id="link1")
-    alist = scrape.soups.get_hrefs(tag)
+    alist = scrape.soups.get_links(tag)
     assert len(alist) == 1 and alist[0] == 'http://example.com/elsie'
 
 
-def test_get_hrefs_from_results():
+def test_get_links_from_results():
     # Function returns a list of single href strings
     soup = scrape.soups.get_soup(get_page())
     results = soup.find_all(class_="sister")
-    alist = scrape.soups.get_hrefs(results)
+    alist = scrape.soups.get_links(results)
     assert len(alist) == len(results) and alist[0][0] == 'http://example.com/elsie'
 
 
