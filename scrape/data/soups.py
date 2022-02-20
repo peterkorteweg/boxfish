@@ -105,7 +105,7 @@ def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
     Args:
         aitem(tag or ResultSet): BS4 object
         # Extract subset of strings
-        cols (dict): list of dict with keys {'elem','class','href' (optional)} or None
+        cols (dict): dict of dict with keys {'elem','class','href' (optional)} or None
         # Extract all strings
         include_strings (boolean): Include hrefs as strings if true
         include_hrefs (boolean): Include hrefs as strings if true
@@ -132,7 +132,7 @@ def to_table(aitem, cols=None, include_strings=True, include_hrefs=False):
     # Column names
     if cols is None or not cols:
         aitem = atable[0] if atable else None
-        acolnames = ['Col' + str(i+1) for i in range(len(aitem))] if aitem else []
+        acolnames = _get_colnames(len(aitem)) if aitem else []
     else:
         acolnames = list(cols.keys())
     return atable, acolnames
@@ -508,7 +508,31 @@ def get_filter(aitem):
     afilter = {'elem': '', 'class': ''}
     if is_tag(aitem):
         afilter['elem'] = aitem.name
-        afilter['class'] = aitem['class']
+        afilter['class'] = aitem['class'] if 'class' in aitem.attrs else ''
+    return afilter
+
+
+def get_filter_child_of_common_ancestor(aitem1, aitem2):
+    """ Get filter child of common ancestors
+        The filter is based on the first child of the common ancestor.
+
+        afilter = get_filter_child_of_common_ancestor(soup, aitem1, aitem2)
+
+        Args:
+            aitem1 (tag): BS4 object
+            aitem2 (tag): BS4 object
+
+        Returns:
+            afilter (dict): BS4 filter on keys "elem" and "class"
+    """
+    afilter = {}
+
+    aparent = common_ancestor(aitem1, aitem2)
+    if aparent:
+        alineage = lineage(aparent, aitem1)
+        aitem = alineage[0] if alineage else aitem1
+        if aitem:
+            afilter = get_filter(aitem)
     return afilter
 
 
@@ -516,7 +540,7 @@ def get_filter(aitem):
 def common_ancestor(aitem1, aitem2):
     """ Find tag whose descendants contain both aitem1 and aitem2
 
-    ritem = find_item(asoup, aitem1, aitem2)
+    ritem = common_ancestor(aitem1, aitem2)
 
     Args:
         aitem1 (tag): BS4 tag
@@ -995,6 +1019,19 @@ def _get_xpath_index(aitem, first_index=False):
 
 
 # Private functions
+def _get_colnames(ncols):
+    """ Get column names
+
+        [colnames] = _get_colnames(nitems)
+
+        Args:
+            ncols (int): Number of colums
+        Returns:
+            acolnames (list): Column names
+        """
+    return ['Col' + str(i + 1) for i in range(ncols)]
+
+
 def _get_strings_from_results(results, include_hrefs=False):
     """ Get strings from results
 

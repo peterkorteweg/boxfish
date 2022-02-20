@@ -493,9 +493,34 @@ def test_find_tables():
 
 def test_get_filter():
     soup = scrape.soups.get_soup(get_page())
+
+    # Tag with class
     tag = soup.find(id="link1")
     afilter = scrape.soups.get_filter(tag)
     assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+
+    # Tag without class
+    tag = soup.find("b")
+    afilter = scrape.soups.get_filter(tag)
+    assert afilter['elem'] == 'b' and afilter['class'] == ['']
+
+
+def test_get_filter_child_of_common_ancestor():
+    soup = scrape.soups.get_soup(get_page())
+
+    # Example child of ancestor is item
+    aitem1 = soup.find(id="link1")
+    aitem2 = soup.find(id="link2")
+    afilter = scrape.soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
+    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+
+    # Example child of ancestor is ancestor of item
+    soup = scrape.soups.get_soup(get_page(FILE_TREE))
+    atree2 = soup.find(id=ID2_TREE)
+    aitem1 = atree2.find(id='CT')
+    aitem2 = atree2.find(id='FT')
+    afilter = scrape.soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
+    assert afilter['elem'] == 'span' and afilter['class'] == ['']
 
 
 # Tree functions
