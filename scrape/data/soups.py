@@ -505,10 +505,10 @@ def get_filter(aitem):
     Returns:
         afilter (dict): dict with keys 'elem' and 'class'
     """
-    afilter = {'elem': '', 'class': ''}
+    afilter = {'elem': '', 'class': ['']}
     if is_tag(aitem):
         afilter['elem'] = aitem.name
-        afilter['class'] = aitem['class'] if 'class' in aitem.attrs else ''
+        afilter['class'] = aitem['class'] if 'class' in aitem.attrs else ['']
     return afilter
 
 
