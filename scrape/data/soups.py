@@ -75,7 +75,7 @@ def get_table(soup, **kwargs):
         soup (bs4.BeautifulSoup): A BS4 object of an HTML page
         **kwargs:
         id (str, optional): Identifier of subset of soup
-        rows (dict): {'elem','class'}
+        rows (dict): dict with keys {'elem','class'}
         cols (dict): dict of dict with keys {'elem','class','href' (optional)}
 
     Returns:
