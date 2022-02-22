@@ -90,14 +90,14 @@ def request_page(driver, url='', params=None, count=0):
     return page
 
 
-def create_params(package='requests', headers='', timeout=1, filename='', log='', sleep=None, headless=True):
+def create_params(package='requests', headers=None, timeout=1, filename='', log='', sleep=None, headless=True):
     """ Create driver parameters
 
-    params = creat_params(package='requests', headers='', timeout=1, filename='', log='', headless=True):
+    params = create_params(package='requests', headers='', timeout=1, filename='', log='', headless=True):
 
     Args:
         package (str): Name of the driver package. Supported packages are 'selenium' and 'requests'
-        headers (str): Driver headers
+        headers (dict): Driver headers
         timeout (int): Timeout between driver calls, in seconds
         filename (str): File name for data output
         log (str): File name for log file
@@ -107,6 +107,8 @@ def create_params(package='requests', headers='', timeout=1, filename='', log=''
     Returns:
         params (dict): Driver parameters
     """
+
+    headers = {} if headers is None else headers
 
     params = dict.fromkeys(DRIVERKEYS, {})
     params['package'] = package if package in ('selenium', 'requests') else 'requests'
