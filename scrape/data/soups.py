@@ -626,8 +626,10 @@ def position(aitem, include_navs=False):
 # Text extraction functions
 def get_text(aitem, cols=None, include_strings=True, include_links=False):
     """ Get text from soup objects. Text consists of strings and/or links.
+        Returns all text of descendant items if no columns are specified, or
+        text of specific columns only, if columns are specified.
 
-    alist = get_text(aitem)
+    alist = get_text(aitem, cols=cols, include_strings=True, include_links=False)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
@@ -641,7 +643,7 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False):
     alist = []
 
     if isinstance(cols, list):
-        sitem = _get_cols_as_results(aitem, cols)
+        sitem = _get_columns_as_results(aitem, cols)
     elif isinstance(cols, str):
         # TODO stencil
         sitem = aitem
@@ -654,34 +656,6 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False):
     elif not include_strings and include_links:
         alist = get_links(sitem)
     return alist
-
-
-def _get_cols_as_results(aitem, cols):
-    """ Get columns as a Resultset
-
-        aresults = _get_cols_as_results(aitem)
-
-        Args:
-            aitem(soup or tag or ResultSet): BS4 object
-            cols (list): list of dicts with keys {'elem','class'}
-
-        Returns:
-            aresults (ResultSet): List of strings
-        """
-    if not is_results(aitem):
-        aitem = [aitem]
-
-    # Create empty ResultSet
-    aresults = aitem[0].find_all("")
-
-    for record in aitem:
-        for col in cols:
-            atag = find_item(record, col)
-            if is_tag(atag):
-                aresults.append(atag)
-        pass
-
-    return aresults
 
 
 def get_strings(aitem, include_links=False):
@@ -1021,6 +995,32 @@ def _get_colnames(ncols):
             acolnames (list): Column names
         """
     return ['Col' + str(i + 1) for i in range(ncols)]
+
+
+def _get_columns_as_results(aitem, cols):
+    """ Get columns as a Resultset
+
+        aresults = _get_cols_as_results(aitem)
+
+        Args:
+            aitem(soup or tag or ResultSet): BS4 object
+            cols (list): list of dicts with keys {'elem','class'}
+
+        Returns:
+            aresults (ResultSet): List of strings
+        """
+    if not is_results(aitem):
+        aitem = [aitem]
+
+    # Create empty ResultSet
+    aresults = aitem[0].find_all("")
+
+    for record in aitem:
+        for col in cols:
+            atag = find_item(record, col)
+            if is_tag(atag):
+                aresults.append(atag)
+    return aresults
 
 
 def _get_strings_from_results(results, include_links=False):
