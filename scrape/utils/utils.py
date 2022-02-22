@@ -12,14 +12,12 @@ from pathlib import Path
 def makedir(spath):
     """ Make a new directory
 
-    Source: https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory
+        Args:
+            spath (str): Full path of new directory
+        Returns:
+            None
 
-    Args:
-        spath (str): Full path of new directory
-    Returns:
-        None
-
-    Example:
+        Example:
     """
     try:
         Path(spath).mkdir(parents=True, exist_ok=True)
@@ -30,12 +28,12 @@ def makedir(spath):
 def create_folder_if_not_exist(folder):
     """ Create folder
 
-    Args:
-        folder (str): Full path of new folder
-    Returns:
-        None
+        Args:
+            folder (str): Full path of new folder
+        Returns:
+            None
 
-    Example:
+        Example:
     """
     if folder and not os.path.exists(folder):
         os.makedirs(folder)
@@ -72,14 +70,14 @@ def read(filename, filetype='text', encoding='utf-8'):
 def read_json(filename, encoding='utf-8'):
     """ Read json from file
 
-        json = read(filename)
+        ajson = read(filename)
 
         Args:
             filename (str): file name
             encoding (str): file encoding
 
         Returns:
-            json (dict)
+            ajson (dict)
     """
     return read(filename, filetype='json', encoding=encoding)
 
@@ -87,21 +85,21 @@ def read_json(filename, encoding='utf-8'):
 def write(filename, text, filetype='text', encoding='utf-8', indent=4):
     """ Write text to file
 
-            write(filename)
+        write(filename)
 
-            Args:
-                filename (str): file name of configuration
-                text (str): text
-                filetype (str): file type ('text' or 'json')
-                encoding (str): file encoding
-                indent (int): text indentation
+        Args:
+            filename (str): file name of configuration
+            text (str or dict): text
+            filetype (str): file type ('text' or 'json')
+            encoding (str): file encoding
+            indent (int): text indentation
 
-            Returns:
-                None
+        Returns:
+            None
 
-            Raises:
-                IOError (): error in case function cannot write to filename
-        """
+        Raises:
+            IOError (): error in case function cannot write to filename
+    """
 
     try:
         with open(filename, "w", encoding=encoding) as file:
@@ -113,41 +111,41 @@ def write(filename, text, filetype='text', encoding='utf-8', indent=4):
         print('Error: Cannot write to file.')
 
 
-def write_json(filename, text, encoding='utf-8', indent=4):
+def write_json(filename, ajson, encoding='utf-8', indent=4):
     """ Write json to file
 
-                write_json(filename, text, indent=4)
+        write_json(filename, text, indent=4)
 
-                Args:
-                    filename (str): file name of configuration
-                    text (str): text
-                    encoding (str): file encoding
-                    indent (int): text indentation
+        Args:
+            filename (str): file name of configuration
+            ajson (dict): dictionary
+            encoding (str): file encoding
+            indent (int): text indentation
 
-                Returns:
-                    None
+        Returns:
+            None
 
-                Raises:
-                    IOError (): error in case function cannot write to filename
-            """
-    write(filename, text, filetype='json', encoding=encoding, indent=indent)
+        Raises:
+            IOError (): error in case function cannot write to filename
+    """
+    write(filename, ajson, filetype='json', encoding=encoding, indent=indent)
 
 
 def flip(filename1, filename2):
     """ Flips to files.
 
-            flip(filename1, filename2)
+        flip(filename1, filename2)
 
-            Args:
-                filename1 (str): file name of configuration
-                filename2 (str): file name of configuration
+        Args:
+            filename1 (str): file name of configuration
+            filename2 (str): file name of configuration
 
-            Returns:
-                None
+        Returns:
+            None
 
-            Raises:
-                IOError (): error in case function cannot write to filename
-        """
+        Raises:
+            IOError (): error in case function cannot write to filename
+    """
     filename0 = filename1 + '.tmp'
     if os.path.isfile(filename1) and os.path.isfile(filename2):
         shutil.copy(filename1, filename0)
