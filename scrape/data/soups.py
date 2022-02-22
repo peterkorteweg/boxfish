@@ -684,40 +684,6 @@ def _get_cols_as_results(aitem, cols):
     return aresults
 
 
-
-# def get_subtext(aitem, cols):
-#     """ Get text from soup objects. Text consists of strings and/or links.
-#     Relevant text is specified by cols
-#
-#     alist = get_text(aitem, cols)
-#
-#     Args:
-#         aitem(soup or tag or ResultSet): BS4 object
-#         cols (dict): list of dict with keys {'elem','class','href' (optional)}
-#
-#     Returns:
-#         alist (list): alist (list): List of strings
-#     """
-#     row = []
-#
-#     if not is_results(aitem):
-#         aitem = [aitem]
-#
-#     for record in aitem:
-#         for val in cols.values():
-#             atag = find_item(record, val)
-#             if atag is None:
-#                 value = ''
-#             else:
-#                 value = replace_newlines(atag.text.strip())
-#                 if 'href' in val:
-#                     htag = atag.find('a', href=True)
-#                     if htag is not None:
-#                         value = htag['href']
-#             row.append(value)
-#     return row
-
-
 def get_strings(aitem, include_links=False):
     """ Get strings from soup objects
 
