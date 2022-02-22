@@ -183,14 +183,14 @@ def test_to_table_single_row():
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find('a')
-    atable = scrape.soups.to_table(aitem, cols=None, include_strings=True, include_links=False)
+    atable = scrape.soups.to_table(aitem, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 1
     curr_row = atable[0]
     ncols = len(curr_row)
     assert curr_row[0] == 'Elsie'
-    #assert ncols == len(colnames)
+    assert ncols == 1
 
 
 def test_to_table_multiple_rows():
@@ -198,7 +198,7 @@ def test_to_table_multiple_rows():
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find_all('a')
-    atable = scrape.soups.to_table(aitem, cols=None, include_strings=True, include_links=False)
+    atable = scrape.soups.to_table(aitem, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 3
