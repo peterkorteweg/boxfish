@@ -69,23 +69,21 @@ def get_soup(page):
 def get_table(soup, **kwargs):
     """ Get table from soup
 
-    [atable, colnames] = get_table(soup, id = "id", rows = rows, cols = cols)
+    [atable] = get_table(soup, id = "id", rows = rows, cols = cols)
 
     Args:
         soup (bs4.BeautifulSoup): A BS4 object of an HTML page
         **kwargs:
         id (str, optional): Identifier of subset of soup
         rows (dict): dict with keys {'elem','class'}
-        cols (dict): dict of dict with keys {'elem','class','href' (optional)}
+        cols (list): list of dict with keys {'elem','class'}
 
     Returns:
         atable (list): List of rows (list) of columns (str)
-        colnames (list): Column names
     """
 
     [id_, rows, cols] = extract_values(kwargs, ['id', 'rows', 'cols'])
     atable = []
-    colnames = []
 
     if all(val is not None for val in [soup, rows]):
 
@@ -93,25 +91,24 @@ def get_table(soup, **kwargs):
         soup = new_soup if new_soup else soup
 
         results = find_items(soup, rows)
-        [atable, colnames] = to_table(results, cols)
-    return atable, colnames
+        atable = to_table(results, cols)
+    return atable
 
 
 def to_table(aitem, cols=None, include_strings=True, include_links=False):
     """ Convert aitem to a table
 
-    [atable, colnames] = to_table(aitem, cols=None, include_strings=True, include_links=False)
+    [atable] = to_table(aitem, cols=None, include_strings=True, include_links=False)
 
     Args:
         aitem(tag or ResultSet): BS4 object
         # Extract subset of strings
-        cols (dict): dict of dict with keys {'elem','class','href' (optional)} or None
+        cols (list): list of dict with keys {'elem','class'}
         # Extract all strings
         include_strings (boolean): Include strings if true
         include_links (boolean): Include links if true
     Returns:
         atable (list): List of rows (list) of columns (str)
-        acolnames (list): Column names
     """
     atable = []
     if not is_results(aitem):
@@ -119,23 +116,11 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
 
     # Data
     for record in aitem:
-        if cols is None or not cols:
-            # Extract all strings
-            row = get_text(record, include_strings=include_strings, include_links=include_links)
-        else:
-            # Extract subset of strings
-            row = get_subtext(record, cols)
-
+        row = get_text(record, cols=cols, include_strings=include_strings, include_links=include_links)
         if not is_empty(row):
             atable.append(row)
 
-    # Column names
-    if cols is None or not cols:
-        aitem = atable[0] if atable else None
-        acolnames = _get_colnames(len(aitem)) if aitem else []
-    else:
-        acolnames = list(cols.keys())
-    return atable, acolnames
+    return atable
 
 
 # Editing functions - deep copy
@@ -639,13 +624,14 @@ def position(aitem, include_navs=False):
 
 
 # Text extraction functions
-def get_text(aitem, include_strings=True, include_links=False):
+def get_text(aitem, cols=None, include_strings=True, include_links=False):
     """ Get text from soup objects. Text consists of strings and/or links.
 
     alist = get_text(aitem)
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
+        cols (str or list): string or list of dicts with keys {'elem','class'}
         include_strings (boolean): Include strings if true
         include_links (boolean): Include links if true
 
@@ -653,44 +639,83 @@ def get_text(aitem, include_strings=True, include_links=False):
         alist (list): List of strings
     """
     alist = []
+
+    if isinstance(cols, list):
+        sitem = _get_cols_as_results(aitem, cols)
+    elif isinstance(cols, str):
+        # TODO stencil
+        sitem = aitem
+        # TODO Convert list to Resultset. See get_subtext
+    else:
+        sitem = aitem
+
     if include_strings:
-        alist = get_strings(aitem, include_links=include_links)
+        alist = get_strings(sitem, include_links=include_links)
     elif not include_strings and include_links:
-        alist = get_links(aitem)
+        alist = get_links(sitem)
     return alist
 
 
-def get_subtext(aitem, cols):
-    """ Get text from soup objects. Text consists of strings and/or links.
-    Relevant text is specified by cols
+def _get_cols_as_results(aitem, cols):
+    """ Get columns as a Resultset
 
-    alist = get_text(aitem, cols)
+        aresults = _get_cols_as_results(aitem)
 
-    Args:
-        aitem(soup or tag or ResultSet): BS4 object
-        cols (dict): list of dict with keys {'elem','class','href' (optional)}
+        Args:
+            aitem(soup or tag or ResultSet): BS4 object
+            cols (list): list of dicts with keys {'elem','class'}
 
-    Returns:
-        alist (list): alist (list): List of strings
-    """
-    row = []
-
+        Returns:
+            aresults (ResultSet): List of strings
+        """
     if not is_results(aitem):
         aitem = [aitem]
 
+    # Create empty ResultSet
+    aresults = aitem[0].find_all("")
+
     for record in aitem:
-        for val in cols.values():
-            atag = find_item(record, val)
-            if atag is None:
-                value = ''
-            else:
-                value = replace_newlines(atag.text.strip())
-                if 'href' in val:
-                    htag = atag.find('a', href=True)
-                    if htag is not None:
-                        value = htag['href']
-            row.append(value)
-    return row
+        for col in cols:
+            atag = find_item(record, col)
+            if is_tag(atag):
+                aresults.append(atag)
+        pass
+
+    return aresults
+
+
+
+# def get_subtext(aitem, cols):
+#     """ Get text from soup objects. Text consists of strings and/or links.
+#     Relevant text is specified by cols
+#
+#     alist = get_text(aitem, cols)
+#
+#     Args:
+#         aitem(soup or tag or ResultSet): BS4 object
+#         cols (dict): list of dict with keys {'elem','class','href' (optional)}
+#
+#     Returns:
+#         alist (list): alist (list): List of strings
+#     """
+#     row = []
+#
+#     if not is_results(aitem):
+#         aitem = [aitem]
+#
+#     for record in aitem:
+#         for val in cols.values():
+#             atag = find_item(record, val)
+#             if atag is None:
+#                 value = ''
+#             else:
+#                 value = replace_newlines(atag.text.strip())
+#                 if 'href' in val:
+#                     htag = atag.find('a', href=True)
+#                     if htag is not None:
+#                         value = htag['href']
+#             row.append(value)
+#     return row
 
 
 def get_strings(aitem, include_links=False):
@@ -1061,7 +1086,6 @@ def _get_links_from_results(results):
     return [_get_links_from_tag(tag) for tag in results]
 
 
-# Tag functions
 def _get_strings_from_tag(tag, include_links=False):
     """ Get strings from tag
 

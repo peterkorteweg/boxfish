@@ -37,20 +37,18 @@ ROWS_PARENT_CLASS_BOOKS = ['row']
 ROWS_BOOKS = {"elem": "li",
               "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
               }
-COLS_BOOKS = {"rating": {"elem": "p",
-                         "class": "star-rating"
-                         },
-              "price": {"elem": "p",
+COLS_BOOKS = [{"elem": "p",
+               "class": "star-rating"
+               },
+              {"elem": "p",
+               "class": "price_color"
+               }]
+COLS_BOOKS_NO_MATCH = [{"elem": "a",
+                        "class": "star-rating"
+                        },
+                       {"elem": "a",
                         "class": "price_color"
-                        }
-              }
-COLS_BOOKS_NO_MATCH = {"rating": {"elem": "a",
-                                  "class": "star-rating"
-                                  },
-                       "price": {"elem": "a",
-                                 "class": "price_color"
-                                 }
-                       }
+                        }]
 ITEMS_ON_PAGE_BOOKS = 20
 COLUMNS_BOOKS = 4
 
@@ -113,14 +111,14 @@ def test_get_table_rows_success():
     page = get_page()
     soup = scrape.soups.get_soup(page)
     rows = ROWS_DORMOUSE
-    atable, _ = scrape.soups.get_table(soup, rows=rows)
+    atable = scrape.soups.get_table(soup, rows=rows)
     assert len(atable) == 3
 
     # Example, rows
     page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
     rows = ROWS_BOOKS
-    atable, _ = scrape.soups.get_table(soup, rows=rows)
+    atable = scrape.soups.get_table(soup, rows=rows)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == COLUMNS_BOOKS
@@ -131,7 +129,7 @@ def test_get_table_rows_no_match():
     page = get_page()
     soup = scrape.soups.get_soup(page)
     rows = {"elem": "p", "class": "sister"}
-    atable, _ = scrape.soups.get_table(soup, rows=rows)
+    atable = scrape.soups.get_table(soup, rows=rows)
     assert len(atable) == 0
 
 
@@ -152,10 +150,10 @@ def test_get_table_rows_cols():
     soup = scrape.soups.get_soup(page)
     rows = ROWS_BOOKS
     cols = COLS_BOOKS
-    atable, _ = scrape.soups.get_table(soup, rows=rows, cols=cols)
+    atable = scrape.soups.get_table(soup, rows=rows, cols=cols)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
-    assert len(aitem) == len(cols.keys())
+    assert len(aitem) == len(cols)
 
 
 def test_get_table_rows_cols_no_match():
@@ -164,7 +162,7 @@ def test_get_table_rows_cols_no_match():
     soup = scrape.soups.get_soup(page)
     rows = ROWS_BOOKS
     cols = COLS_BOOKS_NO_MATCH
-    atable, _ = scrape.soups.get_table(soup, rows=rows, cols=cols)
+    atable = scrape.soups.get_table(soup, rows=rows, cols=cols)
     assert len(atable) == 0
 
 
@@ -174,52 +172,40 @@ def test_get_table_id_rows():
     soup = scrape.soups.get_soup(page)
     id_ = ID_BOOKS
     rows = ROWS_BOOKS
-    atable, _ = scrape.soups.get_table(soup, id_=id_, rows=rows)
+    atable = scrape.soups.get_table(soup, id_=id_, rows=rows)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == COLUMNS_BOOKS
 
 
 def test_to_table_single_row():
-    # See also content tests test_get_text and test_get_subtext
+    # See also content tests test_get_text
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find('a')
-    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_links=False)
+    atable = scrape.soups.to_table(aitem, cols=None, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 1
     curr_row = atable[0]
     ncols = len(curr_row)
     assert curr_row[0] == 'Elsie'
-    assert ncols == len(colnames)
+    #assert ncols == len(colnames)
 
 
 def test_to_table_multiple_rows():
-    # See also content tests test_get_text and test_get_subtext
+    # See also content tests test_get_text
     page = get_page(filename=FILE_DORMOUSE)
     soup = scrape.soups.get_soup(page)
     aitem = soup.find_all('a')
-    atable, colnames = scrape.soups.to_table(aitem, cols={}, include_strings=True, include_links=False)
+    atable = scrape.soups.to_table(aitem, cols=None, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 3
     curr_row = atable[0]
     ncols = len(curr_row)
     assert curr_row[0] == 'Elsie'
-    assert ncols == len(colnames)
-
-
-def test_to_table_colnames():
-    # Test column names
-    page = get_page(filename=FILE_BOOKS)
-    soup = scrape.soups.get_soup(page)
-    rows = ROWS_BOOKS
-    aitem = scrape.soups.find_items(soup, rows)
-    cols = COLS_BOOKS
-    atable, colnames = scrape.soups.to_table(aitem, cols=cols)
-    assert isinstance(colnames, list)
-    assert len(colnames) == len(cols)
+    assert ncols == 1
 
 
 # Editing functions
@@ -644,7 +630,7 @@ def test_get_text():
     assert alist[0] == 'Elsie'
 
 
-def test_get_subtext():
+def test_get_text_cols():
     page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
     rows = ROWS_BOOKS
@@ -653,14 +639,14 @@ def test_get_subtext():
     results = scrape.soups.find_items(soup, rows)
 
     # Assert results
-    alist = scrape.soups.get_subtext(results, cols=cols)
+    alist = scrape.soups.get_text(results, cols=cols)
 
     ncols = len(alist)
     assert ncols == len(rows) * len(results)
 
     # Assert tag
     aitem = results[0]
-    alist = scrape.soups.get_subtext(aitem, cols=cols)
+    alist = scrape.soups.get_text(aitem, cols=cols)
 
     ncols = len(alist)
     assert ncols == len(rows)
