@@ -17,8 +17,7 @@ import bs4
 from bs4 import BeautifulSoup
 import copy
 from scrape.utils.dicts import extract_values
-from scrape.utils.lists import is_empty, union, intersect, difference
-from scrape.utils.strings import replace_newlines
+from scrape.utils.lists import flatten, is_empty, union, intersect, difference
 from scrape.utils.utils import read as _read, write as _write
 from scrape.utils.xpaths import split as xsplit
 
@@ -114,7 +113,6 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
     if not is_results(aitem):
         aitem = [aitem]
 
-    # Data
     for record in aitem:
         row = get_text(record, cols=cols, include_strings=include_strings, include_links=include_links)
         if not is_empty(row):
@@ -624,7 +622,7 @@ def position(aitem, include_navs=False):
 
 
 # Text extraction functions
-def get_text(aitem, cols=None, include_strings=True, include_links=False):
+def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_missing_cols=True):
     """ Get text from soup objects. Text consists of strings and/or links.
         Returns all text of descendant items if no columns are specified, or
         text of specific columns only, if columns are specified.
@@ -636,25 +634,50 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False):
         cols (str or list): string or list of dicts with keys {'elem','class'}
         include_strings (boolean): Include strings if true
         include_links (boolean): Include links if true
+        fill_missing_cols (boolean): Fill missing columns if true
 
     Returns:
-        alist (list): List of strings
+        alist (list): List of strings (tag) or list of list of strings (ResultSet)
     """
     alist = []
 
-    if isinstance(cols, list):
-        sitem = _get_columns_as_results(aitem, cols)
-    elif isinstance(cols, str):
-        # TODO stencil
-        sitem = aitem
-        # TODO Convert list to Resultset. See get_subtext
+    if is_tag(aitem):
+        aitem = [aitem]
+        do_unpack = True
     else:
-        sitem = aitem
+        do_unpack = False
 
-    if include_strings:
-        alist = get_strings(sitem, include_links=include_links)
-    elif not include_strings and include_links:
-        alist = get_links(sitem)
+    for atag in aitem:
+        do_flatten = False
+
+        # Get string item
+        if isinstance(cols, list):
+            sitem = _get_cols_as_results(atag, cols, fill_missing_cols=fill_missing_cols)
+            do_flatten = True
+        elif isinstance(cols, str):
+            # TODO stencil
+            sitem = atag
+            # TODO Convert list to Resultset. See get_subtext
+        else:
+            sitem = atag
+
+        # Extract text
+        if include_strings:
+            alist_item = get_strings(sitem, include_links=include_links)
+        elif include_links:
+            alist_item = get_links(sitem)
+        else:
+            alist_item = []
+
+        # Flatten text
+        if do_flatten:
+            alist_item = [[''] if is_empty(val) else val for val in alist_item]
+            alist_item = flatten(alist_item)
+
+        alist.append(alist_item)
+
+    if do_unpack:
+        alist = alist[0]
     return alist
 
 
@@ -668,7 +691,7 @@ def get_strings(aitem, include_links=False):
         include_links (boolean): Include links as strings if true
 
     Returns:
-        alist (list): List of strings
+        alist (list): List of strings (soup or tag) or list of list of strings (ResultSet)
     """
     alist = []
     if is_tag(aitem):
@@ -687,7 +710,7 @@ def get_links(aitem):
         aitem(soup or tag or ResultSet): BS4 object
 
     Returns:
-        alist (list): List of strings
+        alist (list): List of strings (soup or tag) or list of list of strings (ResultSet)
     """
     alist = []
     if is_tag(aitem) or is_soup(aitem):
@@ -997,7 +1020,7 @@ def _get_colnames(ncols):
     return ['Col' + str(i + 1) for i in range(ncols)]
 
 
-def _get_columns_as_results(aitem, cols):
+def _get_cols_as_results(aitem, cols, fill_missing_cols=True):
     """ Get columns as a Resultset
 
         aresults = _get_cols_as_results(aitem)
@@ -1005,9 +1028,10 @@ def _get_columns_as_results(aitem, cols):
         Args:
             aitem(soup or tag or ResultSet): BS4 object
             cols (list): list of dicts with keys {'elem','class'}
+            fill_missing_cols (boolean): Fill missing columns if true
 
         Returns:
-            aresults (ResultSet): List of strings
+            aresults (ResultSet): ResultSet
         """
     if not is_results(aitem):
         aitem = [aitem]
@@ -1015,11 +1039,24 @@ def _get_columns_as_results(aitem, cols):
     # Create empty ResultSet
     aresults = aitem[0].find_all("")
 
+    if fill_missing_cols:
+        asoup = find_soup(aitem[0])
+        stag = asoup.new_tag('i')
+        ltag = asoup.new_tag('a', href='')
+    else:
+        stag = None
+        ltag = None
+
     for record in aitem:
         for col in cols:
             atag = find_item(record, col)
             if is_tag(atag):
                 aresults.append(atag)
+            elif fill_missing_cols:
+                if col['elem'] == 'a':
+                    aresults.append(ltag)
+                else:
+                    aresults.append(stag)
     return aresults
 
 
@@ -1039,7 +1076,7 @@ def _get_strings_from_results(results, include_links=False):
 
 
 def _get_links_from_results(results):
-    """ Get strings with hrefs from results
+    """ Get links from results. Links are href strings
 
     alist = _get_links_from_results(results)
 
@@ -1047,7 +1084,7 @@ def _get_links_from_results(results):
         results (ResultSet): BS4 result set
 
     Returns:
-        alist (list): List of href strings
+        alist (list): List of links
     """
     return [_get_links_from_tag(tag) for tag in results]
 
@@ -1059,7 +1096,7 @@ def _get_strings_from_tag(tag, include_links=False):
 
     Args:
         tag (tag): BS4 tag
-        include_links (boolean): Include hrefs as strings if true
+        include_links (boolean): Include links if true
 
     Returns:
         alist (list): List of strings
@@ -1073,7 +1110,7 @@ def _get_strings_from_tag(tag, include_links=False):
 
 
 def _get_links_from_tag(tag):
-    """ Get href strings from tag
+    """ Get links from tag. Links are href strings
 
     alist = _get_links_from_tag(tag)
 
@@ -1081,7 +1118,7 @@ def _get_links_from_tag(tag):
         tag (tag): BS4 tag
 
     Returns:
-        alist (list): List of href strings
+        alist (list): List of links
     """
     results = tag.find_all('a')
     results.append(tag)

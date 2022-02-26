@@ -37,8 +37,8 @@ ROWS_PARENT_CLASS_BOOKS = ['row']
 ROWS_BOOKS = {"elem": "li",
               "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
               }
-COLS_BOOKS = [{"elem": "p",
-               "class": "star-rating"
+COLS_BOOKS = [{"elem": "h3",
+               "class": ""
                },
               {"elem": "p",
                "class": "price_color"
@@ -619,37 +619,80 @@ def test_position():
 
 
 # Tree extraction functions
-def test_get_text():
-    page = get_page()
+def test_get_text_from_tag():
+    page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
-    aitem = soup.find('a')
-    alist = scrape.soups.get_text(aitem, include_strings=True, include_links=True)
+    rows = ROWS_BOOKS
 
-    ncols = len(alist)
-    assert ncols == 2
-    assert alist[0] == 'Elsie'
+    aitem = scrape.soups.find_item(soup, rows)
+    alist = scrape.soups.get_text(aitem, include_strings=True, include_links=False)
+
+    assert len(alist) == 4
+    assert alist[0] == 'A Light in the ...'
 
 
-def test_get_text_cols():
+def test_get_text_from_tag_cols():
+    page = get_page(filename=FILE_BOOKS)
+    soup = scrape.soups.get_soup(page)
+    rows = ROWS_BOOKS
+    cols = COLS_BOOKS
+
+    aitem = scrape.soups.find_item(soup, rows)
+    alist = scrape.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False)
+
+    assert len(alist) == 2
+    assert alist[0] == 'A Light in the ...'
+
+
+def test_get_text_from_tag_cols_fill_missing():
+    page = get_page(filename=FILE_BOOKS)
+    soup = scrape.soups.get_soup(page)
+    rows = ROWS_BOOKS
+    cols = COLS_BOOKS
+
+    aitem = scrape.soups.find_item(soup, rows)
+    # Remove item
+    asubitem = scrape.soups.find_item(aitem,cols[1])
+    asubitem.decompose()
+
+    alist = scrape.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False, fill_missing_cols=False)
+    assert len(alist) == 1
+    alist = scrape.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False, fill_missing_cols=True)
+    assert len(alist) == 2
+
+
+
+def test_get_text_from_results():
+    page = get_page(filename=FILE_BOOKS)
+    soup = scrape.soups.get_soup(page)
+    rows = ROWS_BOOKS
+
+    results = scrape.soups.find_items(soup, rows)
+    alist = scrape.soups.get_text(results, include_strings=True, include_links=False)
+
+    nrows = len(alist)
+    ncols = len(alist[0])
+    assert nrows == len(results)
+    assert ncols == 4
+    assert isinstance(alist[0], list)
+    assert alist[0][0] == 'A Light in the ...'
+
+
+def test_get_text_from_results_cols():
     page = get_page(filename=FILE_BOOKS)
     soup = scrape.soups.get_soup(page)
     rows = ROWS_BOOKS
     cols = COLS_BOOKS
 
     results = scrape.soups.find_items(soup, rows)
+    alist = scrape.soups.get_text(results, cols=cols, include_strings=True, include_links=False)
 
-    # Assert results
-    alist = scrape.soups.get_text(results, cols=cols)
-
-    ncols = len(alist)
-    assert ncols == len(rows) * len(results)
-
-    # Assert tag
-    aitem = results[0]
-    alist = scrape.soups.get_text(aitem, cols=cols)
-
-    ncols = len(alist)
-    assert ncols == len(rows)
+    nrows = len(alist)
+    ncols = len(alist[0])
+    assert nrows == len(results)
+    assert ncols == len(cols)
+    assert isinstance(alist[0], list)
+    assert alist[0][0] == 'A Light in the ...'
 
 
 def test_get_strings_from_soup():
@@ -680,30 +723,35 @@ def test_get_strings_from_results():
     soup = scrape.soups.get_soup(get_page())
     results = soup.find_all("a")
     alist = scrape.soups.get_strings(results)
-    assert len(alist) == len(results) and alist[0][0] == "Elsie"
+    assert len(alist) == len(results)
+    assert alist[0][0] == "Elsie"
 
 
 def test_get_links_from_soup():
-    # Function returns a list of href strings
+    # Function returns a list of links
     soup = scrape.soups.get_soup(get_page())
     alist = scrape.soups.get_links(soup)
-    assert len(alist) == 3 and alist[0] == 'http://example.com/elsie'
+    assert len(alist) == 3
+    assert alist[0] == 'http://example.com/elsie'
 
 
 def test_get_links_from_tag():
-    # Function returns a single href string
+    # Function returns a list of links
     soup = scrape.soups.get_soup(get_page())
     tag = soup.find(id="link1")
     alist = scrape.soups.get_links(tag)
-    assert len(alist) == 1 and alist[0] == 'http://example.com/elsie'
+    assert len(alist) == 1
+    assert alist[0] == 'http://example.com/elsie'
 
 
 def test_get_links_from_results():
-    # Function returns a list of single href strings
+    # Function returns a list of list of links
     soup = scrape.soups.get_soup(get_page())
     results = soup.find_all(class_="sister")
     alist = scrape.soups.get_links(results)
-    assert len(alist) == len(results) and alist[0][0] == 'http://example.com/elsie'
+    assert len(alist) == len(results)
+    assert isinstance(alist[0], list)
+    assert alist[0][0] == 'http://example.com/elsie'
 
 
 # Stencil functions
