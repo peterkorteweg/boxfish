@@ -49,7 +49,6 @@ def get_data(url,config):
     data = []
     colnames = []
 
-    #TODO exception handling
     if url and config:
         adriver = drivers.driver_start(config['driver'])
         try:
@@ -99,59 +98,6 @@ def get_url_next_page(page, params, base_url):
             url (str)
     """
     return ''
-
-#     links = process_page_links(page, params)
-#     if links is not None:
-#         url_next = links[0]
-#     else:
-#         url_next = ''
-#
-#     if url_next != '':
-#         path_next = urls.get_path(url_next)
-#         query_next = urls.get_query(url_next)
-#         # Logging
-#         # print('url_next ' + url_next)
-#         # print('path_next')
-#         # print(path_next)
-#         # print('query_next')
-#         # print(query_next)
-#         url_next = urls.create_from_parts(url=base_url,
-#                                                 path=path_next,
-#                                                 query=query_next,
-#                                                 remove_existing_path=True,
-#                                                 remove_existing_query=False)
-#
-#     return url_next
-
-# def process_page_links(page, params):
-#     """ ???
-#
-#         links = process_links(page, website)
-#
-#         Args:
-#             page(str): HTML text
-#             params(dict): Parameter with keys {'id','elem','class'}
-#
-#         Returns:
-#             links (???)
-#     """
-#
-#     soup = soups.get_soup(page)
-#     tag = soup.find(id=params['id'])
-#
-#     elem =  params['elem']
-#     class_ = params['class']
-#
-#     if not elem is None:
-#         if class_ is None:
-#             results = tag.find_all(elem)
-#         else:
-#             results = tag.find_all(elem, class_= class_)
-#     else:
-#         results = tag
-#
-#     links = soups.get_hrefs(results)
-#     return links
 
 
 # File functions
