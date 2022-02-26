@@ -1,7 +1,7 @@
 # test_website.py
 
-import scrape
-from scrape.utils import drivers
+import boxfish
+from boxfish.utils import drivers
 
 FILE_DORMOUSE = r'.\data\dormouse.html'
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
@@ -27,9 +27,9 @@ CONFIG_BOOKS = r'.\\configurations\config_bookstoscrape.json'
 # Helper functions
 def get_config(filename=CONFIG_BOOKS):
     if filename is '':
-        config = scrape.config.create('')
+        config = boxfish.config.create('')
     else:
-        config = scrape.config.read(filename)
+        config = boxfish.config.read(filename)
         config["website"]["url"] = FILE_BOOKS
     return config
 
@@ -38,7 +38,7 @@ def get_page(filename=FILE_DORMOUSE):
     if filename is '':
         page = PAGE_DORMOUSE
     else:
-        page = scrape.utils.utils.read(filename)
+        page = boxfish.utils.utils.read(filename)
     return page
 
 
@@ -47,7 +47,7 @@ def get_page(filename=FILE_DORMOUSE):
 #     page = get_page(label=label)
 #     params = config['website']['page']
 #
-#     links = scrape.website.process_page_links(page, params)
+#     links = boxfish.website.process_page_links(page, params)
 #     return links
 
 
@@ -56,7 +56,7 @@ def test_get_website():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
-    df = scrape.website.get_website(url, config)
+    df = boxfish.website.get_website(url, config)
     assert len(df) > 0
 
 
@@ -64,7 +64,7 @@ def test_get_data():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
-    data, colnames = scrape.website.get_data(url, config)
+    data, colnames = boxfish.website.get_data(url, config)
     assert isinstance(data, list)
     assert isinstance(colnames, list)
     assert len(data) > 0
@@ -82,7 +82,7 @@ def test_get_table():
     page = get_page(FILE_BOOKS)
     config = get_config(CONFIG_BOOKS)
     website = config["website"]
-    atable = scrape.website.get_table(page, website)
+    atable = boxfish.website.get_table(page, website)
     assert len(atable) > 0
 
 
@@ -91,7 +91,7 @@ def test_get_table_empty_page():
     page = ''
     config = get_config(CONFIG_BOOKS)
     website = config["website"]
-    atable, _ = scrape.website.get_table(page, website)
+    atable, _ = boxfish.website.get_table(page, website)
     assert len(atable) == 0
 
 
@@ -100,7 +100,7 @@ def test_get_table_incorrect_page():
     page = 'Incorrect'
     config = get_config(CONFIG_BOOKS)
     website = config["website"]
-    atable, _ = scrape.website.get_table(page, website)
+    atable, _ = boxfish.website.get_table(page, website)
     assert len(atable) == 0
 
 
@@ -110,7 +110,7 @@ def test_get_table_incorrect_website():
     # page = 'Incorrect'
     # config = get_config(CONFIG_BOOKS)
     # website = config["website"]
-    # atable = scrape.website.get_table(page, website)
+    # atable = boxfish.website.get_table(page, website)
     # assert len(atable) == 0
     assert True
 
@@ -122,7 +122,7 @@ def test_get_url_next_page():
     #
     #     url_base = config['urlparts']['url']
     #     params = config['website']['page']
-    #     # url_next = scrape.website.get_url_next_page(page, params, url_base)
+    #     # url_next = boxfish.website.get_url_next_page(page, params, url_base)
     #
     # TODO
     assert True
@@ -139,7 +139,7 @@ def test__get_data_from_driver():
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
     adriver = drivers.driver_start(config['driver'])
-    data = scrape.website._get_data_from_driver(url, config, adriver)
+    data = boxfish.website._get_data_from_driver(url, config, adriver)
     drivers.driver_stop(adriver)
     assert len(data) > 0
 

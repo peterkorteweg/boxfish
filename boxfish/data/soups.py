@@ -16,10 +16,10 @@ atable (list): List of rows (list) of columns (str)
 import bs4
 from bs4 import BeautifulSoup
 import copy
-from scrape.utils.dicts import extract_values
-from scrape.utils.lists import flatten, is_empty, union, intersect, difference
-from scrape.utils.utils import read as _read, write as _write
-from scrape.utils.xpaths import split as xsplit
+from boxfish.utils.dicts import extract_values
+from boxfish.utils.lists import flatten, is_empty, union, intersect, difference
+from boxfish.utils.utils import read as _read, write as _write
+from boxfish.utils.xpaths import split as xsplit
 
 
 # Main functions

@@ -7,8 +7,8 @@
 import csv
 import os
 import pandas as pd
-from scrape.utils.strings import filename_append_date
-from scrape.utils.utils import create_folder_if_not_exist
+from boxfish.utils.strings import filename_append_date
+from boxfish.utils.utils import create_folder_if_not_exist
 
 
 def list_to_dataframe(alist, columns):

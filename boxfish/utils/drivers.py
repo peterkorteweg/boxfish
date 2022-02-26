@@ -5,7 +5,7 @@
 import os
 import requests
 from selenium import webdriver
-from scrape import utils
+from boxfish import utils
 
 DRIVERKEYS = ['package', 'headers', 'filename', 'log', 'timeout', 'sleep', 'headless']
 MIN_TIMEOUT = 10

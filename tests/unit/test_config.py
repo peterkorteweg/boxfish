@@ -1,8 +1,8 @@
 # test_config.py
 
 
-import scrape
-from scrape.utils import drivers
+import boxfish
+from boxfish.utils import drivers
 
 FILE_BOOKS = r'.\data\bookstoscrape.html'
 STR_BOOKS_TITLE1 = 'A Light in the ...'
@@ -25,15 +25,15 @@ def get_query(tf):
 
 # Initialization
 def test_create_all_keys():
-    aconfig = scrape.config.create()
-    assert sorted(list(aconfig.keys())) == sorted(scrape.config.CONFIGKEYS)
+    aconfig = boxfish.config.create()
+    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
 
 
 def test_create_all_keys_sub():
-    aconfig = scrape.config.create()
+    aconfig = boxfish.config.create()
     keys_sub = {'driver': drivers.DRIVERKEYS,
-                'website': scrape.config.WEBSITEKEYS,
-                'dataset': scrape.config.DATASETKEYS}
+                'website': boxfish.config.WEBSITEKEYS,
+                'dataset': boxfish.config.DATASETKEYS}
     for key in list(aconfig.keys()):
         if key in list(keys_sub.keys()):
             actual_keys_sub = list(aconfig[key].keys())
@@ -46,27 +46,27 @@ def test_create_all_keys_sub():
 
 # Editing configurations
 def test_process_missing_keys():
-    aconfig = scrape.config.create()
+    aconfig = boxfish.config.create()
     aconfig.pop('url', None)
-    scrape.config.process(aconfig)
-    assert sorted(list(aconfig.keys())) == sorted(scrape.config.CONFIGKEYS)
+    boxfish.config.process(aconfig)
+    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
 
 
 def test_process_non_keys():
-    aconfig = scrape.config.create()
+    aconfig = boxfish.config.create()
     aconfig['non_key'] = 'Not a key'
-    scrape.config.process(aconfig)
-    assert sorted(list(aconfig.keys())) == sorted(scrape.config.CONFIGKEYS)
+    boxfish.config.process(aconfig)
+    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
 
 
 def test_build():
-    config = scrape.config.create('')
+    config = boxfish.config.create('')
     aurl = FILE_BOOKS
 
     # Build two titles
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_TITLE2
-    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
+    boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
@@ -76,7 +76,7 @@ def test_build():
     # Build two prices
     astr1 = STR_BOOKS_PRICE1
     astr2 = STR_BOOKS_PRICE2
-    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
+    boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
@@ -86,7 +86,7 @@ def test_build():
     # Build 1 title and 1 price
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_PRICE2
-    scrape.config.build(config, url=aurl, rows=[astr1, astr2])
+    boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
     adict = config['website']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict

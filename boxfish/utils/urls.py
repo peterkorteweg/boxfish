@@ -3,8 +3,8 @@
 """ urls contains functions to parse url strings """
 
 from urllib.parse import parse_qsl, urlencode, urlsplit
-from scrape.utils.dicts import get_subset, remove_nones
-from scrape.utils.lists import reshape
+from boxfish.utils.dicts import get_subset, remove_nones
+from boxfish.utils.lists import reshape
 
 
 def set_components(url, **kwargs):

@@ -1,6 +1,6 @@
 # test_drivers.py
 
-import scrape
+import boxfish
 import requests
 from selenium import webdriver
 import time
@@ -14,9 +14,9 @@ CONFIG_SELENIUM = r'.\\configurations\config_bookstoscrape.json'
 # Helper functions
 def get_config(filename=CONFIG_SELENIUM):
     if filename is '':
-        config = scrape.config.create('')
+        config = boxfish.config.create('')
     else:
-        config = scrape.config.read(filename)
+        config = boxfish.config.read(filename)
     return config
 
 
@@ -31,7 +31,7 @@ def test_get_page():
     Returns:
     """
     url = PAGE_URL
-    page = scrape.drivers.get_page(url)
+    page = boxfish.drivers.get_page(url)
     assert isinstance(page, str)
 
 
@@ -51,19 +51,19 @@ def test_request_page():
     params = config['driver']
     params['package'] = 'requests'
 
-    adriver = scrape.drivers.driver_start(params)
+    adriver = boxfish.drivers.driver_start(params)
 
     # Test URL HTTP
     url = PAGE_URL
-    page = scrape.drivers.request_page(adriver, url)
+    page = boxfish.drivers.request_page(adriver, url)
     assert isinstance(page, str)
 
     # Test from file
     url = PAGE_FILE
-    page = scrape.drivers.request_page(adriver, url)
+    page = boxfish.drivers.request_page(adriver, url)
     assert isinstance(page, str)
 
-    scrape.drivers.driver_stop(adriver)
+    boxfish.drivers.driver_stop(adriver)
 
 
 def test_request_page_selenium():
@@ -86,7 +86,7 @@ def test_request_page_selenium():
 
     # Test URL HTTP
     url = PAGE_URL
-    page = scrape.drivers.get_page(url=url, params=params)
+    page = boxfish.drivers.get_page(url=url, params=params)
     assert isinstance(page, str)
 
 
@@ -99,19 +99,19 @@ def test_request_page_sleep():
 
     # Test URL HTTP
     url = PAGE_URL
-    adriver = scrape.drivers.driver_start(params)
+    adriver = boxfish.drivers.driver_start(params)
     start = time.time()
-    scrape.drivers.request_page(adriver, url, params=params, count=1)
+    boxfish.drivers.request_page(adriver, url, params=params, count=1)
     end = time.time()
-    scrape.drivers.driver_stop(adriver)
+    boxfish.drivers.driver_stop(adriver)
 
     assert end-start > 2
 
 
 def test_create_params():
-    params = scrape.utils.drivers.create_params()
+    params = boxfish.utils.drivers.create_params()
     pkeys = list(params.keys())
-    assert pkeys == scrape.utils.drivers.DRIVERKEYS
+    assert pkeys == boxfish.utils.drivers.DRIVERKEYS
 
 
 def test_driver_start_stop_requests():
@@ -132,9 +132,9 @@ def test_driver_start_stop_requests():
     params = config['driver']
     params['package'] = 'requests'
 
-    adriver = scrape.drivers.driver_start(params)
+    adriver = boxfish.drivers.driver_start(params)
     assert isinstance(adriver, requests.sessions.Session)
-    scrape.drivers.driver_stop(adriver)
+    boxfish.drivers.driver_stop(adriver)
 
 
 def test_driver_start_stop_selenium():
@@ -154,9 +154,9 @@ def test_driver_start_stop_selenium():
     params = config['driver']
     params['package'] = 'selenium'
 
-    adriver = scrape.drivers.driver_start(params)
+    adriver = boxfish.drivers.driver_start(params)
     assert isinstance(adriver, webdriver.firefox.webdriver.WebDriver)
-    scrape.drivers.driver_stop(adriver)
+    boxfish.drivers.driver_stop(adriver)
 
 
 def test_driver_start_stop_selenium_headless_false():
@@ -176,6 +176,6 @@ def test_driver_start_stop_selenium_headless_false():
     params['package'] = 'selenium'
     params['headless'] = False
 
-    adriver = scrape.drivers.driver_start(params)
+    adriver = boxfish.drivers.driver_start(params)
     assert isinstance(adriver, webdriver.firefox.webdriver.WebDriver)
-    scrape.drivers.driver_stop(adriver)
+    boxfish.drivers.driver_stop(adriver)

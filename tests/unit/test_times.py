@@ -1,6 +1,6 @@
 # test_times.py
 
-import scrape
+import boxfish
 import time
 
 
@@ -16,25 +16,25 @@ def test_strftime():
     sep = ' '
 
     # 1. Default settings
-    date_format = scrape.utils.times.DATETIME_JAPANESE
+    date_format = boxfish.utils.times.DATETIME_JAPANESE
     strdate = time.strftime(date_format, time.localtime(t))
 
-    date_and_str = scrape.utils.times.strftime(t=t)
+    date_and_str = boxfish.utils.times.strftime(t=t)
     date_and_str_expected = strdate + sep
     assert date_and_str == date_and_str_expected
 
     # 2. Custom settings
-    date_format = scrape.utils.times.DATETIME_FILE
+    date_format = boxfish.utils.times.DATETIME_FILE
     strdate = time.strftime(date_format, time.localtime(t))
     astr = 'Hello World'
     sep = '.'
 
-    date_and_str = scrape.utils.times.strftime(t=t, string=astr, sep=sep, date_format=date_format)
+    date_and_str = boxfish.utils.times.strftime(t=t, string=astr, sep=sep, date_format=date_format)
     date_and_str_expected = strdate + sep + astr
     assert date_and_str == date_and_str_expected
 
     # 3. Custom settings, string first
-    date_and_str = scrape.utils.times.strftime(t=t, string=astr, sep=sep, date_format=date_format, string_first=True)
+    date_and_str = boxfish.utils.times.strftime(t=t, string=astr, sep=sep, date_format=date_format, string_first=True)
     date_and_str_expected = astr + sep + strdate
     assert date_and_str == date_and_str_expected
 
@@ -50,10 +50,10 @@ def test_strfdate():
     sep = ' '
 
     # Default settings
-    date_format = scrape.utils.times.DATE_JAPANESE
+    date_format = boxfish.utils.times.DATE_JAPANESE
     strdate = time.strftime(date_format, time.localtime(t))
 
-    date_and_str = scrape.utils.times.strfdate(t=t)
+    date_and_str = boxfish.utils.times.strfdate(t=t)
     date_and_str_expected = strdate + sep
     assert date_and_str == date_and_str_expected
 
@@ -69,16 +69,16 @@ def test_to_float():
     ttime = (2021, 6, 5, 15, 16, 28, 5, 156, 1)
 
     # 1. From struct_time to float
-    ftime = scrape.utils.times.to_float(stime)
+    ftime = boxfish.utils.times.to_float(stime)
     assert isinstance(ftime, float)
 
     # 2. From tuple to float
-    ftime = scrape.utils.times.to_float(ttime)
+    ftime = boxfish.utils.times.to_float(ttime)
     assert isinstance(ftime, float)
 
     # 3. Incorrect input
     try:
-        scrape.utils.times.to_float(t='abc')
+        boxfish.utils.times.to_float(t='abc')
         error_raised = False
     except Exception:
         error_raised = True
@@ -96,16 +96,16 @@ def test_to_struct_time():
     ttime = (2021, 6, 5, 15, 16, 28, 5, 156, 1)
 
     # 1. From tuple to struct_time
-    stime = scrape.utils.times.to_struct_time(ttime)
+    stime = boxfish.utils.times.to_struct_time(ttime)
     assert isinstance(stime, time.struct_time)
 
     # 2. From float to struct_time
-    stime = scrape.utils.times.to_struct_time(ftime)
+    stime = boxfish.utils.times.to_struct_time(ftime)
     assert isinstance(stime, time.struct_time)
 
     # 3. Incorrect input
     try:
-        scrape.utils.times.to_struct_time(t='abc')
+        boxfish.utils.times.to_struct_time(t='abc')
         error_raised = False
     except Exception:
         error_raised = True
@@ -123,16 +123,16 @@ def test_to_tuple():
     stime = time.localtime(ftime)
 
     # 1. From struct_time to tuple
-    ttime = scrape.utils.times.to_tuple(stime)
+    ttime = boxfish.utils.times.to_tuple(stime)
     assert isinstance(ttime, tuple)
 
     # 2. From float to tuple
-    ttime = scrape.utils.times.to_tuple(ftime)
+    ttime = boxfish.utils.times.to_tuple(ftime)
     assert isinstance(ttime, tuple)
 
     # 3. Incorrect input
     try:
-        scrape.utils.times.to_tuple(t='abc')
+        boxfish.utils.times.to_tuple(t='abc')
         error_raised = False
     except Exception:
         error_raised = True
@@ -156,14 +156,14 @@ def test_sleep_on_count():
 
     # Sleep as cnt+1 is multiple of counter
     time_pre = time.time()
-    scrape.utils.times.sleep_on_count(adict, 17)
+    boxfish.utils.times.sleep_on_count(adict, 17)
     time_post = time.time()
     tdiff = time_post - time_pre
     assert tdiff>=3 and tdiff<=4
 
     # No Sleep as cnt+1 not a multiple of counter
     time_pre = time.time()
-    scrape.utils.times.sleep_on_count(adict, 18)
+    boxfish.utils.times.sleep_on_count(adict, 18)
     time_post = time.time()
     tdiff = time_post - time_pre
     assert tdiff<=1
@@ -185,7 +185,7 @@ def test_sleep_until():
     # Sleep for 5 seconds
     time_until = time.time() + 1.5
 
-    scrape.utils.times.sleep_until(time_until)
+    boxfish.utils.times.sleep_until(time_until)
 
     time_until_actual = time.time()
     tdiff = time_until_actual - time_until

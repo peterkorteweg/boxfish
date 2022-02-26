@@ -1,14 +1,14 @@
 # config.py
 
-"""Config is a module that contains functions for scrape configuration"""
+"""Config is a module that contains functions for boxfish configuration"""
 
 import os
 import re
 import shutil
-from scrape.data import soups
-from scrape.utils.dicts import extract_values
-from scrape.utils.utils import read_json, write_json, flip
-from scrape import utils
+from boxfish.data import soups
+from boxfish.utils.dicts import extract_values
+from boxfish.utils.utils import read_json, write_json, flip
+from boxfish import utils
 
 SEARCH_STENCIL = 'tree'
 SEARCH_STRIPPED_STRINGS = 'naive'
@@ -30,7 +30,7 @@ HEADERS = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gec
 
 # Initialization
 def create(url=''):
-    """ Creates a scrape configuration dictionary
+    """ Creates a boxfish configuration dictionary
 
         config = create(url)
 
@@ -69,7 +69,7 @@ def create(url=''):
 
 # I/O
 def read(filename):
-    """ Read a scrape configuration from file
+    """ Read a boxfish configuration from file
 
         config = read(filename)
 
@@ -89,7 +89,7 @@ def read(filename):
 
 
 def write(filename, config):
-    """ Write a scrape configuration to file. Save current configuration to backup if exists
+    """ Write a boxfish configuration to file. Save current configuration to backup if exists
 
         write(filename, config)
 
@@ -110,7 +110,7 @@ def write(filename, config):
 
 
 def revert(filename):
-    """ Revert a scrape configuration file to backup.
+    """ Revert a boxfish configuration file to backup.
         Flips current configuration with backup configuration if both exist
         Backup is determined by filename + BACKUP_EXT
 

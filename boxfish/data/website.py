@@ -2,11 +2,11 @@
 
 """ Website is a module that contains functions for extracting tables from websites. """
 
-from scrape.utils import dataframes
-from scrape.utils.dicts import extract_values
-from scrape.utils import drivers
-from scrape.utils.lists import to_list
-from scrape.data import soups
+from boxfish.utils import dataframes
+from boxfish.utils.dicts import extract_values
+from boxfish.utils import drivers
+from boxfish.utils.lists import to_list
+from boxfish.data import soups
 
 
 # Main functions

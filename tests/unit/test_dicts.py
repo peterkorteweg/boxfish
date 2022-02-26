@@ -1,6 +1,6 @@
 # test_dicts.py
 
-import scrape
+import boxfish
 
 
 def test_get_subset():
@@ -24,7 +24,7 @@ def test_get_subset():
 
     bkeys_expected = list(set(akeys) & set(ckeys))
 
-    bdict = scrape.utils.dicts.get_subset(adict, ckeys)
+    bdict = boxfish.utils.dicts.get_subset(adict, ckeys)
     bkeys = list(bdict.keys())
     assert bkeys == bkeys_expected
 
@@ -45,7 +45,7 @@ def test_extract_values():
     value2 = 'value2'
     adict['key1'] = value1
     adict['key2'] = value2
-    [output1, output2, output3] = scrape.utils.dicts.extract_values(adict, ['key1', 'key2', 'key3'])
+    [output1, output2, output3] = boxfish.utils.dicts.extract_values(adict, ['key1', 'key2', 'key3'])
     assert output1 == value1 and output2 == value2 and output3 is None
     pass
 
@@ -59,7 +59,7 @@ def test_append():
     """
     adict = {'key1': 'val1', 'key2': 'val2'}
     bdict = {'key1': 'bval1', 'key3': 'val3'}
-    cdict = scrape.utils.dicts.append(adict, bdict)
+    cdict = boxfish.utils.dicts.append(adict, bdict)
 
     # keys
     keys = list(cdict.keys())
@@ -81,5 +81,5 @@ def test_remove_nones():
     """
     adict = {'key1': 'val1', 'key2': None, 'key3': 'val3'}
     bdict_expected = {'key1': 'val1', 'key3': 'val3'}
-    bdict = scrape.utils.dicts.remove_nones(adict)
+    bdict = boxfish.utils.dicts.remove_nones(adict)
     assert bdict == bdict_expected

@@ -1,7 +1,7 @@
 # test_dataframes.py
 
 
-import scrape
+import boxfish
 
 
 def test_list_to_dataframe():
@@ -13,7 +13,7 @@ def test_list_to_dataframe():
     """
     alist = [1, 2, 3]
     columns = ['Col1']
-    df = scrape.utils.dataframes.list_to_dataframe(alist, columns)
+    df = boxfish.utils.dataframes.list_to_dataframe(alist, columns)
 
     # Column
     df_columns = df.columns.to_list()

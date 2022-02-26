@@ -3,8 +3,8 @@
 """Xpaths is a module that contains functions for working with xpaths
 """
 
-from scrape.utils.lists import to_list
-from scrape.utils.strings import to_int
+from boxfish.utils.lists import to_list
+from boxfish.utils.strings import to_int
 
 
 # Xpath list functions

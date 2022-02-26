@@ -1,6 +1,6 @@
 # test_lists.py
 
-import scrape
+import boxfish
 
 
 # General
@@ -16,11 +16,11 @@ def test_is_empty_true():
         assert
     """
     alist = []
-    assert scrape.utils.lists.is_empty(alist) is True
+    assert boxfish.utils.lists.is_empty(alist) is True
     alist.append('')
-    assert scrape.utils.lists.is_empty(alist) is True
+    assert boxfish.utils.lists.is_empty(alist) is True
     alist.append(None)
-    assert scrape.utils.lists.is_empty(alist) is True
+    assert boxfish.utils.lists.is_empty(alist) is True
 
 
 def test_is_empty_false():
@@ -35,9 +35,9 @@ def test_is_empty_false():
         assert
     """
     alist = ['Hello']
-    assert scrape.utils.lists.is_empty(alist) is False
+    assert boxfish.utils.lists.is_empty(alist) is False
     alist = ['', 'Hello']
-    assert scrape.utils.lists.is_empty(alist) is False
+    assert boxfish.utils.lists.is_empty(alist) is False
 
 
 def test_flatten():
@@ -56,7 +56,7 @@ def test_flatten():
     clist = ['Hello', 'World']
     alist.append(blist)
     alist.append(clist)
-    flist = scrape.utils.lists.flatten(alist)
+    flist = boxfish.utils.lists.flatten(alist)
     assert (flist[0:len(blist)] == blist) and (flist[len(blist):] == clist)
 
 
@@ -73,7 +73,7 @@ def test_unique():
     """
     alist = [1, 2, 3, 3, 4, 5]
     ulist_expected = [1, 2, 3, 4, 5]
-    ulist = scrape.utils.lists.unique(alist)
+    ulist = boxfish.utils.lists.unique(alist)
     assert ulist == ulist_expected
 
 
@@ -92,10 +92,10 @@ def test_is_equal_length():
     blist = [2, 4, 6, 8, 10]
     clist = [2, 4, 6, 8, 12]
     dlist = [2, 4, 6, 8]
-    tf = scrape.utils.lists.is_equal_length(alist, blist, clist)
+    tf = boxfish.utils.lists.is_equal_length(alist, blist, clist)
     assert tf
 
-    tf = scrape.utils.lists.is_equal_length(alist, blist, clist, dlist)
+    tf = boxfish.utils.lists.is_equal_length(alist, blist, clist, dlist)
     assert not tf
 
 
@@ -114,7 +114,7 @@ def test_intersect():
     alist = [1, 2, 3, 3, 4, 5]
     blist = [2, 4, 6]
     clist_expected = [2, 4]
-    clist = scrape.utils.lists.intersect(alist, blist)
+    clist = boxfish.utils.lists.intersect(alist, blist)
     assert clist == clist_expected
 
 
@@ -132,7 +132,7 @@ def test_union():
     alist = [1, 2, 3, 3, 4, 5]
     blist = [2, 4, 6]
     clist_expected = [1, 2, 3, 4, 5, 6]
-    clist = scrape.utils.lists.union(alist, blist)
+    clist = boxfish.utils.lists.union(alist, blist)
     assert clist == clist_expected
 
 
@@ -150,7 +150,7 @@ def test_difference():
     alist = [1, 2, 3, 3, 4, 5]
     blist = [2, 4, 6]
     clist_expected = [1, 3, 5]
-    clist = scrape.utils.lists.difference(alist, blist)
+    clist = boxfish.utils.lists.difference(alist, blist)
     assert clist == clist_expected
 
 
@@ -167,11 +167,11 @@ def test_is_subset():
     """
     alist = [1, 2, 3]
     blist = [1, 2, 3, 4, 5, 6]
-    tf = scrape.utils.lists.is_subset(alist, blist)
+    tf = boxfish.utils.lists.is_subset(alist, blist)
     assert tf
 
     clist = [1, 2, 4, 5, 6]
-    tf = scrape.utils.lists.is_subset(alist, clist)
+    tf = boxfish.utils.lists.is_subset(alist, clist)
     assert not tf
 
 
@@ -188,9 +188,9 @@ def test_is_disjoint():
     """
     alist = [1, 2, 3]
     blist = [4, 5, 6]
-    tf = scrape.utils.lists.is_disjoint(alist, blist)
+    tf = boxfish.utils.lists.is_disjoint(alist, blist)
     assert tf
 
     clist = [1, 2, 3, 4, 5, 6]
-    tf = scrape.utils.lists.is_disjoint(alist, clist)
+    tf = boxfish.utils.lists.is_disjoint(alist, clist)
     assert not tf
