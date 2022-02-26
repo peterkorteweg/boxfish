@@ -52,7 +52,10 @@ def get_data(url,config):
     if url and config:
         adriver = drivers.driver_start(config['driver'])
         try:
-            data, colnames = _get_data_from_driver(url, config, adriver)
+            data = _get_data_from_driver(url, config, adriver)
+            if data:
+                ncols = len(data[0])
+                colnames = ['Col' + str(i + 1) for i in range(ncols)]
         finally:
             drivers.driver_stop(adriver)
     return data, colnames
@@ -66,22 +69,20 @@ def get_table(page, website):
 
         Args:
             page(str): HTML text
-            website(dict): Parameters with keys {'id','rows','columns'}
+            website(dict): Parameters with keys {'id','rows','cols'}
 
         Returns:
             atable (list): List of rows (list) of columns (str)
-            colnames (list): Column names
     """
 
     atable = []
-    colnames = []
 
     if page:
         soup = soups.get_soup(page)
         if soup:
             [id_, rows, cols] = extract_values(website, ['id', 'rows', 'cols'])
-            [atable, colnames] =  soups.get_table(soup, id = id_, rows = rows, cols = cols)
-    return atable, colnames
+            atable =  soups.get_table(soup, id = id_, rows = rows, cols = cols)
+    return atable
 
 
 def get_url_next_page(page, params, base_url):
@@ -131,10 +132,9 @@ def _get_data_from_driver(url, config, adriver):
 
     Returns:
         data (list): List of rows (list) of columns (str)
-        colnames (list): Column names
     """
     data = []
-    colnames = []
+
     # Extract parameters
     [pwebsite] = extract_values(config, ['website'])
     [ppage] = extract_values(pwebsite, ['page'])
@@ -146,8 +146,8 @@ def _get_data_from_driver(url, config, adriver):
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
-            table, colnames = get_table(page, pwebsite)
+            table = get_table(page, pwebsite)
             data.extend(table)
 
             url_next = get_url_next_page(page, ppage, url_i)
-    return data, colnames
+    return data

@@ -91,7 +91,7 @@ def test_get_table_empty_page():
     page = ''
     config = get_config(CONFIG_BOOKS)
     website = config["website"]
-    atable, _ = boxfish.website.get_table(page, website)
+    atable = boxfish.website.get_table(page, website)
     assert len(atable) == 0
 
 
@@ -100,7 +100,7 @@ def test_get_table_incorrect_page():
     page = 'Incorrect'
     config = get_config(CONFIG_BOOKS)
     website = config["website"]
-    atable, _ = boxfish.website.get_table(page, website)
+    atable = boxfish.website.get_table(page, website)
     assert len(atable) == 0
 
 
