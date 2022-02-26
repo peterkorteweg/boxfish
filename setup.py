@@ -10,13 +10,13 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="boxfish",
-    version="0.0.1",
+    version="0.0.2",
     description="A lightweight tool for table extraction from HTML pages.",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/",
     author="Peter Korteweg",
-    author_email="nospam@noreply.com",
+    author_email="boxfish@peterkorteweg.com",
     license="MIT",
     classifiers=[
         # How mature is this project? Common values are
@@ -39,14 +39,14 @@ setup(
     ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
-    keywords='template',
+    keywords='beautifulsoup html pandas scraping tables',
 
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
     package_dir={'': 'boxfish'},  # Required
     packages=find_packages(where='boxfish'),  # Required
 
-    python_requires='>=3.6, <4',
+    python_requires='>=3.6',
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is

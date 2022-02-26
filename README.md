@@ -13,14 +13,13 @@ Boxfish is a lightweight tool for table extraction from HTML pages.
 ### Main features
 
 
-### Quick Start
+### Quick start
 
 
-```
+``` python
 import boxfish as bf
 
-# Define table on an url. To identify a table strings from two
-# rows are required  
+# Define table layout of an url with strings from two rows.
 aurl =  
 row1 = ''
 row2 = ''
@@ -49,14 +48,12 @@ The main dependencies are:
 - [**lxml**](https://pypi.org/project/lxml/), a powerful and Pythonic XML processing library.
 - [**Pandas**](https://pypi.org/project/pandas/), a powerful Python data analysis toolkit.
 - [**Requests**](https://pypi.org/project/requests/), a simple, yet elegant, HTTP library.
-- [**Selenium**](https://pypi.org/project/selenium/), which offers automated web browser interaction from Python.
+- [**Selenium**](https://pypi.org/project/selenium/), automated web browser interaction from Python.
 
 
 ### License
-Boxfish is available with a MIT license.
+Boxfish is available with an [MIT license](LICENSE).
 
 ### Documentation
 
-### What's in a name?
-
-Bugs, Camels, Geckos, Mouses, Octocats, Python, Spiders. And now there's a boxfish. 
+Follows soon.
