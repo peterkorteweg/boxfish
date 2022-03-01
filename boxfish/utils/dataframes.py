@@ -39,10 +39,10 @@ def list_to_dataframe(alist, columns):
     return df
 
 
-def save(df, filename, date_format='%Y%m%d', overwrite=False):
+def save(df, filename, date_format='', overwrite=False):
     """ Save dataframe to file with filename based on current date
 
-    save(df, filename, date_format, overwrite)
+    fullname = save(df, filename, date_format, overwrite)
 
     Args:
         df (pandas.core.frame.DataFrame): Dataframe
@@ -53,6 +53,7 @@ def save(df, filename, date_format='%Y%m%d', overwrite=False):
         fullname: Full filename including date
 
     Example:
+        fullname = save(df, 'filename.txt', date_format='%Y%m%d', overwrite=True)
     """
     if (df is not None) and os.path.basename(filename):
         create_folder_if_not_exist(os.path.dirname(filename))
