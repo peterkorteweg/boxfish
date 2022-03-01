@@ -152,6 +152,3 @@ def flip(filename1, filename2):
         shutil.copy(filename2, filename1)
         shutil.move(filename0, filename2)
 
-
-def hello():
-    print('Hello utils')
