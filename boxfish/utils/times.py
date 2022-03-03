@@ -77,7 +77,7 @@ def to_float(t=None):
     t = time.time() if t is None else t
 
     if not isinstance(t, tuple) and not isinstance(t, time.struct_time) \
-            and not isinstance(t,int) and not isinstance(t,float):
+            and not isinstance(t, int) and not isinstance(t, float):
         raise ValueError
 
     ftime = time.mktime(t) if isinstance(t, tuple) or isinstance(t, time.struct_time) else t
@@ -162,4 +162,4 @@ def sleep_until(end_time):
     """
 
     end_time = to_float(end_time)
-    time.sleep(max(end_time - time.time(),0))
+    time.sleep(max(end_time - time.time(), 0))
