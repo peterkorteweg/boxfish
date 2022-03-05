@@ -40,9 +40,9 @@ def list_to_dataframe(alist, columns):
 
 
 def save(df, filename, date_format='', overwrite=False, quoting=csv.QUOTE_NONNUMERIC):
-    """ Save dataframe to file with filename based on current date
+    """ Save dataframe to csv file
 
-    fullname = save(df, filename, date_format, overwrite)
+    fullname = save(df, filename, date_format, overwrite, quoting)
 
     Args:
         df (pandas.core.frame.DataFrame): Dataframe
@@ -54,7 +54,7 @@ def save(df, filename, date_format='', overwrite=False, quoting=csv.QUOTE_NONNUM
         fullname: Full filename including date
 
     Example:
-        fullname = save(df, 'filename.txt', date_format='%Y%m%d', overwrite=True)
+        fullname = save(df, 'filename.txt', date_format='%Y%m%d', overwrite=True, quoting=csv.QUOTE_NONNUMERIC)
     """
     if (df is not None) and os.path.basename(filename):
         create_folder_if_not_exist(os.path.dirname(filename))
