@@ -2,10 +2,9 @@
 
 """ Website is a module that contains functions for extracting tables from websites. """
 
-from boxfish.utils import dataframes
 from boxfish.utils.dicts import extract_values
 from boxfish.utils import drivers
-from boxfish.utils.lists import to_list
+from boxfish.utils.lists import to_csv, to_list
 from boxfish.data import soups
 
 
@@ -13,29 +12,7 @@ from boxfish.data import soups
 def get_website(url, config):
     """ Get data from a website based on config and url
 
-    df = get_website(url=url, config=config):
-
-    Args:
-        url (str or list):  url
-        config (dict):      configuration
-
-    Returns:
-        df (Pandas Dataframe): Dataframe from website
-    """
-
-    [pdataset] = extract_values(config, ['dataset'])
-
-    data, colnames = get_data(url,config)
-    df = dataframes.list_to_dataframe(data,colnames)
-    save(df, pdataset)
-
-    return df
-
-
-def get_data(url,config):
-    """ Get a list with data from url
-
-    data, colnames = get_data(url, config)
+    data = get_website(url=url, config=config):
 
     Args:
         url (str or list):  url
@@ -43,7 +20,27 @@ def get_data(url,config):
 
     Returns:
         data (list): List of rows (list) of columns (str)
-        colnames (list): Column names
+    """
+
+    [pdataset] = extract_values(config, ['dataset'])
+
+    data = get_data(url,config)
+    save(data, pdataset)
+
+    return data
+
+
+def get_data(url,config):
+    """ Get a list with data from url
+
+    data = get_data(url, config)
+
+    Args:
+        url (str or list):  url
+        config (dict):      configuration
+
+    Returns:
+        data (list): List of rows (list) of columns (str)
     """
 
     data = []
@@ -58,7 +55,8 @@ def get_data(url,config):
                 colnames = ['Col' + str(i + 1) for i in range(ncols)]
         finally:
             drivers.driver_stop(adriver)
-    return data, colnames
+    data = colnames + data
+    return data
 
 
 # Beautiful Soup functions
@@ -102,22 +100,21 @@ def get_url_next_page(page, params, base_url):
 
 
 # File functions
-def save(df, fileconfig):
-    """ Saves a dataframe to file
+def save(data, fileconfig):
+    """ Saves data to file
 
-        save(df, fileconfig)
+        save(data, fileconfig)
 
         Args:
-            df(dataframe): HTML text
+            data(dataframe or list): Data from HTML
             fileconfig(dict): Parameter with keys {'filename','date_format','replace'}
 
         Returns:
             None
     """
-    dataframes.save(df, fileconfig['filename'], \
-                    date_format=fileconfig['date_format'], \
-                    overwrite=fileconfig['overwrite'])
-
+    lists.to_csv(data, fileconfig['filename'], \
+                        date_format=fileconfig['date_format'], \
+                        overwrite=fileconfig['overwrite'])
 
 #Private functions
 def _get_data_from_driver(url, config, adriver):

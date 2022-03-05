@@ -56,23 +56,22 @@ def test_get_website():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
-    df = boxfish.website.get_website(url, config)
-    assert len(df) > 0
+    data = boxfish.website.get_website(url, config)
+    assert len(data) > 0
 
 
 def test_get_data():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
-    data, colnames = boxfish.website.get_data(url, config)
+    data = boxfish.website.get_data(url, config)
     assert isinstance(data, list)
-    assert isinstance(colnames, list)
     assert len(data) > 0
-    assert len(colnames) > 0
 
 
 def test_get_data_errors():
     # Non-Happy flow
+    # TODO
     pass
 
 
