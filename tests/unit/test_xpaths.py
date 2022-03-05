@@ -1,7 +1,7 @@
 # test_xpaths.py
 
-import boxfish
 from boxfish.utils.utils import read
+from boxfish.utils import xpaths
 
 # BS4 Default example
 FILE_DORMOUSE = r'.\data\dormouse.html'
@@ -25,7 +25,7 @@ def get_page(filename=FILE_DORMOUSE):
     if filename is '':
         page = PAGE_DORMOUSE
     else:
-        page = boxfish.utils.utils.read(filename)
+        page = read(filename)
     return page
 
 
@@ -35,19 +35,17 @@ def test_is_child():
     npxpath2 = '/html/body/b[1]'
     axpath = pxpath + '/a[2]'
 
-    pxpaths = [axpath]
-
     # Xpath is child
     axpaths = [npxpath, pxpath]
-    assert boxfish.xpaths.is_child(axpath, axpaths)
+    assert xpaths.is_child(axpath, axpaths)
 
     # Xpath is in axpaths but not a child
     axpaths = [npxpath, axpath, npxpath2]
-    assert not boxfish.xpaths.is_child(axpath, axpaths)
+    assert not xpaths.is_child(axpath, axpaths)
 
     # Xpath is not in axpath and not a child
     axpaths = [npxpath, npxpath2]
-    assert not boxfish.xpaths.is_child(axpath, axpaths)
+    assert not xpaths.is_child(axpath, axpaths)
 
 
 def test_is_descendant():
@@ -57,29 +55,29 @@ def test_is_descendant():
     axpath = pxpath + '/a[2]'
 
     pxpaths1 = ['/html/body/p[2]/a[1]', axpath, '/html/body/p[2]/a[3]']
-    pxpaths2 =['/html/body/p[1]', pxpath, '/html/body/p[3]']
+    pxpaths2 = ['/html/body/p[1]', pxpath, '/html/body/p[3]']
     pxpaths3 = ['/html/head', '/html/head/title', gxpath]
 
     # Xpath is descendant (level 1)
     axpaths = [pxpath]
-    assert boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths2
-    assert boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert xpaths.is_descendant(axpath, axpaths)
 
     # Xpath is descendant (level 2)
     axpaths = [gxpath]
-    assert boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths3
-    assert boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert xpaths.is_descendant(axpath, axpaths)
 
     # Xpath is not a desdendant
     axpaths = [axpath]
-    assert not boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert not xpaths.is_descendant(axpath, axpaths)
 
     axpaths = pxpaths1
-    assert not boxfish.xpaths.is_descendant(axpath, axpaths)
+    assert not xpaths.is_descendant(axpath, axpaths)
 
 
 def test_parent():
@@ -88,33 +86,31 @@ def test_parent():
     axpath = pxpath + '/a[2]'
 
     # Parent 1
-    aparent = boxfish.xpaths.parent(axpath)
+    aparent = xpaths.parent(axpath)
     assert aparent == pxpath
 
     # Parent 2
-    aparent = boxfish.xpaths.parent(aparent)
+    aparent = xpaths.parent(aparent)
     assert aparent == gxpath
 
-
     # Invalid xpath ending in /
-    aparent = boxfish.xpaths.parent(axpath + '/')
+    aparent = xpaths.parent(axpath + '/')
     assert aparent == axpath
 
     # Invalid xpath without /
-    aparent = boxfish.xpaths.parent('Hello World')
+    aparent = xpaths.parent('Hello World')
     assert aparent == ''
-
 
 
 def test_split():
     # Test single item
     axpath = '/html/body/p[1]/b'
-    [names, indices] = boxfish.xpaths.split(axpath)
+    [names, indices] = xpaths.split(axpath)
     assert names == ['html', 'body', 'p', 'b']
     assert indices == [1, 1, 1, 1]
 
     # Test multiple items
     axpath = '/html/body/p[2]/a[2]'
-    [names, indices] = boxfish.xpaths.split(axpath)
+    [names, indices] = xpaths.split(axpath)
     assert names == ['html', 'body', 'p', 'a']
     assert indices == [1, 1, 2, 2]

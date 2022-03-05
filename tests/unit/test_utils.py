@@ -1,8 +1,8 @@
 # test_utils.py
 
 import os
-import boxfish
 import time
+from boxfish.utils import utils
 
 
 # Files
@@ -26,7 +26,7 @@ def test_read_file_text():
         assert
     """
     filename = r'.\data\read_text.txt'
-    text = boxfish.utils.utils.read(filename)
+    text = utils.read(filename)
     assert isinstance(text, str)
     assert len(text) > 0
 
@@ -35,11 +35,11 @@ def test_read_json():
     filename = r'.\data\read_json.json'
 
     # General
-    text = boxfish.utils.utils.read(filename, filetype='json')
+    text = utils.read(filename, filetype='json')
     assert isinstance(text, dict)
 
     # Specific function
-    text = boxfish.utils.utils.read_json(filename)
+    text = utils.read_json(filename)
     assert isinstance(text, dict)
 
 
@@ -55,7 +55,7 @@ def test_write_file_text():
         assert
     """
     filename = r'.\data\read_text.txt'
-    text = boxfish.utils.utils.read(filename)
+    text = utils.read(filename)
     assert isinstance(text, str)
     assert len(text) > 0
 
@@ -63,5 +63,5 @@ def test_write_file_text():
     if os.path.exists(filename_to):
         os.remove(filename_to)
         time.sleep(2)
-    boxfish.utils.utils.write(filename_to, text)
+    utils.write(filename_to, text)
     assert os.path.exists(filename_to)
