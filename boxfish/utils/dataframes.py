@@ -39,7 +39,7 @@ def list_to_dataframe(alist, columns):
     return df
 
 
-def save(df, filename, date_format='', overwrite=False):
+def save(df, filename, date_format='', overwrite=False, quoting=csv.QUOTE_NONNUMERIC):
     """ Save dataframe to file with filename based on current date
 
     fullname = save(df, filename, date_format, overwrite)
@@ -49,6 +49,7 @@ def save(df, filename, date_format='', overwrite=False):
         filename (str): Filename
         date_format (str): Date format in strftime formats
         overwrite (bool): Overwrite existing file if True else append
+        quoting (int): CSV quoting constant
     Returns:
         fullname: Full filename including date
 
@@ -60,9 +61,9 @@ def save(df, filename, date_format='', overwrite=False):
         fullname = filename_append_date(filename, date_format)
 
         if os.path.exists(fullname) and not overwrite:
-            df.to_csv(fullname, mode='a', header=False, quoting=csv.QUOTE_ALL)
+            df.to_csv(fullname, mode='a', header=False, quoting=quoting)
         else:
-            df.to_csv(fullname, mode='w', quoting=csv.QUOTE_ALL)
+            df.to_csv(fullname, mode='w', quoting=quoting)
     else:
         fullname = ''
     return fullname
