@@ -7,8 +7,8 @@
             "accept-language": "nl,en-US;q=0.7,en;q=0.3",
             "accept-encoding": "gzip, deflate, br"
         },
-        "filename": "D:\\Projects\\Python\\projects\\scrape\\drivers\\geckodriver.exe",
-        "log": "D:\\Projects\\Python\\projects\\scrape\\drivers\\geckodriver.log",
+        "filename": "D:\\Projects\\Python\\projects\\boxfish\\drivers\\geckodriver.exe",
+        "log": "D:\\Projects\\Python\\projects\\boxfish\\drivers\\geckodriver.log",
         "timeout": 10,
         "sleep": {
             "1": 1,

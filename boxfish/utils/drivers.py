@@ -5,7 +5,7 @@
 import os
 import requests
 from selenium import webdriver
-from boxfish import utils
+from boxfish.utils import dicts, times, urls, utils
 
 DRIVERKEYS = ['package', 'headers', 'filename', 'log', 'timeout', 'sleep', 'headless']
 MIN_TIMEOUT = 10
@@ -57,10 +57,10 @@ def request_page(driver, url='', params=None, count=0):
     """
 
     params = create_params() if params is None else params
-    [psleep] = utils.dicts.extract_values(params, ['sleep'])
+    [psleep] = dicts.extract_values(params, ['sleep'])
     page = ''
     try:
-        if utils.urls.valid_http(url):
+        if urls.valid_http(url):
             is_requests = isinstance(driver, requests.sessions.Session)
             is_selenium = isinstance(driver, webdriver.firefox.webdriver.WebDriver) or \
                           isinstance(driver, webdriver.chrome.webdriver.WebDriver)
@@ -74,9 +74,9 @@ def request_page(driver, url='', params=None, count=0):
                 page = driver.page_source
             else:
                 page = ''
-            utils.times.sleep_on_count(psleep, count)
+            times.sleep_on_count(psleep, count)
         else:
-            page = utils.utils.read(url) if os.path.isfile(url) else ''
+            page = utils.read(url) if os.path.isfile(url) else ''
 
     except requests.exceptions.HTTPError as e:
         print("Http Error:", e)
