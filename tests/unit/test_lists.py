@@ -1,6 +1,7 @@
 # test_lists.py
 
 import boxfish
+import os
 
 
 # General
@@ -194,3 +195,45 @@ def test_is_disjoint():
     clist = [1, 2, 3, 4, 5, 6]
     tf = boxfish.utils.lists.is_disjoint(alist, clist)
     assert not tf
+
+
+# I/O functions
+def test_to_csv_from_csv():
+    alist = []
+    blist = [1, 2, 3]
+    clist = ['Hello', 'World']
+    alist.append(blist)
+    alist.append(clist)
+    header = ['Col1', 'Col2', 'Col3']
+    filename = r'.\results\test_to_csv.csv'
+
+    # 1A. Write data. Example wihtout date and header
+    fullname = boxfish.utils.lists.to_csv(alist, filename, date_format='', overwrite=True, header=[])
+    assert fullname == filename
+    assert os.path.exists(fullname)
+
+    # 1B. Read data
+    alist_read = boxfish.utils.lists.from_csv(filename)
+    assert alist_read == alist
+
+    # 2A. Write data. Example wihtout date and with header
+    fullname = boxfish.utils.lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
+    # 2B. Read data
+    alist_read = boxfish.utils.lists.from_csv(filename)
+    header_read = alist_read.pop(0)
+    assert alist_read == alist
+    assert header_read == header
+
+    # 3A. Write data. Append.
+    fullname = boxfish.utils.lists.to_csv(alist, filename, date_format='', overwrite=False, header=[])
+    # 3B. Read data
+    alist_read = boxfish.utils.lists.from_csv(filename)
+    alist_read.pop(0)
+    len(alist_read) == 2* len(alist)
+
+    # Clean up
+    if os.path.exists(fullname):
+        os.remove(fullname)
+
+    # Example with date
+    # See test_filename_append_date in tests_strings

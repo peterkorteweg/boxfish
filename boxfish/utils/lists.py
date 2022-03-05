@@ -2,6 +2,11 @@
 
 """Lists is a module that contains functions for lists"""
 
+import csv
+import os
+from boxfish.utils.strings import filename_append_date
+from boxfish.utils.utils import create_folder_if_not_exist
+
 
 # General
 def is_empty(alist):
@@ -145,11 +150,75 @@ def reshape(*args):
     length = max(lenlists)
     is_valid = all(alen == length or alen == 1 for alen in lenlists)
     return (length*alist if len(alist) == 1 else alist for alist in arglists) if is_valid \
-        else tuple([None for alist in arglists])
+        else tuple([None for _ in arglists])
+
+# I/O functions
 
 
-# Set functions
-# All set function remove duplicates
+def to_csv(alist, filename, date_format='', overwrite=False, header=None, quoting=csv.QUOTE_NONNUMERIC):
+    """ Save list to csv file
+
+    fullname = to_csv(alist, filename, date_format, overwrite)
+
+    Args:
+        alist (list): list of rows (lists)
+        filename (str): Filename
+        # Optional
+        date_format (str): Date format in strftime format. Date is added to filename
+        overwrite (bool): Overwrite existing file if True else append
+        header (list): Header
+        quoting (int): CSV quoting constant
+    Returns:
+        fullname: Full filename including date
+
+    Example:
+        fullname = to_csv(alist, 'file.csv', date_format='%Y%m%d, overwrite=True)
+    """
+    if (alist is not None) and os.path.basename(filename):
+        create_folder_if_not_exist(os.path.dirname(filename))
+        fullname = filename_append_date(filename, date_format)
+
+        if os.path.exists(fullname) and not overwrite:
+            with open(fullname, 'a', newline='') as f:
+                csv_writer = csv.writer(f, quoting=quoting)
+                if not is_empty(header):
+                    csv_writer.writerow(header)
+                csv_writer.writerows(alist)
+        else:
+            with open(fullname, 'wt', newline='') as f:
+                csv_writer = csv.writer(f, quoting=quoting)
+                if header:
+                    csv_writer.writerow(header)
+                csv_writer.writerows(alist)
+    else:
+        fullname = ''
+    return fullname
+
+
+def from_csv(filename, quoting=csv.QUOTE_NONNUMERIC):
+    """ Load list from csv file
+
+        alist = from_csv(filename)
+
+        Args:
+            filename (str): Filename
+            quoting (int): CSV quoting constant
+        Returns:
+            alist (list): list of rows (lists)
+
+        Example:
+            alist = from_csv('file.csv')
+        """
+    alist = []
+    if os.path.exists(filename):
+        with open(filename, 'r', newline='') as f:
+            csv_reader = csv.reader(f, quoting=quoting)
+            for row in csv_reader:
+                alist.append(row)
+    return alist
+
+
+# Set functions. Set functions remove duplicates
 def intersect(alist, blist):
     """ Return list with intersection of alist and blist
 
