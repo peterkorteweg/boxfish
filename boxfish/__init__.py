@@ -1,12 +1,13 @@
 # __init__.py
 
-
+# Main modules
 from boxfish.data import config
 from boxfish.data import soups
 from boxfish.data import website
-from boxfish.data.website import get_website
 
-# Debugging
-import boxfish.utils
+# Main functions
+from boxfish.data.config import build
+from boxfish.data.website import extract
 
+# Initialization
 print('Initializing boxfish ...')
