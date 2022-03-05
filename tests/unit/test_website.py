@@ -52,11 +52,11 @@ def get_page(filename=FILE_DORMOUSE):
 
 
 # Main functions
-def test_get_website():
+def test_extract():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config["website"]["url"]
-    data = boxfish.website.get_website(url, config)
+    data = boxfish.website.extract(url, config)
     assert len(data) > 0
 
 

@@ -9,10 +9,10 @@ from boxfish.data import soups
 
 
 # Main functions
-def get_website(url, config):
+def extract(url, config):
     """ Get data from a website based on config and url
 
-    data = get_website(url=url, config=config):
+    data = extract(url=url, config=config):
 
     Args:
         url (str or list):  url
@@ -55,7 +55,7 @@ def get_data(url,config):
                 colnames = ['Col' + str(i + 1) for i in range(ncols)]
         finally:
             drivers.driver_stop(adriver)
-    data = colnames + data
+    data.insert(0,colnames)
     return data
 
 
@@ -112,11 +112,11 @@ def save(data, fileconfig):
         Returns:
             None
     """
-    lists.to_csv(data, fileconfig['filename'], \
-                        date_format=fileconfig['date_format'], \
-                        overwrite=fileconfig['overwrite'])
+    to_csv(data, fileconfig['filename'], \
+             date_format=fileconfig['date_format'], \
+             overwrite=fileconfig['overwrite'])
 
-#Private functions
+# Private functions
 def _get_data_from_driver(url, config, adriver):
     """ Get a list with data from url
 
