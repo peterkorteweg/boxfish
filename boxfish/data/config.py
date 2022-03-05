@@ -84,7 +84,7 @@ def read(filename):
     if config is None:
         print('Cannot find' + filename)
 
-    process(config)
+    _process(config)
     return config
 
 
@@ -129,41 +129,10 @@ def revert(filename):
 
 
 # Editing configurations
-def process(config):
-    """ Processes a configuration.
-    The function removes non-config keys
-    The function adds missing config keys with default values, two levels deep
-
-        process(config)
-
-        Args:
-            config (dict): configuration
-
-        Returns:
-            None
-    """
-
-    dconfig = create()
-
-    keys = list(config.keys())
-    for key in keys:
-        if key not in CONFIGKEYS:
-            config.pop(key)
-
-    for key in dconfig.keys():
-        if key not in config.keys():
-            config[key] = dconfig[key]
-        else:
-            for ckey in dconfig[key]:
-                if ckey not in config[key].keys():
-                    config[key][ckey] = dconfig[key][ckey]
-
-
-def build(config, url='', rows=None, cols=None, search=SEARCH_STENCIL):
+def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
     """ Build configuration
-        Function builds website configuration.
 
-        tf = build(config, url= '', rows=[], cols=[], search='none')
+        config = build(config, url= '', rows=[], cols=[], search='none')
 
         Args:
             config (dict): configuration
@@ -173,17 +142,18 @@ def build(config, url='', rows=None, cols=None, search=SEARCH_STENCIL):
             search (str): column search type SEARCHTYPES
 
         Returns:
-            tf (bool): true if config is updated false otherwise
+            config (dict): configuration
 
         Examples:
             # 1. Rows, no columns
-            tf = build(config, url= '', rows=[rowstring1,rowstring2], search='tree')
+            config = build(config=config, url='', rows=[rowstring1,rowstring2], search='tree')
             # 2. Columns, no rows
-            tf = build(config, url= '', cols=[colstring1, colstring2], search='tree')
+            config = build(config=config, url='', cols=[colstring1, colstring2], search='tree')
             # 3. Rows and columns
-            tf = build(config, url= '', rows=[rowstring1,rowstring2], cols=[colstring1, colstring2], search='tree')
+            config = build(config=config, url='', rows=[rowstring1,rowstring2], cols=[colstring1, colstring2], search='tree')
 
     """
+    config = create(url) if config is None else config
     rows = [] if rows is None else rows
     cols = [] if cols is None else cols
     search = SEARCH_STENCIL if search not in SEARCHTYPES else search
@@ -206,7 +176,7 @@ def build(config, url='', rows=None, cols=None, search=SEARCH_STENCIL):
             aitem1 = None
             aitem2 = None
 
-        afilter = soups.get_filter_child_of_common_ancestor(soup, aitem1, aitem2)
+        afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
         if afilter:
             config['website']['url'] = url
             config['website']['rows'] = afilter
@@ -228,7 +198,35 @@ def build(config, url='', rows=None, cols=None, search=SEARCH_STENCIL):
                 config['website']['cols'] = []
             elif search == SEARCH_STRIPPED_STRINGS:
                 config['website']['cols'] = []
-    return tf
+    return config
 
 
+# Private functions
+def _process(config):
+    """ Processes a configuration.
+    The function removes non-config keys
+    The function adds missing config keys with default values, two levels deep
 
+        _process(config)
+
+        Args:
+            config (dict): configuration
+
+        Returns:
+            None
+    """
+
+    dconfig = create()
+
+    keys = list(config.keys())
+    for key in keys:
+        if key not in CONFIGKEYS:
+            config.pop(key)
+
+    for key in dconfig.keys():
+        if key not in config.keys():
+            config[key] = dconfig[key]
+        else:
+            for ckey in dconfig[key]:
+                if ckey not in config[key].keys():
+                    config[key][ckey] = dconfig[key][ckey]

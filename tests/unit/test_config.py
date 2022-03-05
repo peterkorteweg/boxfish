@@ -45,20 +45,6 @@ def test_create_all_keys_sub():
 # passed
 
 # Editing configurations
-def test_process_missing_keys():
-    aconfig = boxfish.config.create()
-    aconfig.pop('url', None)
-    boxfish.config.process(aconfig)
-    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
-
-
-def test_process_non_keys():
-    aconfig = boxfish.config.create()
-    aconfig['non_key'] = 'Not a key'
-    boxfish.config.process(aconfig)
-    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
-
-
 def test_build():
     config = boxfish.config.create('')
     aurl = FILE_BOOKS
@@ -92,3 +78,17 @@ def test_build():
     assert 'elem' in adict and 'class' in adict
     assert config['website']['rows']['elem'] == CONFIG_BOOKS_ELEM
     assert config['website']['rows']['class'] == CONFIG_BOOKS_CLASS
+
+# Private functions
+def test_process_missing_keys():
+    aconfig = boxfish.config.create()
+    aconfig.pop('url', None)
+    boxfish.config._process(aconfig)
+    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
+
+
+def test_process_non_keys():
+    aconfig = boxfish.config.create()
+    aconfig['non_key'] = 'Not a key'
+    boxfish.config._process(aconfig)
+    assert sorted(list(aconfig.keys())) == sorted(boxfish.config.CONFIGKEYS)
