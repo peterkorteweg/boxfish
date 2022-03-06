@@ -7,7 +7,7 @@ import requests
 from selenium import webdriver
 from boxfish.utils import dicts, times, urls, utils
 
-DRIVERKEYS = ['package', 'headers', 'filename', 'log', 'timeout', 'sleep', 'headless']
+DRIVERKEYS = ['package', 'headers', 'timeout', 'sleep', 'filename', 'log', 'headless']
 MIN_TIMEOUT = 10
 
 
