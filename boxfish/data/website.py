@@ -133,6 +133,7 @@ def _get_data_from_driver(url, config, adriver):
 
     # Extract parameters
     [phtml] = extract_values(config, ['html'])
+    [ptable] = extract_values(phtml, ['table'])
     [ppage] = extract_values(phtml, ['page'])
 
     i_request = 0
@@ -142,7 +143,7 @@ def _get_data_from_driver(url, config, adriver):
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
-            table = get_table(page, phtml)
+            table = get_table(page, ptable)
             data.extend(table)
 
             url_next = get_url_next_page(page, ppage, url_i)

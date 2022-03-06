@@ -80,8 +80,8 @@ def test_get_table():
     # Happy flow
     page = get_page(FILE_BOOKS)
     config = get_config(CONFIG_BOOKS)
-    website = config['html']
-    atable = boxfish.website.get_table(page, website)
+    ptable = config['html']['table']
+    atable = boxfish.website.get_table(page, ptable)
     assert len(atable) > 0
 
 
@@ -89,8 +89,8 @@ def test_get_table_empty_page():
     # Empty page
     page = ''
     config = get_config(CONFIG_BOOKS)
-    website = config['html']
-    atable = boxfish.website.get_table(page, website)
+    ptable = config['html']['table']
+    atable = boxfish.website.get_table(page, ptable)
     assert len(atable) == 0
 
 
