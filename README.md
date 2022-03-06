@@ -12,12 +12,12 @@ Boxfish is a lightweight tool for table extraction from HTML pages.
 
 ### Main features
 
-
 ### Quick start
 
 
 ``` python
 import boxfish as bf
+import pandas as pd
 
 # Define table layout of an url with strings from two rows.
 aurl =  
@@ -28,9 +28,10 @@ row2 = ''
 aconfig = bf.build(url=aurl, astr = [row1, row2])
 
 # Extract a table
-df = bf.extract(aconfig, url=aurl)
+data = bf.extract(aconfig, url=aurl)
 
 # View results
+df = pd.DataFrame(data)
 df.head() 
 ```
 
@@ -46,7 +47,6 @@ pip install boxfish
 The main dependencies are:
 - [**BeautifulSoup4**](https://pypi.org/project/beautifulsoup4/), a Python library for pulling data out of HTML and XML files.
 - [**lxml**](https://pypi.org/project/lxml/), a powerful and Pythonic XML processing library.
-- [**Pandas**](https://pypi.org/project/pandas/), a powerful Python data analysis toolkit.
 - [**Requests**](https://pypi.org/project/requests/), a simple, yet elegant, HTTP library.
 - [**Selenium**](https://pypi.org/project/selenium/), automated web browser interaction from Python.
 
@@ -54,6 +54,14 @@ The main dependencies are:
 ### License
 Boxfish is available with an [MIT license](LICENSE).
 
+### Limitations
+
+Boxfish extracts text from HTML. To see if the HTML file contains the
+text of interest, open the page in a browser, then access the HTML in the developer tools via 
+<kbd>Cntrl</kbd>+<kbd>Shift</kbd>+ <kbd>I</kbd>.
+
 ### Documentation
 
-Follows soon.
+Full documentation is available [here](./Documentation.md).
+
+
