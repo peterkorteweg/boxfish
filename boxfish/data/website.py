@@ -59,14 +59,14 @@ def get_data(url,config):
 
 
 # Beautiful Soup functions
-def get_table(page, website):
+def get_table(page, ptable):
     """ Retrieve table from an HTML page
 
-        atable = get_table(page, website)
+        atable = get_table(page, ptable)
 
         Args:
             page(str): HTML text
-            website(dict): Parameters with keys {'id','rows','cols'}
+            ptable(dict): Table parameters with keys {'id','rows','cols'}
 
         Returns:
             atable (list): List of rows (list) of columns (str)
@@ -77,19 +77,19 @@ def get_table(page, website):
     if page:
         soup = soups.get_soup(page)
         if soup:
-            [id_, rows, cols] = extract_values(website, ['id', 'rows', 'cols'])
+            [id_, rows, cols] = extract_values(ptable, ['id', 'rows', 'cols'])
             atable =  soups.get_table(soup, id = id_, rows = rows, cols = cols)
     return atable
 
 
-def get_url_next_page(page, params, base_url):
+def get_url_next_page(page, pnext_page, base_url):
     """ ...
 
-        url_next = get_url_next_page(page,website,url)
+        url_next = get_url_next_page(page,pnext_page,url)
 
         Args:
             page(str): HTML text
-            params(dict): Parameter with keys {'id','elem','class'}
+            next_page(dict): Next page parameters with keys {'id','elem','class'}
             base_url(str): Url base
 
         Returns:

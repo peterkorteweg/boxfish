@@ -15,7 +15,8 @@ SEARCH_STRIPPED_STRINGS = 'naive'
 SEARCH_EXACT_COLUMNS = 'none'
 
 CONFIGKEYS = ['driver', 'html', 'output']
-HTMLKEYS = ['url', 'parser', 'id', 'rows', 'columns', 'page']
+HTMLKEYS = ['url', 'parser', 'table', 'page']
+TABLEKEYS = ['id', 'rows', 'columns']
 OUTPUTKEYS = ['filename', 'date_format', 'overwrite']
 SEARCHTYPES = [SEARCH_STENCIL, SEARCH_STRIPPED_STRINGS, SEARCH_EXACT_COLUMNS]
 
@@ -54,9 +55,12 @@ def create(url=''):
     config['html'] = dict.fromkeys(HTMLKEYS, {})
     config['html']['url'] = url
     config['html']['parser'] = 'html.parser'
-    config['html']['id'] = ''
-    config['html']['rows'] = dict.fromkeys(['elem', 'class'], {})
-    config['html']['columns'] = {}
+
+    config['html']['table'] = dict.fromkeys(TABLEKEYS, {})
+    config['html']['table']['id'] = ''
+    config['html']['table']['rows'] = dict.fromkeys(['elem', 'class'], {})
+    config['html']['table']['columns'] = {}
+
     config['html']['page'] = dict.fromkeys(['id', 'elem', 'class'], {})
 
     config['output'] = dict.fromkeys(OUTPUTKEYS, {})
@@ -160,8 +164,8 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
 
     tf = False
 
-    [pparams] = utils.dicts.extract_values(config, ['params'])
-    page = utils.drivers.get_page(url=url, params=pparams)
+    [pdriver] = utils.dicts.extract_values(config, ['driver'])
+    page = utils.drivers.get_page(url=url, params=pdriver)
     soup = soups.get_soup(page)
 
     if soup:
@@ -179,7 +183,7 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
         afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
         if afilter:
             config['html']['url'] = url
-            config['html']['rows'] = afilter
+            config['html']['table']['rows'] = afilter
             tf = True
 
         # Website columns
@@ -192,12 +196,12 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
                     citem = soups.find_item(ritem, astr=re.compile(col))
                     if citem:
                         afilter = soups.get_filter(citem)
-                        config['html']['cols'] = afilter
+                        config['html']['table']['cols'] = afilter
             elif search == SEARCH_STENCIL:
                 # TODO
-                config['html']['cols'] = []
+                config['html']['table']['cols'] = []
             elif search == SEARCH_STRIPPED_STRINGS:
-                config['html']['cols'] = []
+                config['html']['table']['cols'] = []
     return config
 
 

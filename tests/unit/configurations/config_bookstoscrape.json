@@ -18,20 +18,22 @@
     },
     "html": {
         "parser": "html.parser",
-        "id": "default",
-        "rows": {
-            "elem": "li",
-            "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
-        },
-        "columns": {
-            "title": {
-                "elem": "h3",
-                "class": ""
-            },
-            "price": {
-                "elem": "div",
-                "class": "product_price"
-            }
+        "table": {
+            "id": "default",
+            "rows": {
+                "elem": "li",
+                "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
+                },
+            "columns": {
+                "title": {
+                    "elem": "h3",
+                    "class": ""
+                },
+                "price": {
+                    "elem": "div",
+                    "class": "product_price"
+                }
+        }
         },
         "page": {
             "id": "Collection",

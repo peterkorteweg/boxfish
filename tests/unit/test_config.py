@@ -53,31 +53,31 @@ def test_build():
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_TITLE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['html']['rows']
+    adict = config['html']['table']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['table']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['table']['rows']['class'] == CONFIG_BOOKS_CLASS
 
     # Build two prices
     astr1 = STR_BOOKS_PRICE1
     astr2 = STR_BOOKS_PRICE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['html']['rows']
+    adict = config['html']['table']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['table']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['table']['rows']['class'] == CONFIG_BOOKS_CLASS
 
     # Build 1 title and 1 price
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_PRICE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['html']['rows']
+    adict = config['html']['table']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['table']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['table']['rows']['class'] == CONFIG_BOOKS_CLASS
 
 # Private functions
 def test_process_missing_keys():
