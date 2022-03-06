@@ -22,10 +22,9 @@ def extract(url, config):
         data (list): List of rows (list) of columns (str)
     """
 
-    [pdataset] = extract_values(config, ['dataset'])
-
+    [poutput] = extract_values(config, ['output'])
     data = get_data(url,config)
-    save(data, pdataset)
+    save(data, poutput)
 
     return data
 
@@ -133,8 +132,8 @@ def _get_data_from_driver(url, config, adriver):
     data = []
 
     # Extract parameters
-    [pwebsite] = extract_values(config, ['website'])
-    [ppage] = extract_values(pwebsite, ['page'])
+    [phtml] = extract_values(config, ['html'])
+    [ppage] = extract_values(phtml, ['page'])
 
     i_request = 0
     for url_i in to_list(url):
@@ -143,7 +142,7 @@ def _get_data_from_driver(url, config, adriver):
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
-            table = get_table(page, pwebsite)
+            table = get_table(page, phtml)
             data.extend(table)
 
             url_next = get_url_next_page(page, ppage, url_i)

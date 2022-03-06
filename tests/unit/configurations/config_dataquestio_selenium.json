@@ -16,7 +16,7 @@
         },
         "headless": true
     },
-    "website": {
+    "html": {
         "parser": "html.parser",
         "id": "Collection",
         "rows": {
@@ -39,7 +39,7 @@
             "class": "list--inline pagination"
         }
     },
-    "dataset": {
+    "output": {
         "filename": ".\\results\\dataquestio.csv",
         "date_format": "%Y%m%d",
         "overwrite": true

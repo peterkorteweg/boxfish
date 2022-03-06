@@ -1,5 +1,5 @@
 {
-    "website": {
+    "html": {
         "id": "card-view-panel",
         "rows": {
             "elem": "div",
@@ -42,7 +42,7 @@
             "where": ""
         }
     },
-    "dataset": {
+    "output": {
         "filename": "monster.csv",
         "date_format": "%Y%m%d",
         "overwrite": true

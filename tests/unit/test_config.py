@@ -32,8 +32,8 @@ def test_create_all_keys():
 def test_create_all_keys_sub():
     aconfig = boxfish.config.create()
     keys_sub = {'driver': drivers.DRIVERKEYS,
-                'website': boxfish.config.WEBSITEKEYS,
-                'dataset': boxfish.config.DATASETKEYS}
+                'html': boxfish.config.HTMLKEYS,
+                'output': boxfish.config.OUTPUTKEYS}
     for key in list(aconfig.keys()):
         if key in list(keys_sub.keys()):
             actual_keys_sub = list(aconfig[key].keys())
@@ -53,31 +53,31 @@ def test_build():
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_TITLE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['website']['rows']
+    adict = config['html']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['website']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['website']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
 
     # Build two prices
     astr1 = STR_BOOKS_PRICE1
     astr2 = STR_BOOKS_PRICE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['website']['rows']
+    adict = config['html']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['website']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['website']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
 
     # Build 1 title and 1 price
     astr1 = STR_BOOKS_TITLE1
     astr2 = STR_BOOKS_PRICE2
     boxfish.config.build(config, url=aurl, rows=[astr1, astr2])
-    adict = config['website']['rows']
+    adict = config['html']['rows']
     assert adict is not None
     assert 'elem' in adict and 'class' in adict
-    assert config['website']['rows']['elem'] == CONFIG_BOOKS_ELEM
-    assert config['website']['rows']['class'] == CONFIG_BOOKS_CLASS
+    assert config['html']['rows']['elem'] == CONFIG_BOOKS_ELEM
+    assert config['html']['rows']['class'] == CONFIG_BOOKS_CLASS
 
 # Private functions
 def test_process_missing_keys():

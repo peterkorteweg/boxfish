@@ -14,9 +14,9 @@ SEARCH_STENCIL = 'tree'
 SEARCH_STRIPPED_STRINGS = 'naive'
 SEARCH_EXACT_COLUMNS = 'none'
 
-CONFIGKEYS = ['driver', 'website', 'dataset']
-WEBSITEKEYS = ['url', 'parser', 'id', 'rows', 'columns', 'page']
-DATASETKEYS = ['filename', 'date_format', 'overwrite']
+CONFIGKEYS = ['driver', 'html', 'output']
+HTMLKEYS = ['url', 'parser', 'id', 'rows', 'columns', 'page']
+OUTPUTKEYS = ['filename', 'date_format', 'overwrite']
 SEARCHTYPES = [SEARCH_STENCIL, SEARCH_STRIPPED_STRINGS, SEARCH_EXACT_COLUMNS]
 
 BACKUP_EXT = '.bak'
@@ -51,18 +51,18 @@ def create(url=''):
                                                    sleep={'1': 1, '200': 3600},
                                                    headless=True)
 
-    config['website'] = dict.fromkeys(WEBSITEKEYS, {})
-    config['website']['url'] = url
-    config['website']['parser'] = 'html.parser'
-    config['website']['id'] = ''
-    config['website']['rows'] = dict.fromkeys(['elem', 'class'], {})
-    config['website']['columns'] = {}
-    config['website']['page'] = dict.fromkeys(['id', 'elem', 'class'], {})
+    config['html'] = dict.fromkeys(HTMLKEYS, {})
+    config['html']['url'] = url
+    config['html']['parser'] = 'html.parser'
+    config['html']['id'] = ''
+    config['html']['rows'] = dict.fromkeys(['elem', 'class'], {})
+    config['html']['columns'] = {}
+    config['html']['page'] = dict.fromkeys(['id', 'elem', 'class'], {})
 
-    config['dataset'] = dict.fromkeys(DATASETKEYS, {})
-    config['dataset']['filename'] = ''
-    config['dataset']['date_format'] = '%Y%m%d'
-    config['dataset']['overwrite'] = False
+    config['output'] = dict.fromkeys(OUTPUTKEYS, {})
+    config['output']['filename'] = ''
+    config['output']['date_format'] = '%Y%m%d'
+    config['output']['overwrite'] = False
 
     return config
 
@@ -178,8 +178,8 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
 
         afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
         if afilter:
-            config['website']['url'] = url
-            config['website']['rows'] = afilter
+            config['html']['url'] = url
+            config['html']['rows'] = afilter
             tf = True
 
         # Website columns
@@ -192,12 +192,12 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
                     citem = soups.find_item(ritem, astr=re.compile(col))
                     if citem:
                         afilter = soups.get_filter(citem)
-                        config['website']['cols'] = afilter
+                        config['html']['cols'] = afilter
             elif search == SEARCH_STENCIL:
                 # TODO
-                config['website']['cols'] = []
+                config['html']['cols'] = []
             elif search == SEARCH_STRIPPED_STRINGS:
-                config['website']['cols'] = []
+                config['html']['cols'] = []
     return config
 
 

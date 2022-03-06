@@ -30,7 +30,7 @@ def get_config(filename=CONFIG_BOOKS):
         config = boxfish.config.create('')
     else:
         config = boxfish.config.read(filename)
-        config["website"]["url"] = FILE_BOOKS
+        config["html"]["url"] = FILE_BOOKS
     return config
 
 
@@ -45,7 +45,7 @@ def get_page(filename=FILE_DORMOUSE):
 # def get_page_links(label='books'):
 #     config = get_config(label=label)
 #     page = get_page(label=label)
-#     params = config['website']['page']
+#     params = config['html']['page']
 #
 #     links = boxfish.website.process_page_links(page, params)
 #     return links
@@ -55,7 +55,7 @@ def get_page(filename=FILE_DORMOUSE):
 def test_extract():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config["website"]["url"]
+    url = config["html"]["url"]
     data = boxfish.website.extract(url, config)
     assert len(data) > 0
 
@@ -63,7 +63,7 @@ def test_extract():
 def test_get_data():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config["website"]["url"]
+    url = config["html"]["url"]
     data = boxfish.website.get_data(url, config)
     assert isinstance(data, list)
     assert len(data) > 0
@@ -80,7 +80,7 @@ def test_get_table():
     # Happy flow
     page = get_page(FILE_BOOKS)
     config = get_config(CONFIG_BOOKS)
-    website = config["website"]
+    website = config["html"]
     atable = boxfish.website.get_table(page, website)
     assert len(atable) > 0
 
@@ -89,7 +89,7 @@ def test_get_table_empty_page():
     # Empty page
     page = ''
     config = get_config(CONFIG_BOOKS)
-    website = config["website"]
+    website = config["html"]
     atable = boxfish.website.get_table(page, website)
     assert len(atable) == 0
 
@@ -98,8 +98,8 @@ def test_get_table_incorrect_page():
     # Incorrect page string
     page = 'Incorrect'
     config = get_config(CONFIG_BOOKS)
-    website = config["website"]
-    atable = boxfish.website.get_table(page, website)
+    html = config["html"]
+    atable = boxfish.website.get_table(page, html)
     assert len(atable) == 0
 
 
@@ -108,7 +108,7 @@ def test_get_table_incorrect_website():
     # TODO Exception handling
     # page = 'Incorrect'
     # config = get_config(CONFIG_BOOKS)
-    # website = config["website"]
+    # website = config["html"]
     # atable = boxfish.website.get_table(page, website)
     # assert len(atable) == 0
     assert True
@@ -120,7 +120,7 @@ def test_get_url_next_page():
     #     page = get_page(label)
     #
     #     url_base = config['urlparts']['url']
-    #     params = config['website']['page']
+    #     params = config['html']['page']
     #     # url_next = boxfish.website.get_url_next_page(page, params, url_base)
     #
     # TODO
@@ -136,7 +136,7 @@ def test__get_data_from_driver():
     # Happy flow, single page
     # data = _get_data_from_driver(url, config, adriver)
     config = get_config(CONFIG_BOOKS)
-    url = config["website"]["url"]
+    url = config["html"]["url"]
     adriver = drivers.driver_start(config['driver'])
     data = boxfish.website._get_data_from_driver(url, config, adriver)
     drivers.driver_stop(adriver)

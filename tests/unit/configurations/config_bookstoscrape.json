@@ -16,7 +16,7 @@
         },
         "headless": true
     },
-    "website": {
+    "html": {
         "parser": "html.parser",
         "id": "default",
         "rows": {
@@ -39,7 +39,7 @@
             "class": "list--inline pagination"
         }
     },
-    "dataset": {
+    "output": {
         "filename": ".\\results\\bookstoscrape.csv",
         "date_format": "",
         "overwrite": true
