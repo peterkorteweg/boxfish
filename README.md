@@ -12,6 +12,10 @@ Boxfish is a lightweight tool for table extraction from HTML pages.
 
 ### Main features
 
+- Easy configuration. No knowledge of CSS or Xpaths required.
+- Fast table extraction to CSV files.
+- Integration of `requests` and `selenium`.
+
 ### Quick start
 
 
