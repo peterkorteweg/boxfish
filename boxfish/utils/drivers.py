@@ -7,7 +7,9 @@ import requests
 from selenium import webdriver
 from boxfish.utils import dicts, times, urls, utils
 
-DRIVERKEYS = ['package', 'headers', 'timeout', 'sleep', 'filename', 'log', 'headless']
+DRIVERKEYS = ['package', 'sleep', 'requests', 'selenium']
+REQUESTSKEYS = ['headers', 'timeout']
+SELENIUMKEYS = ['filename', 'log', 'headless']
 MIN_TIMEOUT = 10
 
 
@@ -112,12 +114,16 @@ def create_params(package='requests', headers=None, timeout=1, filename='', log=
 
     params = dict.fromkeys(DRIVERKEYS, {})
     params['package'] = package if package in ('selenium', 'requests') else 'requests'
-    params['headers'] = headers
-    params['timeout'] = max(timeout, MIN_TIMEOUT)
-    params['filename'] = filename
-    params['log'] = log
     params['sleep'] = sleep if isinstance(sleep, dict) else {}
-    params['headless'] = headless
+
+    params['requests'] = dict.fromkeys(REQUESTSKEYS, {})
+    params['requests']['headers'] = headers
+    params['requests']['timeout'] = max(timeout, MIN_TIMEOUT)
+
+    params['selenium'] = dict.fromkeys(SELENIUMKEYS, {})
+    params['selenium']['filename'] = filename
+    params['selenium']['log'] = log
+    params['selenium']['headless'] = headless
     return params
 
 
@@ -140,20 +146,20 @@ def driver_start(params=None):
     if isinstance(params, dict):
         if params['package'] == 'requests':
             driver = requests.Session()
-            driver.headers = params['headers']
-            driver.timeout = params['timeout']
+            driver.headers = params['requests']['headers']
+            driver.timeout = params['requests']['timeout']
         elif params['package'] == 'selenium':
-            if 'gecko' in params['filename']:
+            if 'gecko' in params['selenium']['filename']:
                 options = webdriver.firefox.options.Options()
-                options.headless = params['headless']
-                driver = webdriver.Firefox(executable_path=params['filename'],
-                                           service_log_path=params['log'],
+                options.headless = params['selenium']['headless']
+                driver = webdriver.Firefox(executable_path=params['selenium']['filename'],
+                                           service_log_path=params['selenium']['log'],
                                            options=options)
-            elif 'chrome' in params['filename']:
+            elif 'chrome' in params['selenium']['filename']:
                 options = webdriver.chrome.options.Options()
-                options.headless = params['headless']
-                str_log = "--log-path=" + params['log']
-                driver = webdriver.Chrome(executable_path=params['filename'],
+                options.headless = params['selenium']['headless']
+                str_log = "--log-path=" + params['selenium']['log']
+                driver = webdriver.Chrome(executable_path=params['selenium']['filename'],
                                           service_args=["--verbose", str_log],
                                           options=options)
             else:

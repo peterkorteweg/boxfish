@@ -1,20 +1,24 @@
 {
     "driver": {
         "package": "requests",
-        "headers": {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "accept-language": "nl,en-US;q=0.7,en;q=0.3",
-            "accept-encoding": "gzip, deflate, br"
-        },
-        "filename": "..\\..\\drivers\\geckodriver.exe",
-        "log": "..\\..\\drivers\\geckodriver.log",
-        "timeout": 10,
         "sleep": {
             "1": 1,
             "200": 3600
         },
-        "headless": true
+        "requests": {
+            "headers": {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "accept-language": "nl,en-US;q=0.7,en;q=0.3",
+            "accept-encoding": "gzip, deflate, br"
+            },
+            "timeout": 10
+        },
+        "selenium": {
+            "filename": "..\\..\\drivers\\geckodriver.exe",
+            "log": "..\\..\\drivers\\geckodriver.log",
+            "headless": true
+        }
     },
     "html": {
         "parser": "html.parser",
