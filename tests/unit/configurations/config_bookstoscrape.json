@@ -21,6 +21,7 @@
         }
     },
     "html": {
+	    "url": "http://books.toscrape.com",
         "parser": "html.parser",
         "table": {
             "id": "default",
@@ -37,18 +38,17 @@
                     "elem": "div",
                     "class": "product_price"
                 }
-        }
+                }
         },
         "page": {
-            "id": "Collection",
+            "id": "",
             "elem": "ul",
-            "class": "list--inline pagination"
+            "class": "pager"
         }
     },
     "output": {
         "filename": ".\\results\\bookstoscrape.csv",
         "date_format": "",
         "overwrite": true
-    },
-    "url": "http://http://books.toscrape.com"
+    }
 }
