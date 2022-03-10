@@ -3,7 +3,7 @@
 """ Website is a module that contains functions for extracting tables from websites. """
 
 from boxfish.utils.dicts import extract_values
-from boxfish.utils import drivers
+from boxfish.utils import drivers, urls
 from boxfish.utils.lists import to_csv, to_list
 from boxfish.data import soups
 
@@ -82,7 +82,7 @@ def get_table(page, ptable):
     return atable
 
 
-def get_url_next_page(page, pnext_page, base_url):
+def get_url_next_page(page, pnext_page, url_base):
     """ ...
 
         url_next = get_url_next_page(page,pnext_page,url)
@@ -90,12 +90,18 @@ def get_url_next_page(page, pnext_page, base_url):
         Args:
             page(str): HTML text
             next_page(dict): Next page parameters with keys {'id','elem','class'}
-            base_url(str): Url base
+            url_base(str): Url base
 
         Returns:
-            url (str)
+            url_next_page (str)
     """
-    return ''
+    soup = soups.get_soup(page)
+    citem = soups.find_item(soup, pnext_page)
+    alinks = soups.get_links(citem)
+
+    # Choose correct link
+    alink = alinks[-1]
+    return urls.set_components(url_base, path=alink)
 
 
 # File functions
