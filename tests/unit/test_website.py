@@ -25,12 +25,13 @@ CONFIG_BOOKS = r'.\\configurations\config_bookstoscrape.json'
 
 
 # Helper functions
-def get_config(filename=CONFIG_BOOKS):
+def get_config(filename=CONFIG_BOOKS, live=False):
     if filename is '':
         config = boxfish.config.create('')
     else:
         config = boxfish.config.read(filename)
-        config['html']['url'] = FILE_BOOKS
+        if not live:
+            config['html']['url'] = FILE_BOOKS
     return config
 
 
@@ -42,13 +43,8 @@ def get_page(filename=FILE_DORMOUSE):
     return page
 
 
-# def get_page_links(label='books'):
-#     config = get_config(label=label)
-#     page = get_page(label=label)
-#     params = config['html']['page']
-#
-#     links = boxfish.website.process_page_links(page, params)
-#     return links
+def get_page_live(url=''):
+    return drivers.get_page(url)
 
 
 # Main functions
@@ -115,16 +111,14 @@ def test_get_table_incorrect_website():
 
 
 def test_get_url_next_page():
-    #     label = 'books'
-    #     config = get_config(label)
-    #     page = get_page(label)
-    #
-    #     url_base = config['urlparts']['url']
-    #     params = config['html']['page']
-    #     # url_next = boxfish.website.get_url_next_page(page, params, url_base)
-    #
-    # TODO
-    assert True
+    config = get_config(CONFIG_BOOKS, live=True)
+
+    url_base = config['html']['url']
+    params = config['html']['page']
+    page = get_page_live(config['html']['url'])
+
+    url_next = boxfish.website.get_url_next_page(page, params, url_base)
+    assert url_next == url_base + '/catalogue/page-2.html'
 
 
 def test_save():
