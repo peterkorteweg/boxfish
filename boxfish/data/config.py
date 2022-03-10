@@ -133,7 +133,7 @@ def revert(filename):
 
 
 # Editing configurations
-def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
+def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL, next_page=''):
     """ Build configuration
 
         config = build(config, url= '', rows=[], cols=[], search='none')
@@ -144,6 +144,7 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
             rows (list): list of strings from two rows
             cols (list): list of strings from one or more columns
             search (str): column search type SEARCHTYPES
+            next_page (str): url of next page
 
         Returns:
             config (dict): configuration
@@ -158,50 +159,14 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL):
 
     """
     config = create(url) if config is None else config
-    rows = [] if rows is None else rows
-    cols = [] if cols is None else cols
-    search = SEARCH_STENCIL if search not in SEARCHTYPES else search
-
-    tf = False
 
     [pdriver] = utils.dicts.extract_values(config, ['driver'])
     page = utils.drivers.get_page(url=url, params=pdriver)
     soup = soups.get_soup(page)
 
     if soup:
-        # Website rows
-        if len(rows) >= 2:
-            aitem1 = soups.find_item(soup, astr=re.compile(rows[0]))
-            aitem2 = soups.find_item(soup, astr=re.compile(rows[1]))
-        elif len(cols) >= 2:
-            aitem1 = soups.find_item(soup, astr=re.compile(cols[0]))
-            aitem2 = soups.find_item(soup, astr=re.compile(cols[1]))
-        else:
-            aitem1 = None
-            aitem2 = None
-
-        afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
-        if afilter:
-            config['html']['url'] = url
-            config['html']['table']['rows'] = afilter
-            tf = True
-
-        # Website columns
-        if tf and len(cols) > 0:
-            # TODO
-            # cols from dict to list
-            if search == SEARCH_EXACT_COLUMNS:
-                ritem = soups.find_item(soup, astr=re.compile(cols[0]))
-                for col in cols:
-                    citem = soups.find_item(ritem, astr=re.compile(col))
-                    if citem:
-                        afilter = soups.get_filter(citem)
-                        config['html']['table']['cols'] = afilter
-            elif search == SEARCH_STENCIL:
-                # TODO
-                config['html']['table']['cols'] = []
-            elif search == SEARCH_STRIPPED_STRINGS:
-                config['html']['table']['cols'] = []
+        config = _build_table(soup, config, url, rows, cols, search)
+        config = _build_next_page(soup, config, url, next_page)
     return config
 
 
@@ -234,3 +199,88 @@ def _process(config):
             for ckey in dconfig[key]:
                 if ckey not in config[key].keys():
                     config[key][ckey] = dconfig[key][ckey]
+
+
+def _build_table(soup, config, url='', rows=None, cols=None, search=SEARCH_STENCIL):
+    """ Build table configuration
+
+        config = _build_table(soup, config, url= '', rows=[], cols=[], search='none')
+
+        Args:
+            soup (bs4.BeautifulSoup): A BS4 object of an HTML page
+            config (dict): configuration
+            url (str): url
+            rows (list): list of strings from two rows
+            cols (list): list of strings from one or more columns
+            search (str): column search type SEARCHTYPES
+
+        Returns:
+            config (dict): configuration
+
+    """
+    rows = [] if rows is None else rows
+    cols = [] if cols is None else cols
+    search = SEARCH_STENCIL if search not in SEARCHTYPES else search
+
+    tf = False
+
+    # Website rows
+    if len(rows) >= 2:
+        aitem1 = soups.find_item(soup, astr=re.compile(rows[0]))
+        aitem2 = soups.find_item(soup, astr=re.compile(rows[1]))
+    elif len(cols) >= 2:
+        aitem1 = soups.find_item(soup, astr=re.compile(cols[0]))
+        aitem2 = soups.find_item(soup, astr=re.compile(cols[1]))
+    else:
+        aitem1 = None
+        aitem2 = None
+
+    afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
+    if afilter:
+        config['html']['url'] = url
+        config['html']['table']['rows'] = afilter
+        tf = True
+
+    # Website columns
+    if tf and len(cols) > 0:
+        # TODO
+        # cols from dict to list
+        if search == SEARCH_EXACT_COLUMNS:
+            ritem = soups.find_item(soup, astr=re.compile(cols[0]))
+            for col in cols:
+                citem = soups.find_item(ritem, astr=re.compile(col))
+                if citem:
+                    afilter = soups.get_filter(citem)
+                    config['html']['table']['cols'] = afilter
+        elif search == SEARCH_STENCIL:
+            # TODO
+            config['html']['table']['cols'] = []
+        elif search == SEARCH_STRIPPED_STRINGS:
+            config['html']['table']['cols'] = []
+
+
+def _build_next_page(soup, config, url='', next_page=''):
+    """ Build next page configuration
+
+        config = _build_next_page(soup, config, url= '', next_page=None)
+
+        Args:
+            soup (bs4.BeautifulSoup): A BS4 object of an HTML page
+            config (dict): configuration
+            url (str): url
+            next_page ()
+
+        Returns:
+            config (dict): configuration
+
+    """
+    if len(url) > 0 and len(next_page) > 0:
+        citem = soups.find_item(soup, astr=re.compile(next_page))
+        if citem:
+            afilter = soups.get_filter(citem.parent)
+            # TODO
+            config['html']['table']['page']['id'] = ""
+            config['html']['table']['page']['elem'] = afilter['elem']
+            config['html']['table']['page']['class'] = afilter['class']
+            config['html']['table']['page']['index'] = -1
+    return config
