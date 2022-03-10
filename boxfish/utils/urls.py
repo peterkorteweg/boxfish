@@ -10,7 +10,7 @@ from boxfish.utils.lists import reshape
 def set_components(url, **kwargs):
     """ Set url components based on dict or key value pairs
 
-    url = set(url, query=query, path=path, )
+    url = set_components(url, scheme=scheme, netloc=netloc, path=path, query=query, fragment=fragment)
 
     Args:
         url (str) : url
