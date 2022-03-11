@@ -42,8 +42,11 @@
         },
         "page": {
             "id": "",
-            "elem": "ul",
-            "class": "pager"
+            "rows": {
+                "elem": "ul",
+                "class": "pager"
+                },
+            "index": -1
         }
     },
     "output": {

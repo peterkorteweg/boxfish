@@ -110,15 +110,15 @@ def test_extract_table_incorrect_website():
     assert True
 
 
-def test_get_url_next_page():
+def test_extract_url_next_page():
     config = get_config(CONFIG_BOOKS, live=True)
 
-    url_base = config['html']['url']
+    url = config['html']['url']
     params = config['html']['page']
     page = get_page_live(config['html']['url'])
 
-    url_next = boxfish.website.get_url_next_page(page, params, url_base)
-    assert url_next == url_base + '/catalogue/page-2.html'
+    url_next = boxfish.website.extract_url_next_page(page, params, url)
+    assert url_next == url + '/catalogue/page-2.html'
 
 
 def test_save():

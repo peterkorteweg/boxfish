@@ -6,7 +6,7 @@ from boxfish.data import config
 from boxfish.data import soups
 from boxfish.utils.dicts import extract_values, get_subset
 from boxfish.utils import drivers, urls
-from boxfish.utils.lists import to_csv, to_list
+from boxfish.utils.lists import flatten, to_csv, to_list
 
 
 
@@ -86,26 +86,31 @@ def extract_table(page, ptable):
     return atable
 
 
-def get_url_next_page(page, pnext_page, url_base):
-    """ ...
+def extract_url_next_page(page, pnext_page, url):
+    """ Extract url that refers to next page
 
-        url_next = get_url_next_page(page,pnext_page,url)
+        url_next = extract_url_next_page(page,pnext_page,url)
 
         Args:
             page(str): HTML text
-            next_page(dict): Next page parameters with keys {'id','elem','class'}
-            url_base(str): Url base
+            next_page(dict): Next page parameters with keys config.PAGEKEYS
+            url(str): Url current page
 
         Returns:
-            url_next_page (str)
+            url_next_page (str): Url next page
     """
-    soup = soups.get_soup(page)
-    citem = soups.find_item(soup, pnext_page)
-    alinks = soups.get_links(citem)
+    url_next_page = ''
+    [index] = extract_values(pnext_page, ['index'])
+    index = index if index else -1
 
-    # Choose correct link
-    alink = alinks[-1]
-    return urls.set_components(url_base, path=alink)
+    pnext_page['include_strings'] = False
+    pnext_page['include_links'] = True
+
+    alinks = extract_table(page, pnext_page)
+    if alinks:
+        alinks = flatten(alinks)
+        url_next_page = urls.set_components(url, path=alinks[index])
+    return  url_next_page
 
 
 # File functions

@@ -42,8 +42,11 @@
         },
         "page": {
             "id": "Collection",
-            "elem": "ul",
-            "class": "list--inline pagination"
+            "rows": {
+                "elem": "ul",
+                "class": "list--inline pagination"
+            },
+            "index": -1
         }
     },
     "output": {
