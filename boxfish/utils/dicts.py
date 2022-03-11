@@ -17,7 +17,7 @@ def get_subset(adict, akeys):
 
     Example:
         adict = {'key1': val1, 'key2': val1}
-        bdict = dict_get_susbet(adict, ['key1', 'key3'])
+        bdict = get_subset(adict, ['key1', 'key3'])
         >> bdict = {'key1': val1}
     """
     return {key: value for key, value in adict.items() if key in akeys}
