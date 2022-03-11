@@ -16,7 +16,6 @@ atable (list): List of rows (list) of columns (str)
 import bs4
 from bs4 import BeautifulSoup
 import copy
-from boxfish.utils.dicts import extract_values
 from boxfish.utils.lists import flatten, is_empty, union, intersect, difference
 from boxfish.utils.utils import read as _read, write as _write
 from boxfish.utils.xpaths import split as xsplit
@@ -65,32 +64,33 @@ def get_soup(page):
     return soup
 
 
-def extract_table(soup, **kwargs):
+def extract_table(soup, id='', rows=None, cols=None, include_strings=True, include_links=False):
     """ Extract table from soup
 
     [atable] = extract_table(soup, id = "id", rows = rows, cols = cols)
 
     Args:
         soup (bs4.BeautifulSoup): A BS4 object of an HTML page
-        **kwargs:
-        id (str, optional): Identifier of subset of soup
+        id (str): Identifier of subset of soup
         rows (dict): dict with keys {'elem','class'}
         cols (list): list of dict with keys {'elem','class'}
+        include_strings (boolean): Include strings if true
+        include_links (boolean): Include links if true
 
     Returns:
         atable (list): List of rows (list) of columns (str)
     """
 
-    [id_, rows, cols] = extract_values(kwargs, ['id', 'rows', 'cols'])
     atable = []
 
     if all(val is not None for val in [soup, rows]):
-
-        new_soup = soup.find(id=id_) if id_ else None
+        # Extract rows
+        new_soup = soup.find(id=id) if id else None
         soup = new_soup if new_soup else soup
-
         results = find_items(soup, rows)
-        atable = to_table(results, cols)
+
+        # Extract columns of all rows
+        atable = to_table(results, cols, include_strings=include_strings, include_links=include_links)
     return atable
 
 

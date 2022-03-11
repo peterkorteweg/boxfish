@@ -2,10 +2,12 @@
 
 """ Website is a module that contains functions for extracting tables from websites. """
 
-from boxfish.utils.dicts import extract_values
+from boxfish.data import config
+from boxfish.data import soups
+from boxfish.utils.dicts import extract_values, get_subset
 from boxfish.utils import drivers, urls
 from boxfish.utils.lists import to_csv, to_list
-from boxfish.data import soups
+
 
 
 # Main functions
@@ -68,7 +70,7 @@ def extract_table(page, ptable):
 
         Args:
             page(str): HTML text
-            ptable(dict): Table parameters with keys {'id','rows','cols'}
+            ptable(dict): Table parameters with keys config.TABLEKEYS
 
         Returns:
             atable (list): List of rows (list) of columns (str)
@@ -79,8 +81,8 @@ def extract_table(page, ptable):
     if page:
         soup = soups.get_soup(page)
         if soup:
-            [id_, rows, cols] = extract_values(ptable, ['id', 'rows', 'cols'])
-            atable = soups.extract_table(soup, id = id_, rows = rows, cols = cols)
+            pparams = get_subset(ptable, config.TABLEKEYS)
+            atable = soups.extract_table(soup, **pparams)
     return atable
 
 

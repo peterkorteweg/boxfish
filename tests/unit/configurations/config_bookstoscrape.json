@@ -29,7 +29,7 @@
                 "elem": "li",
                 "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
                 },
-            "columns": {
+            "cols": {
                 "title": {
                     "elem": "h3",
                     "class": ""

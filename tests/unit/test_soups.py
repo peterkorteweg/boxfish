@@ -172,7 +172,7 @@ def test_extract_table_id_rows():
     soup = boxfish.soups.get_soup(page)
     id_ = ID_BOOKS
     rows = ROWS_BOOKS
-    atable = boxfish.soups.extract_table(soup, id_=id_, rows=rows)
+    atable = boxfish.soups.extract_table(soup, id=id_, rows=rows)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == COLUMNS_BOOKS

@@ -16,7 +16,7 @@ SEARCH_EXACT_COLUMNS = 'none'
 
 CONFIGKEYS = ['driver', 'html', 'output']
 HTMLKEYS = ['url', 'parser', 'table', 'page']
-TABLEKEYS = ['id', 'rows', 'columns']
+TABLEKEYS = ['id', 'rows', 'cols', 'include_strings', 'include_links']
 OUTPUTKEYS = ['filename', 'date_format', 'overwrite']
 SEARCHTYPES = [SEARCH_STENCIL, SEARCH_STRIPPED_STRINGS, SEARCH_EXACT_COLUMNS]
 
@@ -59,7 +59,9 @@ def create(url=''):
     config['html']['table'] = dict.fromkeys(TABLEKEYS, {})
     config['html']['table']['id'] = ''
     config['html']['table']['rows'] = dict.fromkeys(['elem', 'class'], {})
-    config['html']['table']['columns'] = {}
+    config['html']['table']['cols'] = {}
+    config['html']['table']['include_strings'] = True
+    config['html']['table']['include_links'] = True
 
     config['html']['page'] = dict.fromkeys(['id', 'elem', 'class'], {})
 
