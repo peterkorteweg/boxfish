@@ -126,13 +126,13 @@ def test_save():
 
 
 # Private functions
-def test__get_data_from_driver():
+def test__extract_data_from_driver():
     # Happy flow, single page
     # data = _get_data_from_driver(url, config, adriver)
     config = get_config(CONFIG_BOOKS)
     url = config['html']['url']
     adriver = drivers.driver_start(config['driver'])
-    data = boxfish.website._get_data_from_driver(url, config, adriver)
+    data = boxfish.website._extract_data_from_driver(url, config, adriver)
     drivers.driver_stop(adriver)
     assert len(data) > 0
 
