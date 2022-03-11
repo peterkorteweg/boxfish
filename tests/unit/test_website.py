@@ -23,19 +23,16 @@ CONFIG_NARREN = r'.\\configurations\config_narrenschip_test.json'
 FILE_BOOKS = r'.\data\bookstoscrape.html'
 CONFIG_BOOKS = r'.\\configurations\config_bookstoscrape.json'
 
-
 # Helper functions
-def get_config(filename=CONFIG_BOOKS, live=False):
+def get_config(filename=CONFIG_BOOKS):
     if filename is '':
         config = boxfish.config.create('')
     else:
         config = boxfish.config.read(filename)
-        if not live:
-            config['html']['url'] = FILE_BOOKS
     return config
 
 
-def get_page(filename=FILE_DORMOUSE):
+def get_page(filename=''):
     if filename is '':
         page = PAGE_DORMOUSE
     else:
@@ -43,29 +40,25 @@ def get_page(filename=FILE_DORMOUSE):
     return page
 
 
-def get_page_live(url=''):
-    return drivers.get_page(url)
-
-
 # Main functions
-def test_extract():
+def test_extract_from_file():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config['html']['url']
+    url = FILE_BOOKS
     data = boxfish.website.extract(url, config)
     assert len(data) > 0
 
 
-def test_extract_data():
+def test_extract_data_from_file():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
-    url = config['html']['url']
+    url = FILE_BOOKS
     data = boxfish.website.extract_data(url, config)
     assert isinstance(data, list)
     assert len(data) > 0
 
 
-def test_extract_data_errors():
+def test_extract_data_errors_from_file():
     # Non-Happy flow
     # TODO
     pass
@@ -110,12 +103,13 @@ def test_extract_table_incorrect_website():
     assert True
 
 
-def test_extract_url_next_page():
-    config = get_config(CONFIG_BOOKS, live=True)
+def test_extract_url_next_page_live():
+    config = get_config(CONFIG_BOOKS)
 
     url = config['html']['url']
     params = config['html']['page']
-    page = get_page_live(config['html']['url'])
+
+    page = drivers.get_page(config['html']['url'])
 
     url_next = boxfish.website.extract_url_next_page(page, params, url)
     assert url_next == url + '/catalogue/page-2.html'
@@ -126,9 +120,9 @@ def test_save():
 
 
 # Private functions
-def test__extract_data_from_driver():
+def test__extract_data_from_driver_live():
     # Happy flow, single page
-    # data = _get_data_from_driver(url, config, adriver)
+    # data = _extract_data_from_driver(url, config, adriver)
     config = get_config(CONFIG_BOOKS)
     url = config['html']['url']
     adriver = drivers.driver_start(config['driver'])
@@ -137,6 +131,6 @@ def test__extract_data_from_driver():
     assert len(data) > 0
 
 
-def test__get_data_from_driver_errors():
+def test__get_data_from_driver_errors_live():
     # Non-Happy flows
     pass

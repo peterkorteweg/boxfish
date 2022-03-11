@@ -109,7 +109,7 @@ def extract_url_next_page(page, pnext_page, url):
     alinks = extract_table(page, pnext_page)
     if alinks:
         alinks = flatten(alinks)
-        url_next_page = urls.set_components(url, path=alinks[index])
+        url_next_page = urls.replace_subpath(url,alinks[index],-1)
     return  url_next_page
 
 
@@ -154,12 +154,14 @@ def _extract_data_from_driver(url, config, adriver):
     i_request = 0
     for url_i in to_list(url):
         url_next = url_i
-        while url_next != '':
+        url_pre = ['']
+        while url_next not in url_pre:
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
             table = extract_table(page, ptable)
             data.extend(table)
 
-            url_next = extract_url_next_page(page, ppage, url_i)
+            url_pre.append(url_next)
+            url_next = extract_url_next_page(page, ppage, url_next)
     return data
