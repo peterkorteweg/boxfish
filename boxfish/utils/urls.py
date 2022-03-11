@@ -59,15 +59,15 @@ def get_components(url):
     return components
 
 
-def replace_subpath(url, subpath, level):
+def replace_subpath(url, subpath, index):
     """ Replace subpath replaces a single subpath of the path of an url
 
-    url = replace_subpath(url, path=path, level=1)
+    url = replace_subpath(url, path=path, index=0)
 
     Args:
         url (str) : url
         subpath (str): subpath
-        level (int): level of path
+        index (int): index of path between 0 and n-1 or between -1 and -n
     Returns:
         url (str) : url
     """
@@ -77,9 +77,12 @@ def replace_subpath(url, subpath, level):
     dictpath = _path_to_dict(adict['path'])
     keys = list(dictpath.keys())
 
-    if 0 < level <= len(keys):
-        dictpath[keys[level-1]] = subpath
-        aurl = set_components(url, path=_dict_to_path(dictpath))
+    if len(keys)==0:
+        aurl = set_components(url, path=subpath)
+    else:
+        if -len(keys) <= index < len(keys):
+            dictpath[keys[index]] = subpath
+            aurl = set_components(url, path=_dict_to_path(dictpath))
     return aurl
 
 

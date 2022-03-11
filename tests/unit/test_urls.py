@@ -98,31 +98,46 @@ def test_replace_subpath():
     """
 
     url_original = 'http://user:pwd@NetLoc.com:80/p1;para/p2;para?query=arg#frag'
+    url_empty_path = 'http://user:pwd@NetLoc.com'
     subpath = 'p3'
 
-    # Level 1
-    level = 1
+    # Index 0
+    index = 0
     aurl_expected = 'http://user:pwd@NetLoc.com:80/p3/p2;para?query=arg#frag'
-    aurl = urls.replace_subpath(url_original, subpath, level)
+    aurl = urls.replace_subpath(url_original, subpath, index)
     assert aurl_expected == aurl
 
-    # Level 2
-    level = 2
+    # Index 1
+    index = 1
     aurl_expected = 'http://user:pwd@NetLoc.com:80/p1;para/p3?query=arg#frag'
-    aurl = urls.replace_subpath(url_original, subpath, level)
+    aurl = urls.replace_subpath(url_original, subpath, index)
     assert aurl_expected == aurl
 
     # Non-existing level
-    level = 3
+    index = 2
     aurl_expected = url_original
-    aurl = urls.replace_subpath(url_original, subpath, level)
+    aurl = urls.replace_subpath(url_original, subpath, index)
     assert aurl_expected == aurl
 
-    # Level 1, subpath with multiple paths
-    level = 1
+    # Index 0, subpath with multiple paths
+    index = 0
     subpath = 'p3/p4'
     aurl_expected = 'http://user:pwd@NetLoc.com:80/p3/p4/p2;para?query=arg#frag'
-    aurl = urls.replace_subpath(url_original, subpath, level)
+    aurl = urls.replace_subpath(url_original, subpath, index)
+    assert aurl_expected == aurl
+
+    #Index 0, original path is empty
+    index = 0
+    subpath = '/catalogue/page.html'
+    aurl_expected = url_empty_path + subpath
+    aurl = urls.replace_subpath(url_empty_path, subpath, index)
+    assert aurl_expected == aurl
+
+    #Index 0, original path is empty
+    index = 0
+    subpath = 'page.html'
+    aurl_expected = url_empty_path + '/' + subpath
+    aurl = urls.replace_subpath(url_empty_path, subpath, index)
     assert aurl_expected == aurl
 
 
