@@ -56,16 +56,16 @@ def test_extract():
     assert len(data) > 0
 
 
-def test_get_data():
+def test_extract_data():
     # Happy flow from file
     config = get_config(CONFIG_BOOKS)
     url = config['html']['url']
-    data = boxfish.website.get_data(url, config)
+    data = boxfish.website.extract_data(url, config)
     assert isinstance(data, list)
     assert len(data) > 0
 
 
-def test_get_data_errors():
+def test_extract_data_errors():
     # Non-Happy flow
     # TODO
     pass

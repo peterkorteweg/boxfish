@@ -25,7 +25,7 @@ def extract(url, config):
     """
 
     [poutput] = extract_values(config, ['output'])
-    data = get_data(url,config)
+    data = extract_data(url,config)
     save(data, poutput)
 
     return data
@@ -161,5 +161,5 @@ def _extract_data_from_driver(url, config, adriver):
             table = extract_table(page, ptable)
             data.extend(table)
 
-            url_next = get_url_next_page(page, ppage, url_i)
+            url_next = extract_url_next_page(page, ppage, url_i)
     return data
