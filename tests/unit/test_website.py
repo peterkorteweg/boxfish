@@ -72,40 +72,40 @@ def test_get_data_errors():
 
 
 # Beautiful Soup functions
-def test_get_table():
+def test_extract_table():
     # Happy flow
     page = get_page(FILE_BOOKS)
     config = get_config(CONFIG_BOOKS)
     ptable = config['html']['table']
-    atable = boxfish.website.get_table(page, ptable)
+    atable = boxfish.website.extract_table(page, ptable)
     assert len(atable) > 0
 
 
-def test_get_table_empty_page():
+def test_extract_table_empty_page():
     # Empty page
     page = ''
     config = get_config(CONFIG_BOOKS)
     ptable = config['html']['table']
-    atable = boxfish.website.get_table(page, ptable)
+    atable = boxfish.website.extract_table(page, ptable)
     assert len(atable) == 0
 
 
-def test_get_table_incorrect_page():
+def test_extract_table_incorrect_page():
     # Incorrect page string
     page = 'Incorrect'
     config = get_config(CONFIG_BOOKS)
     html = config['html']
-    atable = boxfish.website.get_table(page, html)
+    atable = boxfish.website.extract_table(page, html)
     assert len(atable) == 0
 
 
-def test_get_table_incorrect_website():
+def test_extract_table_incorrect_website():
     # Incorrect website parameters
     # TODO Exception handling
     # page = 'Incorrect'
     # config = get_config(CONFIG_BOOKS)
     # website = config['html']
-    # atable = boxfish.website.get_table(page, website)
+    # atable = boxfish.website.extract_table(page, website)
     # assert len(atable) == 0
     assert True
 

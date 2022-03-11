@@ -29,10 +29,10 @@ def extract(url, config):
     return data
 
 
-def get_data(url,config):
-    """ Get a list with data from url
+def extract_data(url,config):
+    """ Extract data from url to list
 
-    data = get_data(url, config)
+    data = extract_data(url, config)
 
     Args:
         url (str or list):  url
@@ -48,21 +48,23 @@ def get_data(url,config):
     if url and config:
         adriver = drivers.driver_start(config['driver'])
         try:
-            data = _get_data_from_driver(url, config, adriver)
+            data = _extract_data_from_driver(url, config, adriver)
+            # Column headers
             if data:
                 ncols = len(data[0])
                 colnames = ['Col' + str(i + 1) for i in range(ncols)]
+                data.insert(0, colnames)
         finally:
             drivers.driver_stop(adriver)
-    data.insert(0,colnames)
+
     return data
 
 
 # Beautiful Soup functions
-def get_table(page, ptable):
-    """ Retrieve table from an HTML page
+def extract_table(page, ptable):
+    """ Extract table from an HTML page
 
-        atable = get_table(page, ptable)
+        atable = extract_table(page, ptable)
 
         Args:
             page(str): HTML text
@@ -78,7 +80,7 @@ def get_table(page, ptable):
         soup = soups.get_soup(page)
         if soup:
             [id_, rows, cols] = extract_values(ptable, ['id', 'rows', 'cols'])
-            atable =  soups.get_table(soup, id = id_, rows = rows, cols = cols)
+            atable = soups.extract_table(soup, id = id_, rows = rows, cols = cols)
     return atable
 
 
@@ -106,7 +108,7 @@ def get_url_next_page(page, pnext_page, url_base):
 
 # File functions
 def save(data, fileconfig):
-    """ Saves data to file
+    """ Save data to CSV file
 
         save(data, fileconfig)
 
@@ -122,10 +124,10 @@ def save(data, fileconfig):
              overwrite=fileconfig['overwrite'])
 
 # Private functions
-def _get_data_from_driver(url, config, adriver):
-    """ Get a list with data from url
+def _extract_data_from_driver(url, config, adriver):
+    """ Extract data from url to list
 
-    data = _get_data_from_driver(url, config, adriver)
+    data = _extract_data_from_driver(url, config, adriver)
 
     Args:
         url (str or list):  url
@@ -149,7 +151,7 @@ def _get_data_from_driver(url, config, adriver):
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
-            table = get_table(page, ptable)
+            table = extract_table(page, ptable)
             data.extend(table)
 
             url_next = get_url_next_page(page, ppage, url_i)
