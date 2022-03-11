@@ -179,13 +179,13 @@ def to_csv(alist, filename, date_format='', overwrite=False, header=None, quotin
         fullname = filename_append_date(filename, date_format)
 
         if os.path.exists(fullname) and not overwrite:
-            with open(fullname, 'a', newline='') as f:
+            with open(fullname, 'a', newline='', encoding='utf-8') as f:
                 csv_writer = csv.writer(f, quoting=quoting)
                 if not is_empty(header):
                     csv_writer.writerow(header)
                 csv_writer.writerows(alist)
         else:
-            with open(fullname, 'wt', newline='') as f:
+            with open(fullname, 'wt', newline='', encoding='utf-8') as f:
                 csv_writer = csv.writer(f, quoting=quoting)
                 if header:
                     csv_writer.writerow(header)
