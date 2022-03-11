@@ -106,73 +106,73 @@ def test_get_soup():
     assert isinstance(soup, bs4.BeautifulSoup)
 
 
-def test_get_table_rows_success():
+def test_extract_table_rows_success():
     # Simple example, rows
     page = get_page()
     soup = boxfish.soups.get_soup(page)
     rows = ROWS_DORMOUSE
-    atable = boxfish.soups.get_table(soup, rows=rows)
+    atable = boxfish.soups.extract_table(soup, rows=rows)
     assert len(atable) == 3
 
     # Example, rows
     page = get_page(filename=FILE_BOOKS)
     soup = boxfish.soups.get_soup(page)
     rows = ROWS_BOOKS
-    atable = boxfish.soups.get_table(soup, rows=rows)
+    atable = boxfish.soups.extract_table(soup, rows=rows)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == COLUMNS_BOOKS
 
 
-def test_get_table_rows_no_match():
+def test_extract_table_rows_no_match():
     # Simple example, rows
     page = get_page()
     soup = boxfish.soups.get_soup(page)
     rows = {"elem": "p", "class": "sister"}
-    atable = boxfish.soups.get_table(soup, rows=rows)
+    atable = boxfish.soups.extract_table(soup, rows=rows)
     assert len(atable) == 0
 
 
-def test_get_table_rows_non_dict():
+def test_extract_table_rows_non_dict():
     # TODO
     #     # Simple example, rows
     #     page = get_page()
     #     soup = boxfish.soups.get_soup(page)
     #     rows = []
-    #     atable, _ = boxfish.soups.get_table(soup, rows=rows)
+    #     atable, _ = boxfish.soups.extract_table(soup, rows=rows)
     #     assert len(atable) == 0
     pass
 
 
-def test_get_table_rows_cols():
+def test_extract_table_rows_cols():
     # Example, rows and cols
     page = get_page(filename=FILE_BOOKS)
     soup = boxfish.soups.get_soup(page)
     rows = ROWS_BOOKS
     cols = COLS_BOOKS
-    atable = boxfish.soups.get_table(soup, rows=rows, cols=cols)
+    atable = boxfish.soups.extract_table(soup, rows=rows, cols=cols)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == len(cols)
 
 
-def test_get_table_rows_cols_no_match():
+def test_extract_table_rows_cols_no_match():
     # Example, rows and cols
     page = get_page(filename=FILE_BOOKS)
     soup = boxfish.soups.get_soup(page)
     rows = ROWS_BOOKS
     cols = COLS_BOOKS_NO_MATCH
-    atable = boxfish.soups.get_table(soup, rows=rows, cols=cols)
+    atable = boxfish.soups.extract_table(soup, rows=rows, cols=cols)
     assert len(atable) == 0
 
 
-def test_get_table_id_rows():
+def test_extract_table_id_rows():
     # Example, rows
     page = get_page(filename=FILE_BOOKS)
     soup = boxfish.soups.get_soup(page)
     id_ = ID_BOOKS
     rows = ROWS_BOOKS
-    atable = boxfish.soups.get_table(soup, id_=id_, rows=rows)
+    atable = boxfish.soups.extract_table(soup, id_=id_, rows=rows)
     aitem = atable[0]
     assert len(atable) == ITEMS_ON_PAGE_BOOKS
     assert len(aitem) == COLUMNS_BOOKS

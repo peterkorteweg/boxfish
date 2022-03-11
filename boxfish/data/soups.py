@@ -65,10 +65,10 @@ def get_soup(page):
     return soup
 
 
-def get_table(soup, **kwargs):
-    """ Get table from soup
+def extract_table(soup, **kwargs):
+    """ Extract table from soup
 
-    [atable] = get_table(soup, id = "id", rows = rows, cols = cols)
+    [atable] = extract_table(soup, id = "id", rows = rows, cols = cols)
 
     Args:
         soup (bs4.BeautifulSoup): A BS4 object of an HTML page
