@@ -80,8 +80,8 @@ def test_request_page_selenium():
     """
     config = get_config()
 
-    config['driver']['headless'] = False
     config['driver']['package'] = 'selenium'
+    config['driver']['selenium']['headless'] = False
 
     params = config['driver']
 
@@ -175,7 +175,7 @@ def test_driver_start_stop_selenium_headless_false():
 
     params = config['driver']
     params['package'] = 'selenium'
-    params['headless'] = False
+    params['selenium']['headless'] = False
 
     adriver = drivers.driver_start(params)
     assert isinstance(adriver, webdriver.firefox.webdriver.WebDriver)
