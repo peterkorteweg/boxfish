@@ -4,13 +4,14 @@ from setuptools import setup, find_packages
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
-# The text of the README file
+# The text of README and VERSION
 README = (HERE / "README.md").read_text()
+VERSION = (HERE / "VERSION").read_text()
 
 # This call to setup() does all the work
 setup(
     name="boxfish",
-    version="0.0.2",
+    version=VERSION,
     description="A lightweight tool for table extraction from HTML pages.",
     long_description=README,
     long_description_content_type="text/markdown",

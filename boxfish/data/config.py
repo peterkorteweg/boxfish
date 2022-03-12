@@ -3,8 +3,10 @@
 """Config is a module that contains functions for boxfish configuration"""
 
 import os
+import pathlib
 import re
 import shutil
+
 from boxfish.data import soups
 from boxfish.utils.dicts import extract_values
 from boxfish.utils.utils import read_json, write_json, flip
@@ -14,7 +16,9 @@ SEARCH_NAIVE = 'naive'
 SEARCH_STENCIL = 'tree'
 SEARCH_NONE = 'none'
 
-CONFIGKEYS = ['driver', 'html', 'output']
+VERSION = (pathlib.Path(__file__).parent.parent / "VERSION").read_text()
+
+CONFIGKEYS = ['driver', 'html', 'output', 'boxfish']
 HTMLKEYS = ['url', 'parser', 'table', 'page']
 TABLEKEYS = ['id', 'rows', 'cols', 'include_strings', 'include_links']
 CONFIGTABLEKEYS = TABLEKEYS + ['search']
@@ -73,8 +77,11 @@ def create(url=''):
 
     config['output'] = dict.fromkeys(OUTPUTKEYS, {})
     config['output']['filename'] = ''
-    config['output']['date_format'] = '%Y%m%d'
+    config['output']['date_format'] = ''
     config['output']['overwrite'] = False
+
+    config['boxfish']['version'] = VERSION
+
 
     return config
 
