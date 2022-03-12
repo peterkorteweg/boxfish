@@ -2,6 +2,7 @@
 
 """Config is a module that contains functions for boxfish configuration"""
 
+import csv
 import os
 import pathlib
 import re
@@ -23,7 +24,7 @@ HTMLKEYS = ['url', 'parser', 'table', 'page']
 TABLEKEYS = ['id', 'rows', 'cols', 'include_strings', 'include_links']
 CONFIGTABLEKEYS = TABLEKEYS + ['search']
 PAGEKEYS = ['id', 'rows', 'index']
-OUTPUTKEYS = ['filename', 'date_format', 'overwrite']
+OUTPUTKEYS = ['filename', 'date_format', 'overwrite' 'quoting']
 SEARCHTYPES = [SEARCH_NAIVE, SEARCH_STENCIL, SEARCH_NONE]
 
 BACKUP_EXT = '.bak'
@@ -79,6 +80,7 @@ def create(url=''):
     config['output']['filename'] = ''
     config['output']['date_format'] = ''
     config['output']['overwrite'] = False
+    config['output']['quoting'] = csv.QUOTE_NONNUMERIC
 
     config['boxfish']['version'] = VERSION
 

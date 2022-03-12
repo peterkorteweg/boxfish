@@ -54,7 +54,7 @@ def extract_data(url,config):
             # Column headers
             if data:
                 ncols = len(data[0])
-                colnames = ['Col' + str(i + 1) for i in range(ncols)]
+                colnames = ['col' + str(i + 1) for i in range(ncols)]
                 data.insert(0, colnames)
         finally:
             drivers.driver_stop(adriver)
@@ -126,9 +126,10 @@ def save(data, fileconfig):
         Returns:
             None
     """
-    to_csv(data, fileconfig['filename'], \
-             date_format=fileconfig['date_format'], \
-             overwrite=fileconfig['overwrite'])
+    to_csv(data, fileconfig['filename'],
+             date_format=fileconfig['date_format'],
+             overwrite=fileconfig['overwrite'],
+             quoting=fileconfig['quoting'])
 
 # Private functions
 def _extract_data_from_driver(url, config, adriver):
