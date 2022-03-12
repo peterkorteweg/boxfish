@@ -24,7 +24,7 @@ HTMLKEYS = ['url', 'parser', 'table', 'page']
 TABLEKEYS = ['id', 'rows', 'cols', 'include_strings', 'include_links']
 CONFIGTABLEKEYS = TABLEKEYS + ['search']
 PAGEKEYS = ['id', 'rows', 'index']
-OUTPUTKEYS = ['filename', 'date_format', 'overwrite' 'quoting']
+OUTPUTKEYS = ['filename', 'date_format', 'overwrite', 'quoting']
 SEARCHTYPES = [SEARCH_NAIVE, SEARCH_STENCIL, SEARCH_NONE]
 
 BACKUP_EXT = '.bak'
@@ -182,8 +182,8 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL, next
     soup = soups.get_soup(page)
 
     if soup:
-        config = _build_table(soup, config, url, rows, cols, search)
-        config = _build_next_page(soup, config, url, next_page)
+        config = _build_table(soup, config, url=url, rows=rows, cols=cols, search=search)
+        config = _build_next_page(soup, config, url=url, next_page=next_page)
     return config
 
 
