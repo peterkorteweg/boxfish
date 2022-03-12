@@ -70,6 +70,7 @@ def request_page(driver, url='', params=None, count=0):
                 headers = driver.headers if 'headers' in dir(driver) else ''
                 timeout = max(driver.timeout if 'timeout' in dir(driver) else MIN_TIMEOUT, MIN_TIMEOUT)
                 r = driver.get(url, headers=headers, timeout=timeout)
+                r.encoding = 'utf-8'
                 page = r.text
             elif is_selenium:
                 driver.get(url)
@@ -133,8 +134,7 @@ def driver_start(params=None):
     driver = driver_start(params)
 
     Args:
-        params (dict): Driver parameters. Contains information on DRIVERKEYS =
-                       ['package', 'headers', 'filename', 'log', 'timeout', 'sleep','headless']
+        params (dict): Driver parameters with keys DRIVERKEYS
 
     Returns:
         driver (obj): Driver object. Supported objects are:
