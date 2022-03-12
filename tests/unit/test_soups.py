@@ -843,6 +843,39 @@ def test_is_navigable_string():
     assert not boxfish.soups.is_navigable_string(results)
 
 
+def test_is_leaf():
+    # TODO
+    pass
+
+
+def test_is_empty_filter():
+    afilter = {'elem': '', 'class': ['']}
+    tf = boxfish.soups.is_empty_filter(afilter)
+    assert tf == True
+
+    afilter = {'elem': '', 'class': ['o']}
+    tf = boxfish.soups.is_empty_filter(afilter)
+    assert tf == False
+
+    afilter = {'elem': 'o', 'class': ['']}
+    tf = boxfish.soups.is_empty_filter(afilter)
+    assert tf == False
+
+
+def test_is_filter():
+    afilter = {'elem': 'ul', 'class': ['list']}
+    tf = boxfish.soups.is_filter(afilter)
+    assert tf == True
+
+    afilter = {'elem': 'ul'}
+    tf = boxfish.soups.is_filter(afilter)
+    assert tf == False
+
+    afilter = {'class': ['list']}
+    tf = boxfish.soups.is_filter(afilter)
+    assert tf == False
+
+
 # Xpath functions
 def test_xpath():
     soup = boxfish.soups.get_soup(get_page())

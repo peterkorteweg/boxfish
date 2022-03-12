@@ -888,6 +888,34 @@ def is_leaf(aitem):
     return is_tag(aitem) and is_navigable_string(aitem.next)
 
 
+def is_empty_filter(afilter):
+    """ True if filter is empty
+
+    tf = is_empty_filter(afilter)
+
+    Args:
+        afilter (dict): dict with keys 'elem' and 'class'
+
+    Returns:
+        tf: True if filter is empty
+    """
+    return afilter['elem'] == '' and is_empty(afilter['class'])
+
+
+def is_filter(afilter):
+    """ Returns true if afilter is a filter
+
+    tf = is_filter(afilter)
+
+    Args:
+        afilter (dict): dict with keys 'elem' and 'class' (if True)
+
+    Returns:
+        tf (bool): True if afilter is afilter, False otherwise
+    """
+    return isinstance(afilter, dict) and ('elem' in afilter and 'class' in afilter)
+
+
 # Xpath functions
 def xpath(aitem, root=None, first_index=False):
     """ Returns xpath of aitem.
