@@ -6,7 +6,7 @@ HERE = pathlib.Path(__file__).parent
 
 # The text of README and VERSION
 README = (HERE / "README.md").read_text()
-VERSION = (HERE / "VERSION").read_text()
+VERSION = (HERE / "boxfish/VERSION").read_text()
 
 # This call to setup() does all the work
 setup(
