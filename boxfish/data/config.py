@@ -10,16 +10,17 @@ from boxfish.utils.dicts import extract_values
 from boxfish.utils.utils import read_json, write_json, flip
 from boxfish import utils
 
+SEARCH_NAIVE = 'naive'
 SEARCH_STENCIL = 'tree'
-SEARCH_STRIPPED_STRINGS = 'naive'
-SEARCH_EXACT_COLUMNS = 'none'
+SEARCH_NONE = 'none'
 
 CONFIGKEYS = ['driver', 'html', 'output']
 HTMLKEYS = ['url', 'parser', 'table', 'page']
 TABLEKEYS = ['id', 'rows', 'cols', 'include_strings', 'include_links']
+CONFIGTABLEKEYS = TABLEKEYS + ['search']
 PAGEKEYS = ['id', 'rows', 'index']
 OUTPUTKEYS = ['filename', 'date_format', 'overwrite']
-SEARCHTYPES = [SEARCH_STENCIL, SEARCH_STRIPPED_STRINGS, SEARCH_EXACT_COLUMNS]
+SEARCHTYPES = [SEARCH_NAIVE, SEARCH_STENCIL, SEARCH_NONE]
 
 BACKUP_EXT = '.bak'
 
@@ -57,12 +58,13 @@ def create(url=''):
     config['html']['url'] = url
     config['html']['parser'] = 'html.parser'
 
-    config['html']['table'] = dict.fromkeys(TABLEKEYS, {})
+    config['html']['table'] = dict.fromkeys(CONFIGTABLEKEYS, {})
     config['html']['table']['id'] = ''
     config['html']['table']['rows'] = dict.fromkeys(['elem', 'class'], {})
     config['html']['table']['cols'] = {}
     config['html']['table']['include_strings'] = True
     config['html']['table']['include_links'] = True
+    config['html']['table']['search'] = SEARCH_NONE
 
     config['html']['page'] = dict.fromkeys(PAGEKEYS, {})
     config['html']['page']['id'] = ''
@@ -251,18 +253,21 @@ def _build_table(soup, config, url='', rows=None, cols=None, search=SEARCH_STENC
     if tf and len(cols) > 0:
         # TODO
         # cols from dict to list
-        if search == SEARCH_EXACT_COLUMNS:
+        if search == SEARCH_NONE:
             ritem = soups.find_item(soup, astr=re.compile(cols[0]))
-            for col in cols:
+            adict = {}
+            for index, col in enumerate(cols):
                 citem = soups.find_item(ritem, astr=re.compile(col))
-                if citem:
-                    afilter = soups.get_filter(citem)
-                    config['html']['table']['cols'] = afilter
+                afilter = soups.get_filter(citem)
+                adict['col' + str(index + 1)] = afilter
+            config['html']['table']['cols'] = adict
         elif search == SEARCH_STENCIL:
             # TODO
-            config['html']['table']['cols'] = []
-        elif search == SEARCH_STRIPPED_STRINGS:
-            config['html']['table']['cols'] = []
+            config['html']['table']['cols'] = {}
+        else:
+            # search == SEARCH_NAIVE:
+            config['html']['table']['cols'] = {}
+    return config
 
 
 def _build_next_page(soup, config, url='', next_page=''):
