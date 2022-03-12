@@ -52,6 +52,7 @@
     "output": {
         "filename": ".\\results\\dataquestio.csv",
         "date_format": "%Y%m%d",
-        "overwrite": true
+        "overwrite": true,
+        "quoting": 2
     }
 }

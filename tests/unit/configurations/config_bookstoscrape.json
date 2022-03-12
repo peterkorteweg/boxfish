@@ -52,6 +52,7 @@
     "output": {
         "filename": ".\\results\\bookstoscrape.csv",
         "date_format": "",
-        "overwrite": true
+        "overwrite": true,
+        "quoting": 2
     }
 }
