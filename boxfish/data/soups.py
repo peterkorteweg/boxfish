@@ -17,6 +17,7 @@ import bs4
 from bs4 import BeautifulSoup
 import copy
 from boxfish.utils.lists import flatten, is_empty, union, intersect, difference
+from boxfish.utils import urls
 from boxfish.utils.utils import read as _read, write as _write
 from boxfish.utils.xpaths import split as xsplit
 
@@ -211,6 +212,29 @@ def merge(meta, body):
     else:
         soup = None
     return soup
+
+
+def set_urls(aitem, url):
+    """ Set full url paths to all href tags. Returns a deep copy
+
+    [titem] = set_urls(aitem, url)
+
+    Args:
+        aitem(tag or soup): BS4 object
+        url (str): url string
+
+    Returns:
+        aitem(tag or soup): BS4 object with full url strings
+
+    """
+    if is_tag(aitem) or is_soup(aitem):
+        titem = copy.copy(aitem)
+        results = titem.find_all('a')
+        for aitem in results:
+            aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
+    else:
+        titem = None
+    return titem
 
 
 # Conversion functions
@@ -899,7 +923,7 @@ def is_empty_filter(afilter):
     Returns:
         tf: True if filter is empty
     """
-    return afilter['elem'] == '' and is_empty(afilter['class'])
+    return is_empty(afilter['elem']) and is_empty(afilter['class'])
 
 
 def is_filter(afilter):

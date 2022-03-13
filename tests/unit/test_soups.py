@@ -51,6 +51,7 @@ COLS_BOOKS_NO_MATCH = [{"elem": "a",
                         }]
 ITEMS_ON_PAGE_BOOKS = 20
 COLUMNS_BOOKS = 4
+URL_BOOKS = 'http://books.toscrape.com'
 
 # Wikipedia lists
 FILE_WIKI = r'.\data\ISO3166.html'
@@ -275,6 +276,32 @@ def test_merge_soup():
     aset = soup.find_all('a')
     soup_new = boxfish.soups.merge(meta, aset)
     assert boxfish.soups.is_soup(soup_new)
+
+
+def test_set_urls():
+    page = get_page(filename=FILE_BOOKS)
+    soup = boxfish.soups.get_soup(page)
+
+    afilter = ROWS_BOOKS
+    results = boxfish.soups.find_items(soup, afilter)
+    aitem = results[0]
+
+    alink = aitem.find('a')
+    asouplink = soup.find('a')
+
+    # Item
+    titem = boxfish.soups.set_urls(aitem, URL_BOOKS)
+    tlink = titem.find('a')
+    assert tlink['href'] == URL_BOOKS + '/' + alink['href']
+
+    # Results
+    tresults = boxfish.soups.set_urls(results, URL_BOOKS)
+    assert tresults is None
+
+    # Soup
+    tsoup = boxfish.soups.set_urls(soup, URL_BOOKS)
+    tsouplink = tsoup.find('a')
+    assert tsouplink['href'] == URL_BOOKS + '/' + asouplink['href']
 
 
 # Conversion functions
@@ -661,7 +688,6 @@ def test_get_text_from_tag_cols_fill_missing():
     assert len(alist) == 2
 
 
-
 def test_get_text_from_results():
     page = get_page(filename=FILE_BOOKS)
     soup = boxfish.soups.get_soup(page)
@@ -851,29 +877,29 @@ def test_is_leaf():
 def test_is_empty_filter():
     afilter = {'elem': '', 'class': ['']}
     tf = boxfish.soups.is_empty_filter(afilter)
-    assert tf == True
+    assert tf
 
     afilter = {'elem': '', 'class': ['o']}
     tf = boxfish.soups.is_empty_filter(afilter)
-    assert tf == False
+    assert not tf
 
     afilter = {'elem': 'o', 'class': ['']}
     tf = boxfish.soups.is_empty_filter(afilter)
-    assert tf == False
+    assert not tf
 
 
 def test_is_filter():
     afilter = {'elem': 'ul', 'class': ['list']}
     tf = boxfish.soups.is_filter(afilter)
-    assert tf == True
+    assert tf
 
     afilter = {'elem': 'ul'}
     tf = boxfish.soups.is_filter(afilter)
-    assert tf == False
+    assert not tf
 
     afilter = {'class': ['list']}
     tf = boxfish.soups.is_filter(afilter)
-    assert tf == False
+    assert not tf
 
 
 # Xpath functions
