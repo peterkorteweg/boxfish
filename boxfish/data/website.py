@@ -63,15 +63,15 @@ def extract_data(url,config):
 
 
 # Beautiful Soup functions
-def extract_table(page, ptable):
+def extract_table(page, ptable, url=''):
     """ Extract table from an HTML page
 
-        atable = extract_table(page, ptable)
+        atable = extract_table(page, ptable, url)
 
         Args:
             page(str): HTML text
             ptable(dict): Table parameters with keys config.TABLEKEYS
-
+            url(str): Url current page
         Returns:
             atable (list): List of rows (list) of columns (str)
     """
@@ -80,7 +80,10 @@ def extract_table(page, ptable):
 
     if page:
         soup = soups.get_soup(page)
+
         if soup:
+            if url:
+                soup = soups.set_urls(soup, url)
             pparams = get_subset(ptable, config.TABLEKEYS)
             atable = soups.extract_table(soup, **pparams)
     return atable
@@ -100,16 +103,18 @@ def extract_url_next_page(page, pnext_page, url):
             url_next_page (str): Url next page
     """
     url_next_page = ''
-    [index] = extract_values(pnext_page, ['index'])
-    index = index if index else -1
 
-    pnext_page['include_strings'] = False
-    pnext_page['include_links'] = True
+    if not soups.is_empty_filter(pnext_page['rows']):
+        [index] = extract_values(pnext_page, ['index'])
+        index = index if index else -1
 
-    alinks = extract_table(page, pnext_page)
-    if alinks:
-        alinks = flatten(alinks)
-        url_next_page = urls.replace_subpath(url,alinks[index],-1)
+        pnext_page['include_strings'] = False
+        pnext_page['include_links'] = True
+
+        alinks = extract_table(page, pnext_page, url='')
+        if alinks:
+            alinks = flatten(alinks)
+            url_next_page = urls.replace_subpath(url,alinks[index],-1)
     return  url_next_page
 
 
@@ -160,7 +165,7 @@ def _extract_data_from_driver(url, config, adriver):
             page = drivers.request_page(adriver, url=url_next, count=i_request)
             i_request = i_request + 1
 
-            table = extract_table(page, ptable)
+            table = extract_table(page, ptable, url_next)
             data.extend(table)
 
             url_pre.append(url_next)

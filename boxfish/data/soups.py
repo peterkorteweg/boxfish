@@ -229,9 +229,10 @@ def set_urls(aitem, url):
     """
     if is_tag(aitem) or is_soup(aitem):
         titem = copy.copy(aitem)
-        results = titem.find_all('a')
-        for aitem in results:
-            aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
+        if url:
+            results = titem.find_all('a')
+            for aitem in results:
+                aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
     else:
         titem = None
     return titem
