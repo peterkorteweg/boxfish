@@ -97,8 +97,9 @@ def extract_url_next_page(page, pnext_page, url):
             url_next_page (str): Url next page
     """
     url_next_page = ''
+    tf = not soups.is_empty_filter(pnext_page['rows']) if pnext_page else False
 
-    if not soups.is_empty_filter(pnext_page['rows']):
+    if tf:
         [index] = extract_values(pnext_page, ['index'])
         index = index if index else -1
 
