@@ -50,13 +50,13 @@ config = bf.build(url=aurl)
 ```
 
 ##Get/set parameters
-Parameters can be set directly as values in a dictionary.
+Most parameters can be set directly as values in a dictionary. 
 
 ``` python
 config['driver']['package'] = 'requests'
 ```
-
-Most html parameters should be set with <code>build</code>. 
+The keys below provide an overview of all sub-keys that can be set directly.
+Keys that cannot be set directly, should be set with <code>build</code>. 
 
 ##Build a table configuration
 

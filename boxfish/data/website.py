@@ -45,17 +45,11 @@ def extract_data(url,config):
     """
 
     data = []
-    colnames = []
 
     if url and config:
         adriver = drivers.driver_start(config['driver'])
         try:
             data = _extract_data_from_driver(url, config, adriver)
-            # Column headers
-            if data:
-                ncols = len(data[0])
-                colnames = ['col' + str(i + 1) for i in range(ncols)]
-                data.insert(0, colnames)
         finally:
             drivers.driver_stop(adriver)
 
