@@ -11,6 +11,9 @@ aitem : soup or tag or ResultSet object
 aitems: ResultSet object
 atable (list): List of rows (list) of columns (str)
 
+afilter (dict): BS4 filter on keys 'elem' (str) and 'class' (str or list)
+FILTERKEYS = ['elem', 'class']
+
 """
 
 import bs4
@@ -369,7 +372,7 @@ def find_items(aitem, afilter=None, astr=''):
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        afilter (dict): BS4 filter on keys "elem" and "class"
+        afilter (dict): BS4 filter
         astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
@@ -398,7 +401,7 @@ def find_item(aitem, afilter=None, astr=''):
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        afilter (dict): Keys "elem" and "class"
+        afilter (dict): BS4 filter
         astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
@@ -469,7 +472,7 @@ def find_lists(aitem, afilter=None, astr=''):
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        afilter (dict): Keys "elem" and "class"
+        afilter (dict): BS4 filter
         astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
@@ -489,7 +492,7 @@ def find_tables(aitem, afilter=None, astr=''):
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
-        afilter (dict): Keys "elem" and "class"
+        afilter (dict): BS4 filter
         astr (str): string or regular expressiom for filter on aitem.string
 
     Returns:
@@ -531,7 +534,7 @@ def get_filter_child_of_common_ancestor(aitem1, aitem2):
             aitem2 (tag): BS4 object
 
         Returns:
-            afilter (dict): BS4 filter on keys "elem" and "class"
+            afilter (dict): BS4 filter
     """
     afilter = {}
 
@@ -919,7 +922,7 @@ def is_empty_filter(afilter):
     tf = is_empty_filter(afilter)
 
     Args:
-        afilter (dict): dict with keys 'elem' and 'class'
+        afilter (dict): BS4 filter
 
     Returns:
         tf: True if filter is empty

@@ -66,6 +66,8 @@ def create(url=''):
     config['html']['table'] = dict.fromkeys(CONFIGTABLEKEYS, {})
     config['html']['table']['id'] = ''
     config['html']['table']['rows'] = dict.fromkeys(['elem', 'class'], {})
+    config['html']['table']['rows']['elem'] = ''
+    config['html']['table']['rows']['class'] = ['']
     config['html']['table']['cols'] = {}
     config['html']['table']['include_strings'] = True
     config['html']['table']['include_links'] = True
@@ -74,6 +76,8 @@ def create(url=''):
     config['html']['page'] = dict.fromkeys(PAGEKEYS, {})
     config['html']['page']['id'] = ''
     config['html']['page']['rows'] = dict.fromkeys(['elem', 'class'], {})
+    config['html']['page']['rows']['elem'] = ''
+    config['html']['page']['rows']['class'] = ['']
     config['html']['page']['index'] = -1
 
     config['output'] = dict.fromkeys(OUTPUTKEYS, {})
