@@ -366,9 +366,9 @@ def find_soup(aitem):
 
 
 def find_items(aitem, afilter=None, astr=''):
-    """ Find items from atag based on filter and/or string
+    """ Find items from aitem based on filter and/or string
 
-    ritems = find_items(aitems, filter=afilter, astr='')
+    ritems = find_items(aitem, filter=afilter, astr='')
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
@@ -395,9 +395,9 @@ def find_items(aitem, afilter=None, astr=''):
 
 
 def find_item(aitem, afilter=None, astr=''):
-    """ Find single item from atag based on filter and/or string
+    """ Find single item from aitem based on filter and/or string
 
-    ritem = find_item(aitems, filter=afilter, astr='')
+    ritem = find_item(aitem, filter=afilter, astr='')
 
     Args:
         aitem(soup or tag or ResultSet): BS4 object
