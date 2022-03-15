@@ -1,0 +1,60 @@
+{
+    "driver": {
+        "package": "requests",
+        "sleep": {
+            "1": 1,
+            "200": 3600
+        },
+        "requests": {
+            "headers": {
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "accept-language": "nl,en-US;q=0.7,en;q=0.3",
+                "accept-encoding": "gzip, deflate, br"
+            },
+            "timeout": 10
+        },
+        "selenium": {
+            "filename": "..\\..\\drivers\\geckodriver.exe",
+            "log": "..\\..\\drivers\\geckodriver.log",
+            "headless": true
+        }
+    },
+    "html": {
+        "url": "http://books.toscrape.com",
+        "parser": "html.parser",
+        "table": {
+            "id": "",
+            "rows": {
+                "elem": "li",
+                "class": [
+                    "col-xs-6",
+                    "col-sm-4",
+                    "col-md-3",
+                    "col-lg-3"
+                ]
+            },
+            "cols": {},
+            "include_strings": true,
+            "include_links": true,
+            "search": "none"
+        },
+        "page": {
+            "id": "",
+            "rows": {
+                "elem": {},
+                "class": {}
+            },
+            "index": -1
+        }
+    },
+    "output": {
+        "filename": ".\\results\\bookstoscrape2.csv",
+        "date_format": "",
+        "overwrite": true,
+        "quoting": 2
+    },
+    "boxfish": {
+        "version": "0.0.2"
+    }
+}
