@@ -939,9 +939,28 @@ def is_filter(afilter):
         afilter (dict): dict with keys 'elem' and 'class' (if True)
 
     Returns:
-        tf (bool): True if afilter is afilter, False otherwise
+        tf (bool): True if afilter is filter, False otherwise
     """
     return isinstance(afilter, dict) and ('elem' in afilter and 'class' in afilter)
+
+
+def is_unique_filter(afilter, aitem):
+    """ Returns true if afilter is unique in aitem
+
+        tf = is_unique_filter(afilter, aitem)
+
+        Args:
+            afilter (dict): dict with keys 'elem' and 'class' (if True)
+            aitem(tag or soup): BS4 object
+
+        Returns:
+            tf (bool): True if afilter is unique filter in aitem, False otherwise
+    """
+    tf = is_filter(afilter) and (is_tag(aitem) or is_soup(aitem))
+    if tf:
+        results = find_items(aitem,afilter=afilter)
+        tf = len(results)==1
+    return tf
 
 
 # Xpath functions

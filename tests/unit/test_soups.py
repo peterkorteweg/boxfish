@@ -902,6 +902,37 @@ def test_is_filter():
     assert not tf
 
 
+def test_is_unique_filter():
+    page = get_page(filename=FILE_DORMOUSE)
+    soup = boxfish.soups.get_soup(page)
+
+    afilter = ROWS_DORMOUSE
+    nonfilter = {'elem': 'hello'}
+    afilter_zero = {'elem': 'a', 'class': 'brother'}
+    afilter_one = {'elem': 'p', 'class': 'title'}
+    results = boxfish.soups.find_items(soup, afilter)
+
+    aitem = soup.find('body')
+
+    # False, filter is not a filter
+    assert not boxfish.soups.is_unique_filter(nonfilter,soup)
+
+    # False, aitem is not a tag or soup
+    assert not boxfish.soups.is_unique_filter(afilter, results)
+
+    # False, zero results
+    assert not boxfish.soups.is_unique_filter(afilter_zero, soup)
+
+    # False, multiple results
+    assert not boxfish.soups.is_unique_filter(afilter, soup)
+
+    # True, single results from soup
+    assert boxfish.soups.is_unique_filter(afilter_one, soup)
+
+    # True, single results from tag
+    assert boxfish.soups.is_unique_filter(afilter_one, aitem)
+
+
 # Xpath functions
 def test_xpath():
     soup = boxfish.soups.get_soup(get_page())
