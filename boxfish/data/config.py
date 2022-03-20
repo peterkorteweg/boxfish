@@ -9,8 +9,6 @@ import re
 import shutil
 
 from boxfish.data import soups
-from boxfish.utils.dicts import extract_values
-from boxfish.utils.utils import read_json, write_json, flip
 from boxfish import utils
 
 SEARCH_NAIVE = 'naive'
@@ -105,7 +103,7 @@ def read(filename):
             config(dict)
     """
 
-    config = read_json(filename)
+    config = utils.utils.read_json(filename)
     if config is None:
         print('Cannot find' + filename)
 
@@ -131,7 +129,7 @@ def write(filename, config):
 
     if os.path.isfile(filename):
         shutil.copy(filename, filename+BACKUP_EXT)
-    write_json(filename, config)
+    utils.utils.write_json(filename, config)
 
 
 def revert(filename):
@@ -150,7 +148,7 @@ def revert(filename):
         Raises:
             IOError (): error in case function cannot write to filename
         """
-    flip(filename, filename + BACKUP_EXT)
+    utils.utils.flip(filename, filename + BACKUP_EXT)
 
 
 # Editing configurations
@@ -179,7 +177,10 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL, next
             config = build(config=config, url='', rows=[rowstring1,rowstring2], cols=[colstring1, colstring2], search='tree')
 
     """
-    config = create(url) if config is None else config
+    if config is None:
+        config = create(url)
+    if len(url) == 0:
+        url = config['html']['url']
 
     [pdriver] = utils.dicts.extract_values(config, ['driver'])
     page = utils.drivers.get_page(url=url, params=pdriver)
@@ -187,7 +188,7 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL, next
 
     if soup:
         config = _build_table(soup, config, url=url, rows=rows, cols=cols, search=search)
-        config = _build_next_page(soup, config, url=url, next_page=next_page)
+        config = _build_next_page(soup, config, next_page=next_page)
     return config
 
 
@@ -283,7 +284,7 @@ def _build_table(soup, config, url='', rows=None, cols=None, search=SEARCH_STENC
     return config
 
 
-def _build_next_page(soup, config, url='', next_page=''):
+def _build_next_page(soup, config, next_page=''):
     """ Build next page configuration
 
         config = _build_next_page(soup, config, url= '', next_page=None)
@@ -291,20 +292,38 @@ def _build_next_page(soup, config, url='', next_page=''):
         Args:
             soup (bs4.BeautifulSoup): A BS4 object of an HTML page
             config (dict): configuration
-            url (str): url
             next_page ()
 
         Returns:
             config (dict): configuration
 
     """
-    if len(url) > 0 and len(next_page) > 0:
-        citem = soups.find_item(soup, astr=re.compile(next_page))
+    if len(next_page) > 0:
+        if utils.urls.is_valid_http(next_page):
+            durl = utils.urls.get_components(next_page)
+            next_page = durl['path']
+        next_page = next_page.lstrip('/')
+
+        citem = soup.find('a', href=re.compile(next_page))
         if citem:
-            afilter = soups.get_filter(citem.parent)
-            # TODO
-            config['html']['table']['page']['id'] = ""
-            config['html']['table']['page']['elem'] = afilter['elem']
-            config['html']['table']['page']['class'] = afilter['class']
-            config['html']['table']['page']['index'] = -1
+            afilter = {'elem': '', 'class': []}
+            aindex = -1
+
+            # Find ancestor with unique filter
+            ancestors = soups.ancestors(citem.parent)
+            aitem = None
+            is_unique = False
+            while not is_unique and len(ancestors)>0:
+                aitem = ancestors.pop()
+                afilter = soups.get_filter(aitem)
+                is_unique = soups.is_unique_filter(afilter,soup)
+
+            aresults = soups.get_links(aitem)
+            if aresults:
+                aindex = aresults.index(next_page) - len(aresults)
+
+            config['html']['page']['id'] = ""
+            config['html']['page']['rows']['elem'] = afilter['elem']
+            config['html']['page']['rows']['class'] = afilter['class']
+            config['html']['page']['index'] = aindex
     return config

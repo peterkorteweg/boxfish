@@ -13,6 +13,9 @@ STR_BOOKS_PRICE2 = '£53.74'
 CONFIG_BOOKS_ELEM = 'li'
 CONFIG_BOOKS_CLASS = ['col-xs-6', 'col-sm-4', 'col-md-3', 'col-lg-3']
 
+CONFIG_BOOKS_NEXT_PAGE_ELEM = 'ul'
+CONFIG_BOOKS_NEXT_PAGE_CLASS = ['pager']
+
 
 # Helper functions
 def get_query(tf):
@@ -78,6 +81,33 @@ def test_build():
     assert 'elem' in adict and 'class' in adict
     assert config['html']['table']['rows']['elem'] == CONFIG_BOOKS_ELEM
     assert config['html']['table']['rows']['class'] == CONFIG_BOOKS_CLASS
+
+
+def test_build_next_page():
+    aurl = 'https://books.toscrape.com'
+    next_page_url = 'https://books.toscrape.com/catalogue/page-2.html'
+    next_page_path1 = 'catalogue/page-2.html'
+    next_page_path2 = '/catalogue/page-2.html'
+
+    # Test 1
+    config = boxfish.config.create(url=aurl)
+    config = boxfish.config.build(config,next_page=next_page_url)
+    assert config['html']['page']['rows']['elem'] == CONFIG_BOOKS_NEXT_PAGE_ELEM
+    assert config['html']['page']['rows']['class'] == CONFIG_BOOKS_NEXT_PAGE_CLASS
+
+    # Test 2
+    config = boxfish.config.create(url=aurl)
+    config = boxfish.config.build(config,next_page=next_page_path1)
+    assert config['html']['page']['rows']['elem'] == CONFIG_BOOKS_NEXT_PAGE_ELEM
+    assert config['html']['page']['rows']['class'] == CONFIG_BOOKS_NEXT_PAGE_CLASS
+
+    # Test 3
+    config = boxfish.config.create(url=aurl)
+    config = boxfish.config.build(config, next_page=next_page_path2)
+    assert config['html']['page']['rows']['elem'] == CONFIG_BOOKS_NEXT_PAGE_ELEM
+    assert config['html']['page']['rows']['class'] == CONFIG_BOOKS_NEXT_PAGE_CLASS
+
+
 
 # Private functions
 def test_process_missing_keys():
