@@ -62,7 +62,7 @@ def request_page(driver, url='', params=None, count=0):
     [psleep] = dicts.extract_values(params, ['sleep'])
     page = ''
     try:
-        if urls.valid_http(url):
+        if urls.is_valid_http(url):
             is_requests = isinstance(driver, requests.sessions.Session)
             is_selenium = isinstance(driver, webdriver.firefox.webdriver.WebDriver) or \
                           isinstance(driver, webdriver.chrome.webdriver.WebDriver)
