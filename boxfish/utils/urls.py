@@ -128,7 +128,7 @@ def create_url_list(url, query=None, path=None):
     return url_list
 
 
-def valid_http(url):
+def is_valid_http(url):
     """ Validate url syntax for http and https
 
     url = valid(url)

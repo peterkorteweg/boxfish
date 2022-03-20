@@ -249,15 +249,15 @@ def test_create_url_list():
     assert aurl_list == aurl_list_expected
 
 
-def test_valid_http():
+def test_is_valid_http():
     url_http = 'http://user:pwd@NetLoc.com:80/p1;para/p2;para?query=arg#frag'
     url_https = 'http://user:pwd@NetLoc.com:80/p1;para/p2;para?query=arg#frag'
     url_no_http = 'ftp://user:pwd@NetLoc.com:80/p1;para/p2;para?query=arg#frag'
     url_no_scheme = 'user:pwd@NetLoc.com:80/p1;para/p2;para?query=arg#frag'
-    assert urls.valid_http(url_http)
-    assert urls.valid_http(url_https)
-    assert not urls.valid_http(url_no_http)
-    assert not urls.valid_http(url_no_scheme)
+    assert urls.is_valid_http(url_http)
+    assert urls.is_valid_http(url_https)
+    assert not urls.is_valid_http(url_no_http)
+    assert not urls.is_valid_http(url_no_scheme)
 
 
 # Private functions
