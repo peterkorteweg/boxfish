@@ -83,3 +83,35 @@ def test_remove_nones():
     bdict_expected = {'key1': 'val1', 'key3': 'val3'}
     bdict = dicts.remove_nones(adict)
     assert bdict == bdict_expected
+
+
+def test_loads():
+    # Single item
+    adict = {'name': 'John', 'age': 30, 'city': 'New York'}
+    ajson = '{"name": "John", "age": 30, "city": "New York"}'
+    adict2 = dicts.loads(ajson)
+    assert adict == adict2
+
+    # List
+    ajson = '{"name": "John", "age": 30, "city": "New York"}'
+    bjson = '{"name": "Jane", "age": 28, "city": "New Jersey"}'
+    json_list = [ajson, bjson]
+    alist = dicts.loads(json_list)
+    assert isinstance(alist,list)
+    assert alist[0] == adict
+
+
+def test_dumps():
+    # Single item
+    adict = {'name': 'John', 'age': 30, 'city': 'New York'}
+    ajson = '{"name": "John", "age": 30, "city": "New York"}'
+    ajson2 = dicts.dumps(adict)
+    assert ajson == ajson2
+
+    # List
+    adict = {'name': 'John', 'age': 30, 'city': 'New York'}
+    bdict = {'name': 'Jane', 'age': 28, 'city': 'New Jersey'}
+    dict_list = [adict, bdict]
+    alist = dicts.dumps(dict_list)
+    assert isinstance(alist, list)
+    assert alist[0] == ajson

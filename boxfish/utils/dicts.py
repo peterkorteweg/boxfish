@@ -2,6 +2,7 @@
 
 """Dicts is a module that contains functions for dictionaries"""
 
+import json
 
 def get_subset(adict, akeys):
     """ Get a dict subset consisting of akeys. Missing akeys are ignored
@@ -87,3 +88,39 @@ def remove_nones(adict):
         >> {'key1': 'bval1', 'key3': 'val3'}
     """
     return {k: v for k, v in adict.items() if v is not None}
+
+
+def dumps(adict):
+    """ Dumps dictionary into Json string. Generalizes to lists
+
+        ajson = dumps(adict)
+
+        Args:
+            adict (dict or list): Dictionary
+        Returns:
+            ajson (str or list): Json strings
+        """
+    ajson = ''
+    if isinstance(adict,dict):
+        ajson = json.dumps(adict)
+    elif isinstance(adict,list):
+        ajson = [json.dumps(idict) for idict in adict]
+    return ajson
+
+
+def loads(ajson):
+    """ Loads Json string into a dictionary. Generalizes to lists
+
+        adict = loads(ajson)
+
+        Args:
+            ajson (str or list): Json strings
+        Returns:
+            adict (dict or list): Dictionary
+        """
+    adict = {}
+    if isinstance(ajson,str):
+        adict = json.loads(ajson)
+    elif isinstance(ajson,list):
+        adict = [json.loads(ijson) for ijson in ajson]
+    return adict
