@@ -10,6 +10,7 @@ from boxfish.data import soups
 from boxfish.data import website
 
 # Main functions
+from boxfish.data.config import create
 from boxfish.data.config import build
 from boxfish.data.website import extract
 
