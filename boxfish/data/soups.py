@@ -552,6 +552,67 @@ def get_filter_child_of_common_ancestor(aitem1, aitem2):
     return afilter
 
 
+def get_filters_child_of_common_ancestor(aitems1, aitems2):
+    """ Get filters child of common ancestors
+        The filters are based on the first child of the common ancestor for each pair of items
+
+        afilters = get_filters_child_of_common_ancestor(soup, aitem1, aitem2)
+
+        Args:
+            aitems1 (tag or ResultSet): BS4 object
+            aitems2 (tag or ResultSet): BS4 object
+
+        Returns:
+            afilters (list): List of BS4 filters (dict)
+    """
+    aresults1 = aitems1 if is_results(aitems1) else [aitems1]
+    aresults2 = aitems2 if is_results(aitems2) else [aitems2]
+
+    return [get_filter_child_of_common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
+
+
+def get_filter_most_common(afilters):
+    """ Get filter most common returns the filter with most occurences
+
+        afilter = get_filter_most_common(afilters)
+
+        Args:
+            afilters (list): List of BS4 filters (dict)
+
+        Returns:
+            afilter (dict): dict with keys 'elem' and 'class'
+    """
+    jfilters = dicts.dumps(afilters)
+    coll=collections.Counter(jfilters)
+    alist = coll.most_common(1)
+    tup = alist[0]
+    afilter = dicts.loads(tup[0])
+    return afilter
+
+
+
+# Filter function
+def remove_filters(afilters, elem=None, class_=None):
+    """ Remove filter from afilters based on elem and/or class_
+
+        afilters = _remove_filters(afilters, elem=None,class_=None)
+
+        Args:
+            afilters(list): list of filters
+            elem (str):
+            class_ (str or list):
+        Returns:
+            afilters(list): list of filters
+
+    """
+    for afilter in afilters[:]:  # [:] creates a copy
+        do_remove = afilter['elem'] == elem if elem is not None else False
+        do_remove = do_remove or (afilter['class'] == class_ if class_ is not None else False)
+        if do_remove:
+            afilters.remove(afilter)
+    return afilters
+
+
 # Tree functions
 def common_ancestor(aitem1, aitem2):
     """ Find tag whose descendants contain both aitem1 and aitem2
