@@ -22,9 +22,7 @@ import collections
 import bs4
 from bs4 import BeautifulSoup
 
-from boxfish.utils.lists import flatten, is_empty, union, intersect, difference
-from boxfish.utils import dicts, urls
-from boxfish.utils.utils import read as _read, write as _write
+from boxfish.utils import dicts, lists, urls, utils
 from boxfish.utils.xpaths import split as xsplit
 
 
@@ -122,7 +120,7 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
 
     for record in aitem:
         row = get_text(record, cols=cols, include_strings=include_strings, include_links=include_links)
-        if not is_empty(row):
+        if not lists.is_empty(row):
             atable.append(row)
 
     return atable
@@ -326,7 +324,7 @@ def read(filename):
             page(str)
     """
 
-    page = _read(filename)
+    page = utils.read(filename)
     return page
 
 
@@ -346,7 +344,7 @@ def write(filename, page):
                 IOError (): error in case function cannot write to filename
         """
 
-    _write(filename, page)
+    utils.write(filename, page)
 
 
 # Search functions
@@ -583,15 +581,13 @@ def get_filter_most_common(afilters):
             afilter (dict): dict with keys 'elem' and 'class'
     """
     jfilters = dicts.dumps(afilters)
-    coll=collections.Counter(jfilters)
+    coll = collections.Counter(jfilters)
     alist = coll.most_common(1)
     tup = alist[0]
     afilter = dicts.loads(tup[0])
     return afilter
 
 
-
-# Filter function
 def remove_filters(afilters, elem=None, class_=None):
     """ Remove filter from afilters based on elem and/or class_
 
@@ -765,8 +761,8 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_m
 
         # Flatten text
         if do_flatten:
-            alist_item = [[''] if is_empty(val) else val for val in alist_item]
-            alist_item = flatten(alist_item)
+            alist_item = [[''] if lists.is_empty(val) else val for val in alist_item]
+            alist_item = lists.flatten(alist_item)
 
         alist.append(alist_item)
 
@@ -993,7 +989,7 @@ def is_empty_filter(afilter):
     Returns:
         tf: True if filter is empty
     """
-    return is_empty(afilter['elem']) and is_empty(afilter['class'])
+    return lists.is_empty(afilter['elem']) and lists.is_empty(afilter['class'])
 
 
 def is_filter(afilter):
@@ -1108,11 +1104,11 @@ def xpaths_set(aitem1, aitem2, operation=None, relative=False):
     xpath2 = xpaths(aitem2, root=(aitem2 if relative else None), first_index=True)
 
     if operation == 'union':
-        alist = union(xpath1, xpath2)
+        alist = lists.union(xpath1, xpath2)
     elif operation == 'intersect':
-        alist = intersect(xpath1, xpath2)
+        alist = lists.intersect(xpath1, xpath2)
     elif operation == 'difference':
-        alist = difference(xpath1, xpath2)
+        alist = lists.difference(xpath1, xpath2)
     else:
         alist = []
     return alist

@@ -4,10 +4,9 @@
 
 from boxfish.data import config
 from boxfish.data import soups
-from boxfish.utils.dicts import extract_values, get_subset
-from boxfish.utils import drivers, urls
-from boxfish.utils.lists import flatten, to_csv, to_list
 
+from boxfish.utils.dicts import extract_values, get_subset
+from boxfish.utils import drivers, lists, urls
 
 
 # Main functions
@@ -108,7 +107,7 @@ def extract_url_next_page(page, pnext_page, url):
 
         alinks = extract_table(page, pnext_page, url='')
         if alinks:
-            alinks = flatten(alinks)
+            alinks = lists.flatten(alinks)
             url_next_page = urls.replace_subpath(url,alinks[index],-1)
     return  url_next_page
 
@@ -126,7 +125,7 @@ def save(data, fileconfig):
         Returns:
             None
     """
-    to_csv(data, fileconfig['filename'],
+    lists.to_csv(data, fileconfig['filename'],
              date_format=fileconfig['date_format'],
              overwrite=fileconfig['overwrite'],
              quoting=fileconfig['quoting'])
@@ -153,7 +152,7 @@ def _extract_data_from_driver(url, config, adriver):
     [ppage] = extract_values(phtml, ['page'])
 
     i_request = 0
-    for url_i in to_list(url):
+    for url_i in lists.to_list(url):
         url_next = url_i
         url_pre = ['']
         while url_next not in url_pre:

@@ -328,4 +328,3 @@ def _build_next_page(soup, config, next_page=''):
             config['html']['page']['rows']['class'] = afilter['class']
             config['html']['page']['index'] = aindex
     return config
-
