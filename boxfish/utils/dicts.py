@@ -4,6 +4,7 @@
 
 import json
 
+
 def get_subset(adict, akeys):
     """ Get a dict subset consisting of akeys. Missing akeys are ignored
 
@@ -101,9 +102,9 @@ def dumps(adict):
             ajson (str or list): Json strings
         """
     ajson = ''
-    if isinstance(adict,dict):
+    if isinstance(adict, dict):
         ajson = json.dumps(adict)
-    elif isinstance(adict,list):
+    elif isinstance(adict, list):
         ajson = [json.dumps(idict) for idict in adict]
     return ajson
 
@@ -119,8 +120,26 @@ def loads(ajson):
             adict (dict or list): Dictionary
         """
     adict = {}
-    if isinstance(ajson,str):
+    if isinstance(ajson, str):
         adict = json.loads(ajson)
-    elif isinstance(ajson,list):
+    elif isinstance(ajson, list):
         adict = [json.loads(ijson) for ijson in ajson]
     return adict
+
+
+def set_(alist):
+    """ Return a set of unique dictionaries in alist
+
+        aset = set_(alist)
+
+        Args:
+            alist (list): List of dictionary
+        Returns:
+            aset (list): List of dictionary
+        """
+    aset = []
+    if isinstance(alist, list):
+        ajson = dumps(alist)
+        ujson = list(set(ajson))
+        aset = loads(ujson)
+    return aset

@@ -97,7 +97,7 @@ def test_loads():
     bjson = '{"name": "Jane", "age": 28, "city": "New Jersey"}'
     json_list = [ajson, bjson]
     alist = dicts.loads(json_list)
-    assert isinstance(alist,list)
+    assert isinstance(alist, list)
     assert alist[0] == adict
 
 
@@ -115,3 +115,13 @@ def test_dumps():
     alist = dicts.dumps(dict_list)
     assert isinstance(alist, list)
     assert alist[0] == ajson
+
+
+def test_set_():
+    adict = {'name': 'John', 'age': 30, 'city': 'New York'}
+    bdict = {'name': 'Jane', 'age': 28, 'city': 'New Jersey'}
+    cdict = {'name': 'Cal', 'age': 32, 'city': 'San Francisco'}
+
+    dict_list = [bdict, adict, adict, bdict, cdict]
+    dict_set = dicts.set_(dict_list)
+    assert len(dict_set) == 3
