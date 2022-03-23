@@ -11,16 +11,19 @@ aitem : soup or tag or ResultSet object
 aitems: ResultSet object
 atable (list): List of rows (list) of columns (str)
 
-afilter (dict): BS4 filter on keys 'elem' (str) and 'class' (str or list)
+afilter (dict): BS4 filter on keys 'elem' (str) and 'class' (list)
 FILTERKEYS = ['elem', 'class']
 
 """
 
+import copy
+import collections
+
 import bs4
 from bs4 import BeautifulSoup
-import copy
+
 from boxfish.utils.lists import flatten, is_empty, union, intersect, difference
-from boxfish.utils import urls
+from boxfish.utils import dicts, urls
 from boxfish.utils.utils import read as _read, write as _write
 from boxfish.utils.xpaths import split as xsplit
 
@@ -960,8 +963,8 @@ def is_unique_filter(afilter, aitem):
     """
     tf = is_filter(afilter) and (is_tag(aitem) or is_soup(aitem))
     if tf:
-        results = find_items(aitem,afilter=afilter)
-        tf = len(results)==1
+        results = find_items(aitem, afilter=afilter)
+        tf = len(results) == 1
     return tf
 
 

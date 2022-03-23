@@ -86,7 +86,6 @@ def create(url=''):
 
     config['boxfish']['version'] = VERSION
 
-
     return config
 
 
@@ -248,16 +247,18 @@ def _build_table(soup, config, url='', rows=None, cols=None, search=SEARCH_STENC
 
     # Website rows
     if len(rows) >= 2:
-        aitem1 = soups.find_item(soup, astr=re.compile(rows[0]))
-        aitem2 = soups.find_item(soup, astr=re.compile(rows[1]))
+        aitems1 = soups.find_items(soup, astr=re.compile(rows[0]))
+        aitems2 = soups.find_items(soup, astr=re.compile(rows[1]))
     elif len(cols) >= 2:
-        aitem1 = soups.find_item(soup, astr=re.compile(cols[0]))
-        aitem2 = soups.find_item(soup, astr=re.compile(cols[1]))
+        aitems1 = soups.find_items(soup, astr=re.compile(cols[0]))
+        aitems2 = soups.find_items(soup, astr=re.compile(cols[1]))
     else:
-        aitem1 = None
-        aitem2 = None
+        aitems1 = None
+        aitems2 = None
 
-    afilter = soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
+    afilters = soups.get_filters_child_of_common_ancestor(aitems1, aitems2)
+    afilter = soups.get_filter_most_common(afilters)
+
     if afilter:
         config['html']['url'] = url
         config['html']['table']['rows'] = afilter
@@ -313,10 +314,10 @@ def _build_next_page(soup, config, next_page=''):
             ancestors = soups.ancestors(citem.parent)
             aitem = None
             is_unique = False
-            while not is_unique and len(ancestors)>0:
+            while not is_unique and len(ancestors) > 0:
                 aitem = ancestors.pop()
                 afilter = soups.get_filter(aitem)
-                is_unique = soups.is_unique_filter(afilter,soup)
+                is_unique = soups.is_unique_filter(afilter, soup)
 
             aresults = soups.get_links(aitem)
             if aresults:
@@ -327,3 +328,4 @@ def _build_next_page(soup, config, next_page=''):
             config['html']['page']['rows']['class'] = afilter['class']
             config['html']['page']['index'] = aindex
     return config
+
