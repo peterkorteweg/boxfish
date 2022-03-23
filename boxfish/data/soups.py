@@ -235,7 +235,9 @@ def set_urls(aitem, url):
         if url:
             results = titem.find_all('a')
             for aitem in results:
-                aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
+                if 'href' in aitem.attrs:
+                    if not urls.is_valid_http(aitem['href']):
+                        aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
     else:
         titem = None
     return titem
