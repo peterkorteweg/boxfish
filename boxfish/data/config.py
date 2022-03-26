@@ -300,12 +300,17 @@ def _build_next_page(soup, config, next_page=''):
 
     """
     if len(next_page) > 0:
+        # Create next_page string
         if utils.urls.is_valid_http(next_page):
             durl = utils.urls.get_components(next_page)
             next_page = durl['path']
+            if len(durl['query']) > 0:
+                next_page = next_page + '?' + durl['query']
         next_page = next_page.lstrip('/')
 
-        citem = soup.find('a', href=re.compile(next_page))
+        # Find next_page tag
+        next_page_regex = utils.strings.re_literals(next_page)
+        citem = soup.find('a', href=re.compile(next_page_regex))
         if citem:
             afilter = {'elem': '', 'class': []}
             aindex = -1
@@ -319,10 +324,11 @@ def _build_next_page(soup, config, next_page=''):
                 afilter = soups.get_filter(aitem)
                 is_unique = soups.is_unique_filter(afilter, soup)
 
-            aresults = soups.get_links(aitem)
+            aresults = aitem.find_all('a')
             if aresults:
-                aindex = aresults.index(next_page) - len(aresults)
+                aindex = aresults.index(citem) - len(aresults)
 
+            # Save ancestor filter and index
             config['html']['page']['id'] = ""
             config['html']['page']['rows']['elem'] = afilter['elem']
             config['html']['page']['rows']['class'] = afilter['class']
