@@ -376,7 +376,7 @@ def find_items(aitem, afilter=None, astr=''):
     Args:
         aitem(soup or tag or ResultSet): BS4 object
         afilter (dict): BS4 filter
-        astr (str): string or regular expressiom for filter on aitem.string
+        astr (str): string or regular expression for filter on aitem.string
 
     Returns:
         ritems (ResultSet): BS4 resultset
@@ -387,11 +387,13 @@ def find_items(aitem, afilter=None, astr=''):
     has_class = "class" in afilter
 
     if has_item and has_class:
-        ritems = aitem.find_all(afilter["elem"], class_=afilter["class"], string=astr)
+        class_ = ' '.join(afilter["class"])
+        ritems = aitem.find_all(afilter["elem"], class_=class_, string=astr)
     elif has_item and not has_class:
         ritems = aitem.find_all(afilter["elem"], string=astr)
     elif not has_item and has_class:
-        ritems = aitem.find_all(class_=afilter["class"], string=astr)
+        class_ = ' '.join(afilter["class"])
+        ritems = aitem.find_all(class_=class_, string=astr)
     else:
         ritems = aitem.find_all(True, string=astr)
     return ritems
@@ -416,11 +418,13 @@ def find_item(aitem, afilter=None, astr=''):
     has_class = "class" in afilter
 
     if has_item and has_class:
-        ritem = aitem.find(afilter["elem"], class_=afilter["class"], string=astr)
+        class_ = ' '.join(afilter["class"])
+        ritem = aitem.find(afilter["elem"], class_=class_, string=astr)
     elif has_item and not has_class:
         ritem = aitem.find(afilter["elem"], string=astr)
     elif not has_item and has_class:
-        ritem = aitem.find(class_=afilter["class"], string=astr)
+        class_ = ' '.join(afilter["class"])
+        ritem = aitem.find(class_=class_, string=astr)
     else:
         ritem = aitem.find(True, string=astr)
     return ritem
