@@ -123,6 +123,28 @@ def get_type(obj):
     return astr
 
 
+# Regex
+
+def re_literals(string):
+    """ Regex conversion of string creating literals for regex meta characters
+
+        restring = re_literals(string)
+
+        Args:
+            string (str): input string
+
+        Returns:
+            restring (str): Regex string
+        """
+    re_chars = ['\\', '^', '$', '.', '|', '?', '*', '+', '(', ')', '[', ']', '{', '}']
+    restring = string
+
+    for char in re_chars:
+        restring = restring.replace(char, '\\' + char)
+
+    return restring
+
+
 # Filenames
 def filename_append_date(filename, date_format=DATE_FILE):
     """ Filename with current date appended
