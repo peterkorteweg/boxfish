@@ -238,7 +238,10 @@ def set_urls(aitem, url):
             for aitem in results:
                 if 'href' in aitem.attrs:
                     if not urls.is_valid_http(aitem['href']):
-                        aitem['href'] = urls.replace_subpath(url, aitem['href'], -1)
+                        components = urls.get_components(aitem['href'])
+                        next_page_path = components['path']
+                        next_page_query = components['query']
+                        aitem['href'] = urls.set_components(url, path=next_page_path, query=next_page_query)
     else:
         titem = None
     return titem

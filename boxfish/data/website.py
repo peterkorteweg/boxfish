@@ -108,7 +108,10 @@ def extract_url_next_page(page, pnext_page, url):
         alinks = extract_table(page, pnext_page, url='')
         if alinks:
             alinks = lists.flatten(alinks)
-            url_next_page = urls.replace_subpath(url,alinks[index],-1)
+            components = urls.get_components(alinks[index])
+            next_page_path = components['path']
+            next_page_query = components['query']
+            url_next_page = urls.set_components(url, path=next_page_path, query=next_page_query)
     return  url_next_page
 
 
