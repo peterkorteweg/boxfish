@@ -595,6 +595,29 @@ def get_filter_most_common(afilters):
     return afilter
 
 
+def get_ancestor_unique_filter(aitem):
+    """ Get first ancestor of aitem which has a unique filter in soup
+
+        aancestor = get_ancestor_unique_filter(aitem)
+
+        Args:
+            aitem (tag): BS4 object
+
+        Returns:
+            aancestor (tag): BS4 object
+    """
+    aancestors = ancestors(aitem)
+    aancestor = None
+    is_unique = False
+    soup = find_soup(aitem)
+
+    while not is_unique and len(aancestors) > 0:
+        aancestor = aancestors.pop()
+        afilter = get_filter(aitem)
+        is_unique = is_unique_filter(afilter, soup)
+    return aancestor
+
+
 def remove_filters(afilters, elem=None, class_=None):
     """ Remove filter from afilters based on elem and/or class_
 

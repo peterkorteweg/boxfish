@@ -536,6 +536,26 @@ def test_get_filter_child_of_common_ancestor():
     assert afilter['elem'] == 'span' and afilter['class'] == ['']
 
 
+def test_get_filter_child_of_common_ancestor():
+    # TODO
+    pass
+
+
+def get_filter_most_common():
+    # TODO
+    pass
+
+
+def get_ancestor_unique_filter():
+    # TODO
+    pass
+
+
+def remove_filters():
+    # TODO
+    pass
+
+
 # Tree functions
 def test_common_ancestor():
     soup = boxfish.soups.get_soup(get_page(FILE_BOOKS))

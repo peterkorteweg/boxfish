@@ -293,7 +293,7 @@ def _build_next_page(soup, config, next_page=''):
         Args:
             soup (bs4.BeautifulSoup): A BS4 object of an HTML page
             config (dict): configuration
-            next_page ()
+            next_page (str): next page url
 
         Returns:
             config (dict): configuration
@@ -312,21 +312,14 @@ def _build_next_page(soup, config, next_page=''):
         next_page_regex = utils.strings.re_literals(next_page)
         citem = soup.find('a', href=re.compile(next_page_regex))
         if citem:
-            afilter = {'elem': '', 'class': []}
-            aindex = -1
-
             # Find ancestor with unique filter
-            ancestors = soups.ancestors(citem.parent)
-            aitem = None
-            is_unique = False
-            while not is_unique and len(ancestors) > 0:
-                aitem = ancestors.pop()
-                afilter = soups.get_filter(aitem)
-                is_unique = soups.is_unique_filter(afilter, soup)
-
-            aresults = aitem.find_all('a')
+            ancestor_unique = soups.get_ancestor_unique_filter(citem.parent)
+            afilter = soups.get_filter(ancestor_unique)
+            aresults = ancestor_unique.find_all('a')
             if aresults:
                 aindex = aresults.index(citem) - len(aresults)
+            else:
+                aindex = -1
 
             # Save ancestor filter and index
             config['html']['page']['id'] = ""
