@@ -9,7 +9,7 @@ from boxfish.utils.utils import read
 
 # BS4 Default example
 FILE_DORMOUSE = r'.\data\dormouse.html'
-ROWS_DORMOUSE = {"elem": "a", "class": "sister"}
+ROWS_DORMOUSE = {"elem": "a", "class": ["sister"]}
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
     <p class="title"><b>The Dormouse's story</b></p>
@@ -31,23 +31,25 @@ ID2_TREE = 'tree2'
 
 # Books to boxfish example
 FILE_BOOKS = r'.\data\bookstoscrape.html'
-ID_BOOKS = 'default'
+ID_BOOKS = {"elem": "body",
+            "class": ["default"]
+            }
 ROWS_PARENT_NAME_BOOKS = 'ol'
 ROWS_PARENT_CLASS_BOOKS = ['row']
 ROWS_BOOKS = {"elem": "li",
-              "class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"
+              "class": ["col-xs-6 col-sm-4 col-md-3 col-lg-3"]
               }
 COLS_BOOKS = [{"elem": "h3",
-               "class": ""
+               "class": [""]
                },
               {"elem": "p",
-               "class": "price_color"
+               "class": ["price_color"]
                }]
 COLS_BOOKS_NO_MATCH = [{"elem": "a",
-                        "class": "star-rating"
+                        "class": ["star-rating"]
                         },
                        {"elem": "a",
-                        "class": "price_color"
+                        "class": ["price_color"]
                         }]
 ITEMS_ON_PAGE_BOOKS = 20
 COLUMNS_BOOKS = 4
@@ -57,7 +59,7 @@ URL_BOOKS = 'http://books.toscrape.com'
 FILE_WIKI = r'.\data\ISO3166.html'
 LISTS_NUMBER_WIKI = 44
 
-LISTS_FILTER_WIKI = {"class": "vector-menu-content-list"}
+LISTS_FILTER_WIKI = {"class": ["vector-menu-content-list"]}
 LISTS_FILTER_NUMBER_WIKI = 11
 
 LISTS_FILTER_ELEM_WIKI = {"elem": "ul"}
@@ -377,7 +379,7 @@ def test_find_items_elem():
 
 def test_find_items_class():
     soup = boxfish.soups.get_soup(get_page())
-    afilter = {'class': 'sister'}
+    afilter = {'class': ['sister']}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 3
@@ -422,7 +424,7 @@ def test_find_item():
     assert boxfish.soups.is_tag(ritem2)
 
     # Class
-    afilter = {'class': 'sister'}
+    afilter = {'class': ['sister']}
     ritem3 = boxfish.soups.find_item(soup, afilter=afilter)
     assert boxfish.soups.is_tag(ritem3)
     assert ritem1 == ritem2 == ritem3
@@ -518,35 +520,7 @@ def test_get_filter():
     assert afilter['elem'] == 'b' and afilter['class'] == ['']
 
 
-def test_get_filter_child_of_common_ancestor():
-    soup = boxfish.soups.get_soup(get_page())
-
-    # Example child of ancestor is item
-    aitem1 = soup.find(id="link1")
-    aitem2 = soup.find(id="link2")
-    afilter = boxfish.soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
-    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
-
-    # Example child of ancestor is ancestor of item
-    soup = boxfish.soups.get_soup(get_page(FILE_TREE))
-    atree2 = soup.find(id=ID2_TREE)
-    aitem1 = atree2.find(id='CT')
-    aitem2 = atree2.find(id='FT')
-    afilter = boxfish.soups.get_filter_child_of_common_ancestor(aitem1, aitem2)
-    assert afilter['elem'] == 'span' and afilter['class'] == ['']
-
-
-def test_get_filter_child_of_common_ancestor():
-    # TODO
-    pass
-
-
 def get_filter_most_common():
-    # TODO
-    pass
-
-
-def get_ancestor_unique_filter():
     # TODO
     pass
 
@@ -582,6 +556,11 @@ def test_common_ancestor():
     aitem2 = BeautifulSoup('<body>', 'html.parser').find("body")
     ritem = boxfish.soups.common_ancestor(aitem1, aitem2)
     assert ritem is None
+
+
+def test_common_ancestors():
+    # TODO
+    pass
 
 
 def test_ancestors():
@@ -663,6 +642,46 @@ def test_position():
     # Include_navs = True
     idx = boxfish.soups.position(aitem1, include_navs=True)
     assert idx == 1
+
+
+def test_get_child_of_common_ancestor():
+    soup = boxfish.soups.get_soup(get_page())
+
+    # Example child of ancestor is item
+    aitem1 = soup.find(id="link1")
+    aitem2 = soup.find(id="link2")
+    achild = boxfish.soups.get_child_of_common_ancestor(aitem1, aitem2)
+    afilter = boxfish.soups.get_filter(achild)
+    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+
+    # Example child of ancestor is ancestor of item
+    soup = boxfish.soups.get_soup(get_page(FILE_TREE))
+    atree2 = soup.find(id=ID2_TREE)
+    aitem1 = atree2.find(id='CT')
+    aitem2 = atree2.find(id='FT')
+    achild = boxfish.soups.get_child_of_common_ancestor(aitem1, aitem2)
+    afilter = boxfish.soups.get_filter(achild)
+    assert afilter['elem'] == 'span' and afilter['class'] == ['']
+
+
+def test_get_child_of_common_ancestors():
+    # TODO
+    pass
+
+
+def get_ancestor_unique_filter():
+    # TODO
+    pass
+
+
+def test_get_ancestors_unique_filter():
+    # TODO
+    pass
+
+
+def test_get_parents():
+    # TODO
+    pass
 
 
 # Tree extraction functions
@@ -928,14 +947,14 @@ def test_is_unique_filter():
 
     afilter = ROWS_DORMOUSE
     nonfilter = {'elem': 'hello'}
-    afilter_zero = {'elem': 'a', 'class': 'brother'}
-    afilter_one = {'elem': 'p', 'class': 'title'}
+    afilter_zero = {'elem': 'a', 'class': ['brother']}
+    afilter_one = {'elem': 'p', 'class': ['title']}
     results = boxfish.soups.find_items(soup, afilter)
 
     aitem = soup.find('body')
 
     # False, filter is not a filter
-    assert not boxfish.soups.is_unique_filter(nonfilter,soup)
+    assert not boxfish.soups.is_unique_filter(nonfilter, soup)
 
     # False, aitem is not a tag or soup
     assert not boxfish.soups.is_unique_filter(afilter, results)
@@ -1007,7 +1026,7 @@ def test_xpaths():
     assert len(alist) == 11
 
     # Test item
-    afilter = {'elem': 'p', 'class': 'story'}
+    afilter = {'elem': 'p', 'class': ['story']}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
 
     # Absolute

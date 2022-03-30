@@ -62,7 +62,9 @@ def create(url=''):
     config['html']['parser'] = 'html.parser'
 
     config['html']['table'] = dict.fromkeys(CONFIGTABLEKEYS, {})
-    config['html']['table']['id'] = ''
+    config['html']['table']['id'] = dict.fromkeys(['elem', 'class'], {})
+    config['html']['table']['id']['elem'] = ''
+    config['html']['table']['id']['class'] = ['']
     config['html']['table']['rows'] = dict.fromkeys(['elem', 'class'], {})
     config['html']['table']['rows']['elem'] = ''
     config['html']['table']['rows']['class'] = ['']
@@ -72,7 +74,7 @@ def create(url=''):
     config['html']['table']['search'] = SEARCH_NONE
 
     config['html']['page'] = dict.fromkeys(PAGEKEYS, {})
-    config['html']['page']['id'] = ''
+    config['html']['page']['id'] = {}
     config['html']['page']['rows'] = dict.fromkeys(['elem', 'class'], {})
     config['html']['page']['rows']['elem'] = ''
     config['html']['page']['rows']['class'] = ['']
@@ -243,46 +245,81 @@ def _build_table(soup, config, url='', rows=None, cols=None, search=SEARCH_STENC
     cols = [] if cols is None else cols
     search = SEARCH_STENCIL if search not in SEARCHTYPES else search
 
-    tf = False
+    if rows or cols:
+        # Get id filter
+        aitems1, aitems2 = _build_table_items(soup, rows, cols)
+        atags = soups.get_child_of_common_ancestors(aitems1, aitems2)
+        ancestors_unique = soups.get_ancestors_unique_filter(atags)
+        afilters = soups.get_filters(ancestors_unique)
+        afilter_id = soups.get_filter_most_common(afilters)
 
-    # Website rows
-    if len(rows) >= 2:
-        aitems1 = soups.find_items(soup, astr=re.compile(rows[0]))
-        aitems2 = soups.find_items(soup, astr=re.compile(rows[1]))
-    elif len(cols) >= 2:
-        aitems1 = soups.find_items(soup, astr=re.compile(cols[0]))
-        aitems2 = soups.find_items(soup, astr=re.compile(cols[1]))
-    else:
-        aitems1 = None
-        aitems2 = None
-
-    afilters = soups.get_filters_child_of_common_ancestor(aitems1, aitems2)
-    afilter = soups.get_filter_most_common(afilters)
-
-    if afilter:
-        config['html']['url'] = url
-        config['html']['table']['rows'] = afilter
-        tf = True
-
-    # Website columns
-    if tf and len(cols) > 0:
-        # TODO
-        # cols from dict to list
-        if search == SEARCH_NONE:
-            ritem = soups.find_item(soup, astr=re.compile(cols[0]))
-            adict = {}
-            for index, col in enumerate(cols):
-                citem = soups.find_item(ritem, astr=re.compile(col))
-                afilter = soups.get_filter(citem)
-                adict['col' + str(index + 1)] = afilter
-            config['html']['table']['cols'] = adict
-        elif search == SEARCH_STENCIL:
-            # TODO
-            config['html']['table']['cols'] = {}
+        if afilter_id:
+            config['html']['url'] = url
+            config['html']['table']['id'] = afilter_id
+            tf = True
         else:
-            # search == SEARCH_NAIVE:
-            config['html']['table']['cols'] = {}
+            tf = False
+
+        # Get rows filter
+        if tf:
+            aid = soups.find_item(soup, afilter=afilter_id)
+            aitems1, aitems2 = _build_table_items(aid, rows, cols)
+            atags = soups.get_child_of_common_ancestors(aitems1, aitems2)
+            afilters = soups.get_filters(atags)
+            afilter_rows = soups.get_filter_most_common(afilters)
+            if afilter_rows:
+                config['html']['table']['rows'] = afilter_rows
+            else:
+                tf = False
+
+        # Get cols filter
+        if tf and len(cols) > 0:
+            # TODO
+            # cols from dict to list
+            if search == SEARCH_NONE:
+                ritem = soups.find_item(soup, astr=re.compile(cols[0]))
+                adict = {}
+                for index, col in enumerate(cols):
+                    citem = soups.find_item(ritem, astr=re.compile(col))
+                    afilter = soups.get_filter(citem)
+                    adict['col' + str(index + 1)] = afilter
+                config['html']['table']['cols'] = adict
+            elif search == SEARCH_STENCIL:
+                # TODO
+                config['html']['table']['cols'] = {}
+            else:
+                # search == SEARCH_NAIVE:
+                config['html']['table']['cols'] = {}
+
     return config
+
+
+def _build_table_items(aitem, rows, cols):
+    """ Build table items
+
+        aitems1, aitems2 = _build_table_items(aitem, rows, cols)
+
+        Args:
+            aitem (soup or tag):
+            rows (list): list of strings from two rows
+            cols (list): list of strings from one or more columns
+        Returns:
+            aitems1 (list): list of items from first row or col
+            aitems2 (list): list of items from second row or col
+
+    """
+    aitems1 = None
+    aitems2 = None
+
+    if soups.is_tag(aitem) or soups.is_soup(aitem):
+        if len(rows) >= 2:
+            aitems1 = soups.find_items(aitem, astr=re.compile(rows[0]))
+            aitems2 = soups.find_items(aitem, astr=re.compile(rows[1]))
+        elif len(cols) >= 2:
+            aitems1 = soups.find_items(aitem, astr=re.compile(cols[0]))
+            aitems2 = soups.find_items(aitem, astr=re.compile(cols[1]))
+
+    return aitems1, aitems2
 
 
 def _build_next_page(soup, config, next_page=''):
@@ -322,7 +359,7 @@ def _build_next_page(soup, config, next_page=''):
                 aindex = -1
 
             # Save ancestor filter and index
-            config['html']['page']['id'] = ""
+            config['html']['page']['id'] = {}
             config['html']['page']['rows']['elem'] = afilter['elem']
             config['html']['page']['rows']['class'] = afilter['class']
             config['html']['page']['index'] = aindex

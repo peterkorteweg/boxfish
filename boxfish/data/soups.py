@@ -69,14 +69,14 @@ def get_soup(page):
     return soup
 
 
-def extract_table(soup, id='', rows=None, cols=None, include_strings=True, include_links=False):
+def extract_table(soup, id=None, rows=None, cols=None, include_strings=True, include_links=False):
     """ Extract table from soup
 
-    [atable] = extract_table(soup, id = "id", rows = rows, cols = cols)
+    [atable] = extract_table(soup, id = {}, rows = rows, cols = cols)
 
     Args:
         soup (bs4.BeautifulSoup): A BS4 object of an HTML page
-        id (str): Identifier of subset of soup
+        id (dict): dict with keys {'elem','class'}
         rows (dict): dict with keys {'elem','class'}
         cols (list): list of dict with keys {'elem','class'}
         include_strings (boolean): Include strings if true
@@ -87,10 +87,12 @@ def extract_table(soup, id='', rows=None, cols=None, include_strings=True, inclu
     """
 
     atable = []
+    id = {} if id is None else id
 
     if all(val is not None for val in [soup, rows]):
         # Extract rows
-        new_soup = soup.find(id=id) if id else None
+        # TODO Change ID
+        new_soup = find_item(soup, id) if id else None
         soup = new_soup if new_soup else soup
         results = find_items(soup, rows)
 
@@ -533,47 +535,19 @@ def get_filter(aitem):
     return afilter
 
 
-def get_filter_child_of_common_ancestor(aitem1, aitem2):
-    """ Get filter child of common ancestors
-        The filter is based on the first child of the common ancestor.
+def get_filters(aitems):
+    """ Get filter for aitem
 
-        afilter = get_filter_child_of_common_ancestor(soup, aitem1, aitem2)
+    alist = get_filters(aitem)
 
-        Args:
-            aitem1 (tag): BS4 object
-            aitem2 (tag): BS4 object
+    Args:
+        aitems(tag or resultset): BS4 object
 
-        Returns:
-            afilter (dict): BS4 filter
+    Returns:
+        alist(list): List of filters
     """
-    afilter = {}
-
-    aparent = common_ancestor(aitem1, aitem2)
-    if aparent:
-        alineage = lineage(aparent, aitem1)
-        aitem = alineage[0] if alineage else aitem1
-        if aitem:
-            afilter = get_filter(aitem)
-    return afilter
-
-
-def get_filters_child_of_common_ancestor(aitems1, aitems2):
-    """ Get filters child of common ancestors
-        The filters are based on the first child of the common ancestor for each pair of items
-
-        afilters = get_filters_child_of_common_ancestor(soup, aitem1, aitem2)
-
-        Args:
-            aitems1 (tag or ResultSet): BS4 object
-            aitems2 (tag or ResultSet): BS4 object
-
-        Returns:
-            afilters (list): List of BS4 filters (dict)
-    """
-    aresults1 = aitems1 if is_results(aitems1) else [aitems1]
-    aresults2 = aitems2 if is_results(aitems2) else [aitems2]
-
-    return [get_filter_child_of_common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
+    aresults = aitems if isinstance(aitems, list) else [aitems]
+    return [get_filter(aitem) for aitem in aresults]
 
 
 def get_filter_most_common(afilters):
@@ -593,29 +567,6 @@ def get_filter_most_common(afilters):
     tup = alist[0]
     afilter = dicts.loads(tup[0])
     return afilter
-
-
-def get_ancestor_unique_filter(aitem):
-    """ Get first ancestor of aitem which has a unique filter in soup
-
-        aancestor = get_ancestor_unique_filter(aitem)
-
-        Args:
-            aitem (tag): BS4 object
-
-        Returns:
-            aancestor (tag): BS4 object
-    """
-    aancestors = ancestors(aitem)
-    aancestor = None
-    is_unique = False
-    soup = find_soup(aitem)
-
-    while not is_unique and len(aancestors) > 0:
-        aancestor = aancestors.pop()
-        afilter = get_filter(aitem)
-        is_unique = is_unique_filter(afilter, soup)
-    return aancestor
 
 
 def remove_filters(afilters, elem=None, class_=None):
@@ -661,6 +612,24 @@ def common_ancestor(aitem1, aitem2):
             if p1 == p2:
                 aitem = p1
     return aitem
+
+
+def common_ancestors(aitems1, aitems2):
+    """ Return a list of common ancestor for all combinations in aitems1 and aitems2
+
+    ritem = common_ancestor(aitem1, aitem2)
+
+    Args:
+        aitems1 (tag or Resultset): BS4 tag
+        aitems2 (tag or Resultset): BS4 tag
+
+    Returns:
+        ritems (list): List of common ancestors
+    """
+    aresults1 = aitems1 if isinstance(aitems1, list) else [aitems1]
+    aresults2 = aitems2 if isinstance(aitems2, list) else [aitems2]
+
+    return [common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
 
 
 def ancestors(aitem):
@@ -739,6 +708,98 @@ def position(aitem, include_navs=False):
         achildren = children(aparent, include_navs=include_navs)
         idx = achildren.index(aitem)
     return idx
+
+
+def get_child_of_common_ancestor(aitem1, aitem2):
+    """ Get first child of common ancestor.
+
+        achild = get_child_of_common_ancestor(soup, aitem1, aitem2)
+
+        Args:
+            aitem1 (tag): BS4 object
+            aitem2 (tag): BS4 object
+
+        Returns:
+            achild (tag): First child of common ancestor
+    """
+    aitem = None
+
+    aparent = common_ancestor(aitem1, aitem2)
+    if aparent:
+        alineage = lineage(aparent, aitem1)
+        aitem = alineage[0] if alineage else aitem1
+    return aitem
+
+
+def get_child_of_common_ancestors(aitems1, aitems2):
+    """ Get first child of common ancestor.
+        Returns a list with all combinations of aitem1 and aitems2.
+
+        alist = get_child_of_common_ancestor(soup, aitem1, aitem2)
+
+        Args:
+            aitems1 (list): List of BS4 tags
+            aitems2 (list): List of BS4 tags
+
+        Returns:
+            alist (list): List with first child of common ancestor
+    """
+    aresults1 = aitems1 if isinstance(aitems1, list) else [aitems1]
+    aresults2 = aitems2 if isinstance(aitems2, list) else [aitems2]
+
+    return [get_child_of_common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
+
+
+def get_ancestor_unique_filter(aitem):
+    """ Get first ancestor of aitem which has a unique filter in soup
+
+        aancestor = get_ancestor_unique_filter(aitem)
+
+        Args:
+            aitem (tag): BS4 object
+
+        Returns:
+            aancestor (tag): BS4 object
+    """
+    aancestors = ancestors(aitem)
+    aancestor = None
+    is_unique = False
+    soup = find_soup(aitem)
+
+    while not is_unique and len(aancestors) > 0:
+        aancestor = aancestors.pop()
+        afilter = get_filter(aancestor)
+        is_unique = is_unique_filter(afilter, soup)
+    return aancestor
+
+
+def get_ancestors_unique_filter(aitems):
+    """ Get first ancestor of aitem which has a unique filter in soup
+
+        aancestors = get_ancestors_unique_filter(aitems)
+
+        Args:
+            aitems (list): BS4 object
+
+        Returns:
+            aancestors (list): BS4 object
+    """
+    aresults = aitems if isinstance(aitems, list) else [aitems]
+    return [get_ancestor_unique_filter(aitem) for aitem in aresults]
+
+
+def get_parents(aitems):
+    """ Get parent for each item in aitems
+
+         aparents = get_parents(aitems)
+
+         Args:
+             aitems (list): List of BS4 tags
+
+         Returns:
+             aparents (list): List of BS4 tags
+     """
+    return [aitem.parent for aitem in aitems]
 
 
 # Text extraction functions

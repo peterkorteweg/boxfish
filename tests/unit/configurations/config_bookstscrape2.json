@@ -24,7 +24,7 @@
         "url": "http://books.toscrape.com",
         "parser": "html.parser",
         "table": {
-            "id": "",
+            "id": {},
             "rows": {
                 "elem": "li",
                 "class": [
@@ -40,10 +40,11 @@
             "search": "none"
         },
         "page": {
-            "id": "",
+            "id": {}
+            },
             "rows": {
                 "elem": {},
-                "class": {}
+                "class": []
             },
             "index": -1
         }
