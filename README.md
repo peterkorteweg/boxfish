@@ -1,3 +1,5 @@
+<img src="D:\Projects\Python\projects\boxfish\boxfish.svg" width="100%" alt="">
+
 # boxfish: lightweight table extraction from HTML
 
 [![PyPI](https://img.shields.io/pypi/v/boxfish)](https://img.shields.io/pypi/v/boxfish)

@@ -1,3 +1,5 @@
+<img src="D:\Projects\Python\projects\boxfish\boxfish_horizontal.svg" width="100%">
+
 #Documentation
 
 Boxfish, a lightweight tool for table extraction from HTML pages.
