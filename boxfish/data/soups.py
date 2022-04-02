@@ -292,8 +292,8 @@ def unpack_hrefs(tag):
 
     for atag in results:
         if 'href' in atag.attrs:
-            astr = '<p>' + str(atag["href"]) + '</p>'
-            htag = BeautifulSoup(astr, 'html.parser').find("p")
+            astr = '<span>' + str(atag["href"]) + '</span>'
+            htag = BeautifulSoup(astr, 'html.parser').find("span")
             atag.append(htag)
 
 
