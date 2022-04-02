@@ -75,8 +75,12 @@ def extract_table(page, ptable, url=''):
         soup = soups.get_soup(page)
 
         if soup:
+            # Pre-processing
+            for s in soup.select('style'):
+                s.decompose()
             if url:
                 soup = soups.set_urls(soup, url)
+
             pparams = get_subset(ptable, config.TABLEKEYS)
             atable = soups.extract_table(soup, **pparams)
     return atable
