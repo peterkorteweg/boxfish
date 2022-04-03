@@ -297,12 +297,12 @@ def unpack_hrefs(tag):
             atag.append(htag)
 
 
-def remove_navigable_string_items(results):
-    """ Remove navigable string items from ResultSet
+def remove_navigable_strings(results):
+    """ Remove navigable strings from ResultSet
     The function removes list item of type Navigable String.
-    Tag items which contain Navigable Strings are not removed.
+    Tag items which contain navigable strings are not removed.
 
-    results = remove_navigable_string_items(results)
+    results = remove_navigable_strings(results)
 
     Args:
         results (ResultSet): BS4 ResultSet
@@ -314,6 +314,24 @@ def remove_navigable_string_items(results):
         if is_navigable_string(aitem):
             results.remove(aitem)
     return results
+
+
+def wrap_navigable_strings_not_unique_child(tag):
+    """ Wrap navigable strings into tags
+    The function wraps navigable string into a span tag if the navigable string
+    is not the only child of a tag.
+    The function changes the existing tag
+
+        wrap_navigable_strings_not_unique_child(tag)
+
+    Args:
+        tag (tag): BS4 tag
+
+    Returns:
+    """
+    for aitem in tag.descendants:
+        if is_navigable_string(aitem) and not aitem.parent.string:
+            aitem.wrap(tag.new_tag("span"))
 
 
 # I/O functions

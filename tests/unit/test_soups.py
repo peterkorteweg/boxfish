@@ -29,6 +29,11 @@ FILE_TREE = r'.\data\tree.html'
 ID1_TREE = 'tree1'
 ID2_TREE = 'tree2'
 
+# BS4 Navstring example
+FILE_SCRAPETHIS = r'.\data\scrapethis.html'
+ROWS_SCRAPETHIS = {"elem": "div", "class": ["col-md-4 country"]}
+
+
 # Books to boxfish example
 FILE_BOOKS = r'.\data\bookstoscrape.html'
 ID_BOOKS = {"elem": "body",
@@ -330,16 +335,30 @@ def test_unpack_hrefs():
     assert shref == shref2
 
 
-def test_remove_navigable_string():
+def test_remove_navigable_strings():
     soup = boxfish.soups.get_soup(get_page())
     tag = soup.find(id="link1")
     navstring = tag.string
     results = soup.find_all(class_="sister")
     results.append(navstring)
     len_with = len(results)
-    boxfish.soups.remove_navigable_string_items(results)
+    boxfish.soups.remove_navigable_strings(results)
     len_without = len(results)
     assert len_without == len_with - 1
+
+
+def test_wrap_navigable_strings_not_unique_child():
+    soup = boxfish.soups.get_soup(get_page(filename=FILE_SCRAPETHIS))
+    astring = re.compile("Antigua and Barbuda")
+
+    # Navstring cannot be found
+    tag = boxfish.soups.find_item(soup,astr=astring)
+    assert tag is None
+
+    # Navstring tag can be found
+    boxfish.soups.wrap_navigable_strings_not_unique_child(soup)
+    tag = boxfish.soups.find_item(soup,astr=astring)
+    assert tag is not None
 
 
 # I/O functions
