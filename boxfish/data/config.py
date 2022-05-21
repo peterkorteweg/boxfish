@@ -349,8 +349,9 @@ def _build_next_page(soup, config, next_page=''):
 
         # Find next_page tag
         next_page_regex = utils.strings.re_literals(next_page)
-        citem = soup.find('a', href=re.compile(next_page_regex))
-        if citem:
+        cresults = soup.find_all('a', href=re.compile(next_page_regex))
+        if len(cresults)>0:
+            citem = cresults[-1]
             # Find ancestor with unique filter
             ancestor_unique = soups.get_ancestor_unique_filter(citem.parent)
             afilter = soups.get_filter(ancestor_unique)
