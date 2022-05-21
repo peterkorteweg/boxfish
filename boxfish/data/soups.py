@@ -330,10 +330,17 @@ def wrap_navigable_strings(tag, empty=False):
 
     Returns:
     """
+    new_tags = []
     for aitem in tag.descendants:
         if is_navigable_string(aitem) and not aitem.parent.string:
             if empty or (aitem.string is not None and aitem.string !='\n'):
-                aitem.wrap(tag.new_tag("span"))
+                new_tag = tag.new_tag("span")
+                aitem.wrap(new_tag)
+                new_tags.append(new_tag)
+
+    #Strip new tags
+    for aitem in new_tags:
+        _ = aitem.string.replace_with(aitem.string.strip())
 
 
 # I/O functions
