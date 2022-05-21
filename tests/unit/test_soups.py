@@ -22,7 +22,12 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
 
     <p class="story">...</p>
     """
-
+PAGE_WRAP  = """<html>
+<body>
+    <i>Hello </i>World.
+    <b>This is Pizzicato </b>Five.
+</body>
+</html>"""
 
 # BS4 Tree example
 FILE_TREE = r'.\data\tree.html'
@@ -347,7 +352,7 @@ def test_remove_navigable_strings():
     assert len_without == len_with - 1
 
 
-def test_wrap_navigable_strings_not_unique_child():
+def test_wrap_navigable_strings():
     soup = boxfish.soups.get_soup(get_page(filename=FILE_SCRAPETHIS))
     astring = re.compile("Antigua and Barbuda")
 
@@ -356,9 +361,30 @@ def test_wrap_navigable_strings_not_unique_child():
     assert tag is None
 
     # Navstring tag can be found
-    boxfish.soups.wrap_navigable_strings_not_unique_child(soup)
+    boxfish.soups.wrap_navigable_strings(soup)
     tag = boxfish.soups.find_item(soup,astr=astring)
     assert tag is not None
+
+    ## Example with empty strings
+    soup = boxfish.soups.get_soup(PAGE_WRAP)
+    astring = ""
+
+    # Find all tags with a string
+    results_tags = boxfish.soups.find_items(soup, astr=astring)
+    assert len(results_tags) > 0
+
+    # Find all wrapped strings
+    boxfish.soups.wrap_navigable_strings(soup)
+    results_wrapped = boxfish.soups.find_items(soup, astr=astring)
+    assert len(results_wrapped) > len(results_tags)
+
+    # Find all wrapped strings, including empty strings
+    boxfish.soups.wrap_navigable_strings(soup, empty=True)
+    results_wrapped_empty = boxfish.soups.find_items(soup, astr=astring)
+    assert len(results_wrapped_empty) > len(results_wrapped)
+
+
+
 
 
 # I/O functions

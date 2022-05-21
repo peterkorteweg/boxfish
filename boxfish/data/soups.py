@@ -316,22 +316,24 @@ def remove_navigable_strings(results):
     return results
 
 
-def wrap_navigable_strings_not_unique_child(tag):
+def wrap_navigable_strings(tag, empty=False):
     """ Wrap navigable strings into tags
     The function wraps navigable string into a span tag if the navigable string
     is not the only child of a tag.
     The function changes the existing tag
 
-        wrap_navigable_strings_not_unique_child(tag)
+        wrap_navigable_strings(tag)
 
     Args:
         tag (tag): BS4 tag
+        empty (bool): Wrap empty strings if True
 
     Returns:
     """
     for aitem in tag.descendants:
         if is_navigable_string(aitem) and not aitem.parent.string:
-            aitem.wrap(tag.new_tag("span"))
+            if empty or (aitem.string is not None and aitem.string !='\n'):
+                aitem.wrap(tag.new_tag("span"))
 
 
 # I/O functions
