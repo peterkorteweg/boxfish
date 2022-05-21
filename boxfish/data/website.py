@@ -80,6 +80,7 @@ def extract_table(page, ptable, url=''):
                 s.decompose()
             if url:
                 soup = soups.set_urls(soup, url)
+            soups.wrap_navigable_strings(soup)
 
             pparams = get_subset(ptable, config.TABLEKEYS)
             atable = soups.extract_table(soup, **pparams)

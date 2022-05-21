@@ -188,6 +188,8 @@ def build(config=None, url='', rows=None, cols=None, search=SEARCH_STENCIL, next
     soup = soups.get_soup(page)
 
     if soup:
+        soups.wrap_navigable_strings(soup)
+
         config = _build_table(soup, config, url=url, rows=rows, cols=cols, search=search)
         config = _build_next_page(soup, config, next_page=next_page)
     return config
