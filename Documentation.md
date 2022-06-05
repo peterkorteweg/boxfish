@@ -116,7 +116,7 @@ config['driver']['headers'] = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win6
 
 **timeout**   
 Timeout for requests, in seconds. If no response is received before timeout, the
-reuqest is cancelled.
+request is cancelled.
 
 ``` python
 config['driver']['timeout'] = 10
