@@ -166,7 +166,9 @@ def _extract_data_from_driver(url, config, adriver):
     [ppage] = extract_values(phtml, ['page'])
 
     i_request = 0
-    for url_i in lists.to_list(url):
+    url = lists.to_list(url) if not isinstance(url, list) else url
+
+    for url_i in url:
         url_next = url_i
         url_pre = ['']
         while url_next not in url_pre:
