@@ -26,7 +26,7 @@ import boxfish as bf
 import pandas as pd
 
 # Define table layout of an url with strings from two rows.
-aurl =  
+aurl = ''
 row1 = ''
 row2 = ''
 
