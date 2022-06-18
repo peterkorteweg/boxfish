@@ -116,7 +116,13 @@ def extract_url_next_page(page, pnext_page, url):
             components = urls.get_components(alinks[index])
             next_page_path = components['path']
             next_page_query = components['query']
-            url_next_page = urls.set_components(url, path=next_page_path, query=next_page_query)
+            if '/' in next_page_path:
+                # Replace full path
+                url_next_page = urls.set_components(url, path=next_page_path, query=next_page_query)
+            else:
+                # Replace subpath
+                url_next_page = urls.replace_subpath(url, next_page_path, -1)
+                url_next_page = urls.set_components(url_next_page, query=next_page_query)
     return  url_next_page
 
 
