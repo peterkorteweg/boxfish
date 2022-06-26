@@ -1,4 +1,4 @@
-<img src="D:\Projects\Python\projects\boxfish\boxfish.svg" width="100%" alt="">
+<img src="boxfish.svg" width="100%" alt="">
 
 # boxfish: lightweight table extraction from HTML
 
