@@ -110,7 +110,7 @@ def extract_url_next_page(page, pnext_page, url):
         pnext_page['include_strings'] = False
         pnext_page['include_links'] = True
 
-        alinks = extract_table(page, pnext_page, url='')
+        alinks = extract_table(page, pnext_page, url)
         if alinks:
             alinks = lists.flatten(alinks)
             url_next_page = alinks[index]
