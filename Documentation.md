@@ -12,7 +12,7 @@ Boxfish, a lightweight tool for table extraction from HTML pages.
 - [Build a table configuration](#Build a table configuration)
 - [Build a next page configuration](#Build a next page configuration)
 
-[Extract a table](#Extract a table)  
+[Extract](#Extract a table)  
 [Examples](#Examples)
 
 
@@ -56,6 +56,7 @@ aconfig = bf.build(url=aurl)
 ```
 
 ## Get/set parameters
+
 Most parameters can be set directly as values in a dictionary. 
 
 ``` python
@@ -66,6 +67,7 @@ Keys that cannot be set directly, should be set with <code>build</code>. See
 [driver](#Driver), [html](#Html) and [output](#output) for a description of sub-keys that can be set directly.
 
 ## Driver
+
 Driver contains parameters for the driver to access the HTML page. Boxfish supports the driver packages
 `requests` and `selenium`. 
 
@@ -91,6 +93,7 @@ aconfig['driver']['sleep'] = {'1': 1, '200' : 3600}
 ```
 
 ### requests : dict
+
 A dictionary with parameters for the `requests` driver.
 
 | Parameter      | Description                  |
@@ -117,6 +120,7 @@ aconfig['driver']['timeout'] = 10
 ```
 
 ### selenium  : dict
+
 A dictionary with parameters for the `selenium` driver.
 
 | Parameter      | Description                   |
@@ -149,6 +153,7 @@ aconfig['driver']['selenium']['headless'] = True
 ```
 
 ## Html
+
 Html contains parameters to access table data on an HTML page. 
 
 | Parameter      | Description                   |
@@ -175,6 +180,7 @@ aconfig['html']['parser'] = 'html.parser'
 Parameters for [table](#Build a table configuration) and [page](#Build a next page configuration) are set with <code>build</code>. 
 
 ## Output
+
 Output contains parameters to save results to csv files. 
 
 | Parameter     | Description                   |
@@ -200,6 +206,7 @@ If False, append to existing file.
 If True, overwrite existing file. 
 
 ## Build a table configuration
+
 Use  <code>build</code> method to add a table configuration to a boxfish configuration.  
 
 ``` python
@@ -216,6 +223,7 @@ The url to HTML page that contains the table that you want to extract.
 Rows should contain two strings with text from two different rows of the table that you want to extract.
 
 ## Build a next page configuration
+
 Use <code>build</code> to add a next page configuration to a boxfish configuration.
 
 ``` python
@@ -235,6 +243,7 @@ An url that refers to the next page. The next page link must also be present on 
 [Top](#Documentation)
 
 # Extract a table
+
 Use <code>extract</code> method to extract a table from an HTML page. 
 
 ``` python
