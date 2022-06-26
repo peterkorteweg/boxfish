@@ -126,14 +126,14 @@ def test_replace_subpath():
     aurl = urls.replace_subpath(url_original, subpath, index)
     assert aurl_expected == aurl
 
-    #Index 0, original path is empty
+    # Index 0, original path is empty
     index = 0
     subpath = '/catalogue/page.html'
     aurl_expected = url_empty_path + subpath
     aurl = urls.replace_subpath(url_empty_path, subpath, index)
     assert aurl_expected == aurl
 
-    #Index 0, original path is empty
+    # Index 0, original path is empty
     index = 0
     subpath = 'page.html'
     aurl_expected = url_empty_path + '/' + subpath
@@ -171,6 +171,37 @@ def test_replace_subquery():
     subquery = 'query4=arg4'
     aurl_expected = 'http://user:pwd@NetLoc.com:80/p1;para/p2;para?query1=arg1&query2=arg2&query3=arg3&query4=arg4#frag'
     aurl = urls.replace_subquery(url_original, subquery)
+    assert aurl_expected == aurl
+
+
+def test_replace_relative_path():
+
+    # Full URL. Replaces path, removes existing query
+    url_original = 'http://user:pwd@NetLoc.com:80/p1;para/p2;para?query1=arg1&query2=arg2&query3=arg3#frag'
+    relative_path = '../index.html'
+    aurl_expected = 'http://user:pwd@NetLoc.com:80/index.html'
+    aurl = urls.update_relative_path(url_original, relative_path)
+    assert aurl_expected == aurl
+
+    # To scrape example - no directory
+    url_original = 'http://books.toscrape.com/catalogue/category/books/romance_8/index.html'
+    relative_path = 'index2.html'
+    aurl_expected = 'http://books.toscrape.com/catalogue/category/books/romance_8/index2.html'
+    aurl = urls.update_relative_path(url_original, relative_path)
+    assert aurl_expected == aurl
+
+    # To scrape example - single directory
+    url_original = 'http://books.toscrape.com/catalogue/category/books/romance_8/index.html'
+    relative_path = '../romance_7/index.html'
+    aurl_expected = 'http://books.toscrape.com/catalogue/category/books/romance_7/index.html'
+    aurl = urls.update_relative_path(url_original, relative_path)
+    assert aurl_expected == aurl
+
+    # To scrape example - directory
+    url_original = 'http://books.toscrape.com/catalogue/category/books/romance_8/index.html'
+    relative_path = '../../../chase-me-paris-nights-2_977/index.html'
+    aurl_expected = 'http://books.toscrape.com/catalogue/chase-me-paris-nights-2_977/index.html'
+    aurl = urls.update_relative_path(url_original, relative_path)
     assert aurl_expected == aurl
 
 

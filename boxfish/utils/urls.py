@@ -2,7 +2,7 @@
 
 """ urls contains functions to parse url strings """
 
-from urllib.parse import parse_qsl, urlencode, urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urljoin
 from boxfish.utils.dicts import get_subset, remove_nones
 from boxfish.utils.lists import reshape
 
@@ -62,14 +62,14 @@ def get_components(url):
 def replace_subpath(url, subpath, index):
     """ Replace subpath replaces a single subpath of the path of an url
 
-    url = replace_subpath(url, path=path, index=0)
+    url = replace_subpath(url, subpath, index=0)
 
     Args:
         url (str) : url
         subpath (str): subpath
         index (int): index of path between 0 and n-1 or between -1 and -n
     Returns:
-        url (str) : url
+        aurl (str) : url
     """
 
     aurl = url
@@ -89,13 +89,13 @@ def replace_subpath(url, subpath, index):
 def replace_subquery(url, subquery):
     """ Replace subquery replaces part of a query of an url
 
-    url = replace_subquery(url, subquery=query)
+    url = replace_subquery(url, subquery)
 
     Args:
         url (str) : url
         subquery (str or dict): sub query
     Returns:
-        url (str) : url
+        aurl (str) : url
     """
 
     adict = get_components(url)
@@ -104,6 +104,22 @@ def replace_subquery(url, subquery):
 
     dictquery = dict(dictquery, **dictsubquery)
     aurl = set_components(url, query=_dict_to_query(dictquery))
+    return aurl
+
+
+def update_relative_path(url, newpath):
+    """ Update url with a relative newpath.
+    Existing path and query are overwritten by newpath
+
+    url = update_path(url, newpath)
+
+    Args:
+        url (str) : url
+        newpath (str): subpath
+    Returns:
+        aurl (str) : url
+    """
+    aurl = urljoin(url,newpath)
     return aurl
 
 

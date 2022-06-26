@@ -113,16 +113,7 @@ def extract_url_next_page(page, pnext_page, url):
         alinks = extract_table(page, pnext_page, url='')
         if alinks:
             alinks = lists.flatten(alinks)
-            components = urls.get_components(alinks[index])
-            next_page_path = components['path']
-            next_page_query = components['query']
-            if '/' in next_page_path:
-                # Replace full path
-                url_next_page = urls.set_components(url, path=next_page_path, query=next_page_query)
-            else:
-                # Replace subpath
-                url_next_page = urls.replace_subpath(url, next_page_path, -1)
-                url_next_page = urls.set_components(url_next_page, query=next_page_query)
+            url_next_page = alinks[index]
     return  url_next_page
 
 

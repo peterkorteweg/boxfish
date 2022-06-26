@@ -103,7 +103,8 @@ def test_extract_table_incorrect_website():
     assert True
 
 
-def test_extract_url_next_page_live():
+def test_extract_url_next_page():
+    # Extract relative URL
     config = get_config(CONFIG_BOOKS)
 
     url = config['html']['url']
@@ -112,7 +113,7 @@ def test_extract_url_next_page_live():
     page = drivers.get_page(config['html']['url'])
 
     url_next = boxfish.website.extract_url_next_page(page, params, url)
-    assert url_next == url + '/catalogue/page-2.html'
+    assert url_next == 'catalogue/page-2.html'
 
 
 def test_save():

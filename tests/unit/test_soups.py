@@ -301,6 +301,8 @@ def test_set_urls():
     alink = aitem.find('a')
     asouplink = soup.find('a')
 
+    # Case 1: relative links
+
     # Item
     titem = boxfish.soups.set_urls(aitem, URL_BOOKS)
     tlink = titem.find('a')
@@ -314,6 +316,23 @@ def test_set_urls():
     tsoup = boxfish.soups.set_urls(soup, URL_BOOKS)
     tsouplink = tsoup.find('a')
     assert tsouplink['href'] == URL_BOOKS + '/' + asouplink['href']
+
+    # Case 2: relative link with paths up
+    # 'http://books.toscrape.com'
+    url_current = URL_BOOKS + '/path1/path2/index.html'
+    name_html = 'welcome.html'
+
+    # Current folder
+    ahref = name_html
+    alink['href'] = ahref
+    tlink = boxfish.soups.set_urls(alink, url_current)
+    assert tlink['href'] == URL_BOOKS + '/path1/path2/' + name_html
+
+    # One folder up
+    ahref = '../path3/' + name_html
+    alink['href'] = ahref
+    tlink = boxfish.soups.set_urls(alink, url_current)
+    assert tlink['href'] == URL_BOOKS + '/path1/path3/' + name_html
 
 
 # Conversion functions

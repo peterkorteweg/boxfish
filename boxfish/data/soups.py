@@ -237,13 +237,11 @@ def set_urls(aitem, url):
         titem = copy.copy(aitem)
         if url:
             results = titem.find_all('a')
+            results.append(titem)
             for aitem in results:
                 if 'href' in aitem.attrs:
                     if not urls.is_valid_http(aitem['href']):
-                        components = urls.get_components(aitem['href'])
-                        next_page_path = components['path']
-                        next_page_query = components['query']
-                        aitem['href'] = urls.set_components(url, path=next_page_path, query=next_page_query)
+                        aitem['href'] = urls.update_relative_path(url, aitem['href'])
     else:
         titem = None
     return titem
@@ -333,12 +331,12 @@ def wrap_navigable_strings(tag, empty=False):
     new_tags = []
     for aitem in tag.descendants:
         if is_navigable_string(aitem) and not aitem.parent.string:
-            if empty or (aitem.string is not None and aitem.string !='\n'):
+            if empty or (aitem.string is not None and aitem.string != '\n'):
                 new_tag = tag.new_tag("span")
                 aitem.wrap(new_tag)
                 new_tags.append(new_tag)
 
-    #Strip new tags
+    # Strip new tags
     for aitem in new_tags:
         _ = aitem.string.replace_with(aitem.string.strip())
 
