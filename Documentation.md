@@ -267,7 +267,7 @@ import pandas as pd
 aurl = 'https://www.scrapethissite.com/pages/simple/'
 arows = ['Andorra', 'Antigua and Barbuda']
 
-aconfig = bf.build(config=aconfig, url=aurl, rows=arows)
+aconfig = bf.build(url=aurl, rows=arows)
 
 data = bf.extract(url=aurl, config=aconfig)
 df = pd.DataFrame(data)
@@ -279,7 +279,7 @@ df.head()
 ``` python
 aurl = 'https://www.scrapethissite.com/pages/forms/?page_num=1'
 arows = ['Boston Bruins', 'Buffalo Sabres']
-aconfig = bf.build(config=aconfig, url=aurl, rows=arows)
+aconfig = bf.build(url=aurl, rows=arows)
 
 next_page = 'https://www.scrapethissite.com/pages/forms/?page_num=2'
 aconfig = bf.build(config=aconfig, next_page=next_page)
@@ -298,7 +298,7 @@ df.head()
 aurl = 'https://books.toscrape.com/'
 arows = ['A Light in the ...', 'Tipping the Velvet']
 
-aconfig = bf.build(config=aconfig, url=aurl, rows=arows)
+aconfig = bf.build(url=aurl, rows=arows)
 
 # Extract table from another page
 aurl = 'https://books.toscrape.com/catalogue/category/books/nonfiction_13/index.html' 
