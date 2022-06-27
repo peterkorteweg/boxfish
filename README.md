@@ -42,7 +42,7 @@ df.head()
 ```
 
 ### Where to get it?
-Boxfish is available on [Pypi](https://pypi.org/project/boxfish/) and [Github](https://github.com/peterkorteweg).
+Boxfish is available on [Pypi](https://pypi.org/project/boxfish/) and [Github](https://github.com/peterkorteweg/boxfish/).
 
 ```
 pip install boxfish
