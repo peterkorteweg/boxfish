@@ -6,13 +6,13 @@ Boxfish, a lightweight tool for table extraction from HTML pages.
 
 # Contents 
 
-[Quick Start](#Quick Start)   
-[Build a configuration](#Build a configuration)  
-- [Get/set parameters](#Get/set parameters)
-- [Build a table configuration](#Build a table configuration)
-- [Build a next page configuration](#Build a next page configuration)
+[Quick Start](#quick-start)   
+[Build a configuration](#build-a-configuration)  
+- [Get/set parameters](#get/set-parameters)
+- [Build a table configuration](#build-a-table-configuration)
+- [Build a next page configuration](#build-a-next-page-configuration)
 
-[Extract](#Extract a table)  
+[Extract](#Extract-a-table)  
 [Examples](#Examples)
 
 
