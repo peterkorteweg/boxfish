@@ -15,7 +15,7 @@ setup(
     description="A lightweight tool for table extraction from HTML pages.",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/",
+    url="https://github.com/peterkorteweg/boxfish/",
     author="Peter Korteweg",
     author_email="boxfish@peterkorteweg.com",
     license="MIT",
