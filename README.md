@@ -58,7 +58,7 @@ The main dependencies are:
 
 
 ### License
-Boxfish is available with an [MIT license](LICENSE).
+Boxfish is available with an [MIT license](https://github.com/peterkorteweg/boxfish/blob/main/LICENSE).
 
 ### Limitations
 
@@ -68,6 +68,6 @@ text of interest, open the page in a browser, then access the HTML in the develo
 
 ### Documentation
 
-Full documentation is available [here](./Documentation.md).
+Full documentation is available [here](https://github.com/peterkorteweg/boxfish/blob/main/Documentation.md).
 
 
