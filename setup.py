@@ -54,5 +54,5 @@ setup(
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
-    # install_requires=['requests'],  # Optional
+    install_requires=['requests','beautifulsoup4','selenium','lxml'],  # Optional
 )
