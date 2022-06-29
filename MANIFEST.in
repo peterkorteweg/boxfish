@@ -1,3 +1,1 @@
 include boxfish/VERSION
-graft boxfish/data
-graft boxfish/utils
