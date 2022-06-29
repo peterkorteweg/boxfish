@@ -47,6 +47,8 @@ setup(
     #package_dir={'': 'boxfish'},  # Required
     packages=find_packages(),  # Required
 
+    package_data={'boxfish': ['VERSION']},
+
     python_requires='>=3.6',
 
     # This field lists other packages that your project depends on to run.
