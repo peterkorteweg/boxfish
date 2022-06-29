@@ -113,7 +113,7 @@ def test_extract_url_next_page():
     page = drivers.get_page(config['html']['url'])
 
     url_next = boxfish.website.extract_url_next_page(page, params, url)
-    assert url_next == 'catalogue/page-2.html'
+    assert url_next == 'http://books.toscrape.com/catalogue/page-2.html'
 
 
 def test_save():
