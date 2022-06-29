@@ -44,7 +44,7 @@ setup(
 
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={'': 'boxfish'},  # Required
+    #package_dir={'': 'boxfish'},  # Required
     packages=find_packages(),  # Required
 
     python_requires='>=3.6',
