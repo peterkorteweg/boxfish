@@ -4,16 +4,14 @@
 
 import pathlib
 
-from . import data
-
 # Main modules
-from data import config
-from data import soups
-from data import website
+from boxfish.data import config
+from boxfish.data import soups
+from boxfish.data import website
 
 # Main functions
-from data.config import build, create
-from data.website import extract
+from boxfish.data.config import build, create
+from boxfish.data.website import extract
 
 # Version
 __version__ = (pathlib.Path(__file__).parent / "VERSION").read_text()
