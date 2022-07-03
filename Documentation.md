@@ -28,7 +28,7 @@ row1 = ''
 row2 = ''
 
 # Build a configuration 
-aconfig = bf.build(url=aurl, astr = [row1, row2])
+aconfig = bf.build(url=aurl, rows = [row1, row2])
 
 # Extract a table
 data = bf.extract(aconfig, url=aurl)
