@@ -156,7 +156,7 @@ def reshape(*args):
 
 
 def to_csv(alist, filename, date_format='', overwrite=False, header=None, quoting=csv.QUOTE_NONNUMERIC):
-    """ Save list to csv file
+    """ Save list to csv file. Dictionaries are converted to lists without key validation.
 
     fullname = to_csv(alist, filename, date_format, overwrite)
 
@@ -166,7 +166,7 @@ def to_csv(alist, filename, date_format='', overwrite=False, header=None, quotin
         # Optional
         date_format (str): Date format in strftime format. Date is added to filename
         overwrite (bool): Overwrite existing file if True else append
-        header (list): Header
+        header (list): Column headers
         quoting (int): CSV quoting constant
     Returns:
         fullname: Full filename including date
@@ -178,17 +178,17 @@ def to_csv(alist, filename, date_format='', overwrite=False, header=None, quotin
         create_folder_if_not_exist(os.path.dirname(filename))
         fullname = filename_append_date(filename, date_format)
 
-        if os.path.exists(fullname) and not overwrite:
-            with open(fullname, 'a', newline='', encoding='utf-8') as f:
-                csv_writer = csv.writer(f, quoting=quoting)
-                if not is_empty(header):
-                    csv_writer.writerow(header)
-                csv_writer.writerows(alist)
-        else:
-            with open(fullname, 'wt', newline='', encoding='utf-8') as f:
-                csv_writer = csv.writer(f, quoting=quoting)
-                if header:
-                    csv_writer.writerow(header)
+        read_mode = 'a' if os.path.exists(fullname) and not overwrite else 'wt'
+        read_dict = True if alist and isinstance(alist, list) and isinstance(alist[0], dict) else False
+
+        with open(fullname, read_mode, newline='', encoding='utf-8') as f:
+            csv_writer = csv.writer(f, quoting=quoting)
+            if header:
+                csv_writer.writerow(header)
+            if read_dict:
+                for arow in alist:
+                    csv_writer.writerow(arow.values())
+            else:
                 csv_writer.writerows(alist)
     else:
         fullname = ''

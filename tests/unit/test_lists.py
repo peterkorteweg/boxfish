@@ -207,7 +207,7 @@ def test_to_csv_from_csv():
     header = ['Col1', 'Col2', 'Col3']
     filename = r'.\results\test_to_csv.csv'
 
-    # 1A. Write data. Example wihtout date and header
+    # 1A. Write data. Example without date and header
     fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=[])
     assert fullname == filename
     assert os.path.exists(fullname)
@@ -216,7 +216,7 @@ def test_to_csv_from_csv():
     alist_read = lists.from_csv(filename)
     assert alist_read == alist
 
-    # 2A. Write data. Example wihtout date and with header
+    # 2A. Write data. Example without date and with header
     fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
     # 2B. Read data
     alist_read = lists.from_csv(filename)
@@ -229,7 +229,19 @@ def test_to_csv_from_csv():
     # 3B. Read data
     alist_read = lists.from_csv(filename)
     alist_read.pop(0)
-    len(alist_read) == 2* len(alist)
+    assert len(alist_read) == 2* len(alist)
+
+    # 4A. Write list of dicts based on internal header
+    alist = []
+    blist = {'Col1':1,'Col2':2,'Col3':3}
+    clist = {'Col1':2,'Col2':4,'Col3':6}
+    alist.append(blist)
+    alist.append(clist)
+    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
+
+    # 4A. Write list of dicts based with extended header
+    header = ['Col1', 'Col2', 'Col3', 'Col4']
+    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
 
     # Clean up
     if os.path.exists(fullname):
