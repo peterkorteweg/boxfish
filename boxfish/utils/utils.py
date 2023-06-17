@@ -132,7 +132,7 @@ def write_json(filename, ajson, encoding='utf-8', indent=4):
 
 
 def flip(filename1, filename2):
-    """ Flips to files.
+    """ Flips two files.
 
         flip(filename1, filename2)
 
