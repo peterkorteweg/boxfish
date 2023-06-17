@@ -5,10 +5,7 @@
 import pathlib
 
 # Main modules
-from boxfish.data import config
-from boxfish.data import soups
-from boxfish.data import website
-
+from boxfish.data import config, soups, website
 # Main functions
 from boxfish.data.config import build, create
 from boxfish.data.website import extract

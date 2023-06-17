@@ -2,7 +2,8 @@
 
 """ urls contains functions to parse url strings """
 
-from urllib.parse import parse_qsl, urlencode, urlsplit, urljoin
+from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit
+
 from boxfish.utils.dicts import get_subset, remove_nones
 from boxfish.utils.lists import reshape
 

@@ -4,6 +4,7 @@
 
 import csv
 import os
+
 from boxfish.utils.strings import filename_append_date
 from boxfish.utils.utils import create_folder_if_not_exist
 

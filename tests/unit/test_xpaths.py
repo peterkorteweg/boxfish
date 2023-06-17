@@ -1,7 +1,7 @@
 # test_xpaths.py
 
-from boxfish.utils.utils import read
 from boxfish.utils import xpaths
+from boxfish.utils.utils import read
 
 # BS4 Default example
 FILE_DORMOUSE = r".\data\dormouse.html"

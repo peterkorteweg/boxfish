@@ -16,8 +16,8 @@ FILTERKEYS = ['elem', 'class']
 
 """
 
-import copy
 import collections
+import copy
 
 import bs4
 from bs4 import BeautifulSoup

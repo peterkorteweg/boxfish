@@ -1,9 +1,11 @@
 # test_soups.py
 
-import bs4
-from bs4 import BeautifulSoup
 import copy
 import re
+
+import bs4
+from bs4 import BeautifulSoup
+
 import boxfish
 from boxfish.utils.utils import read
 

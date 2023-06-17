@@ -2,11 +2,9 @@
 
 """ Website is a module that contains functions for extracting tables from websites. """
 
-from boxfish.data import config
-from boxfish.data import soups
-
-from boxfish.utils.dicts import extract_values, get_subset
+from boxfish.data import config, soups
 from boxfish.utils import drivers, lists, urls
+from boxfish.utils.dicts import extract_values, get_subset
 
 
 # Main functions

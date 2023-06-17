@@ -1,10 +1,12 @@
 # test_drivers.py
 
-import boxfish
-from boxfish.utils import drivers
+import time
+
 import requests
 from selenium import webdriver
-import time
+
+import boxfish
+from boxfish.utils import drivers
 
 PAGE_URL = "http://books.toscrape.com"
 PAGE_FILE = r".\data\bookstoscrape.html"

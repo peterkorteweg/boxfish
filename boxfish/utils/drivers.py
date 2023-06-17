@@ -3,8 +3,10 @@
 """Drivers is a module that contains functions to access HTML pages via HTTP."""
 
 import os
+
 import requests
 from selenium import webdriver
+
 from boxfish.utils import dicts, times, urls, utils
 
 DRIVERKEYS = ["package", "sleep", "requests", "selenium"]

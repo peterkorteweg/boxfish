@@ -1,7 +1,8 @@
 # test_lists.py
 
-from boxfish.utils import lists
 import os
+
+from boxfish.utils import lists
 
 
 # General

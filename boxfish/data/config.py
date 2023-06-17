@@ -8,8 +8,8 @@ import pathlib
 import re
 import shutil
 
-from boxfish.data import soups
 from boxfish import utils
+from boxfish.data import soups
 
 SEARCH_NAIVE = "naive"
 SEARCH_STENCIL = "tree"

@@ -1,7 +1,8 @@
 # create_configs.py
 
-import boxfish as bf
 import pandas as pd
+
+import boxfish as bf
 
 # BOOKSTOSCRAPE
 url = "http://books.toscrape.com"

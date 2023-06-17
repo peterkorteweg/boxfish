@@ -1,7 +1,8 @@
 # test_times.py
 
-from boxfish.utils import times
 import time
+
+from boxfish.utils import times
 
 
 # Strings

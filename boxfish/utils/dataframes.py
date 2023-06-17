@@ -6,7 +6,9 @@
 
 import csv
 import os
+
 import pandas as pd
+
 from boxfish.utils.strings import filename_append_date
 from boxfish.utils.utils import create_folder_if_not_exist
 
