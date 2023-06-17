@@ -17,4 +17,4 @@ from boxfish.data.website import extract
 __version__ = (pathlib.Path(__file__).parent / "VERSION").read_text()
 
 # Initialization
-print('Initializing boxfish ...')
+print("Initializing boxfish ...")

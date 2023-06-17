@@ -3,7 +3,7 @@
 import boxfish
 from boxfish.utils import drivers, utils
 
-FILE_DORMOUSE = r'.\data\dormouse.html'
+FILE_DORMOUSE = r".\data\dormouse.html"
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
     <p class="title"><b>The Dormouse's story</b></p>
@@ -17,23 +17,23 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <p class="story">...</p>
     """
 
-FILE_NARREN = r'.\data\narren.html'
-CONFIG_NARREN = r'.\\configurations\config_narrenschip_test.json'
+FILE_NARREN = r".\data\narren.html"
+CONFIG_NARREN = r".\\configurations\config_narrenschip_test.json"
 
-FILE_BOOKS = r'.\data\bookstoscrape.html'
-CONFIG_BOOKS = r'.\\configurations\config_bookstoscrape.json'
+FILE_BOOKS = r".\data\bookstoscrape.html"
+CONFIG_BOOKS = r".\\configurations\config_bookstoscrape.json"
 
 # Helper functions
 def get_config(filename=CONFIG_BOOKS):
-    if filename is '':
-        config = boxfish.config.create('')
+    if filename is "":
+        config = boxfish.config.create("")
     else:
         config = boxfish.config.read(filename)
     return config
 
 
-def get_page(filename=''):
-    if filename is '':
+def get_page(filename=""):
+    if filename is "":
         page = PAGE_DORMOUSE
     else:
         page = utils.read(filename)
@@ -69,25 +69,25 @@ def test_extract_table():
     # Happy flow
     page = get_page(FILE_BOOKS)
     config = get_config(CONFIG_BOOKS)
-    ptable = config['html']['table']
+    ptable = config["html"]["table"]
     atable = boxfish.website.extract_table(page, ptable)
     assert len(atable) > 0
 
 
 def test_extract_table_empty_page():
     # Empty page
-    page = ''
+    page = ""
     config = get_config(CONFIG_BOOKS)
-    ptable = config['html']['table']
+    ptable = config["html"]["table"]
     atable = boxfish.website.extract_table(page, ptable)
     assert len(atable) == 0
 
 
 def test_extract_table_incorrect_page():
     # Incorrect page string
-    page = 'Incorrect'
+    page = "Incorrect"
     config = get_config(CONFIG_BOOKS)
-    html = config['html']
+    html = config["html"]
     atable = boxfish.website.extract_table(page, html)
     assert len(atable) == 0
 
@@ -107,13 +107,13 @@ def test_extract_url_next_page():
     # Extract relative URL
     config = get_config(CONFIG_BOOKS)
 
-    url = config['html']['url']
-    params = config['html']['page']
+    url = config["html"]["url"]
+    params = config["html"]["page"]
 
-    page = drivers.get_page(config['html']['url'])
+    page = drivers.get_page(config["html"]["url"])
 
     url_next = boxfish.website.extract_url_next_page(page, params, url)
-    assert url_next == 'http://books.toscrape.com/catalogue/page-2.html'
+    assert url_next == "http://books.toscrape.com/catalogue/page-2.html"
 
 
 def test_save():
@@ -125,8 +125,8 @@ def test__extract_data_from_driver_live():
     # Happy flow, single page
     # data = _extract_data_from_driver(url, config, adriver)
     config = get_config(CONFIG_BOOKS)
-    url = config['html']['url']
-    adriver = drivers.driver_start(config['driver'])
+    url = config["html"]["url"]
+    adriver = drivers.driver_start(config["driver"])
     data = boxfish.website._extract_data_from_driver(url, config, adriver)
     drivers.driver_stop(adriver)
     assert len(data) > 0

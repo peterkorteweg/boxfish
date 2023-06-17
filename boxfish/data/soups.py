@@ -28,7 +28,7 @@ from boxfish.utils.xpaths import split as xsplit
 
 # Main functions
 def get_page(aitem):
-    """ Get page from soup, tag or ResultSet object
+    """Get page from soup, tag or ResultSet object
 
     page = get_page(bitem)
 
@@ -51,7 +51,7 @@ def get_page(aitem):
 
 
 def get_soup(page):
-    """ Get soup object from page
+    """Get soup object from page
 
     soup = get_soup(page)
 
@@ -63,14 +63,16 @@ def get_soup(page):
     """
 
     if page is not None:
-        soup = BeautifulSoup(page, 'lxml')
+        soup = BeautifulSoup(page, "lxml")
     else:
         soup = None
     return soup
 
 
-def extract_table(soup, id=None, rows=None, cols=None, include_strings=True, include_links=False):
-    """ Extract table from soup
+def extract_table(
+    soup, id=None, rows=None, cols=None, include_strings=True, include_links=False
+):
+    """Extract table from soup
 
     [atable] = extract_table(soup, id = {}, rows = rows, cols = cols)
 
@@ -97,12 +99,14 @@ def extract_table(soup, id=None, rows=None, cols=None, include_strings=True, inc
         results = find_items(soup, rows)
 
         # Extract columns of all rows
-        atable = to_table(results, cols, include_strings=include_strings, include_links=include_links)
+        atable = to_table(
+            results, cols, include_strings=include_strings, include_links=include_links
+        )
     return atable
 
 
 def to_table(aitem, cols=None, include_strings=True, include_links=False):
-    """ Convert aitem to a table
+    """Convert aitem to a table
 
     [atable] = to_table(aitem, cols=None, include_strings=True, include_links=False)
 
@@ -121,7 +125,12 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
         aitem = [aitem]
 
     for record in aitem:
-        row = get_text(record, cols=cols, include_strings=include_strings, include_links=include_links)
+        row = get_text(
+            record,
+            cols=cols,
+            include_strings=include_strings,
+            include_links=include_links,
+        )
         if not lists.is_empty(row):
             atable.append(row)
 
@@ -130,7 +139,7 @@ def to_table(aitem, cols=None, include_strings=True, include_links=False):
 
 # Editing functions - deep copy
 def set_base(page, url):
-    """ Set <base> in page with url
+    """Set <base> in page with url
 
     [bpage] = set_base(page, url)
 
@@ -145,15 +154,15 @@ def set_base(page, url):
     asoup = get_soup(page)
 
     # Set base
-    abase = asoup.find('base')
+    abase = asoup.find("base")
     if not abase:
-        abase = asoup.new_tag('base')
+        abase = asoup.new_tag("base")
     abase["href"] = url
 
     # Add base to head
-    ahead = asoup.find('head')
+    ahead = asoup.find("head")
     if not ahead:
-        ahead = asoup.new_tag('head')
+        ahead = asoup.new_tag("head")
         asoup.append(ahead)
     ahead.append(abase)
 
@@ -162,7 +171,7 @@ def set_base(page, url):
 
 
 def split(soup):
-    """ Split HTML soup into objects meta and body. Meta and body are deep copies.
+    """Split HTML soup into objects meta and body. Meta and body are deep copies.
 
     [meta, body] = split(soup)
 
@@ -181,15 +190,15 @@ def split(soup):
         meta = copy.copy(soup)
         body = meta.find("body")
         if body is None:
-            body = BeautifulSoup('<body>', 'html.parser').find("body")
+            body = BeautifulSoup("<body>", "html.parser").find("body")
         else:
             body.extract()
-        meta.html.append(BeautifulSoup('<body>', 'html.parser').find("body"))
+        meta.html.append(BeautifulSoup("<body>", "html.parser").find("body"))
     return meta, body
 
 
 def merge(meta, body):
-    """ Merge HTML meta and body into a soup object. Soup contains deep copies of meta and body
+    """Merge HTML meta and body into a soup object. Soup contains deep copies of meta and body
 
     [soup] = merge(meta, body)
 
@@ -221,7 +230,7 @@ def merge(meta, body):
 
 
 def set_urls(aitem, url):
-    """ Set full url paths to all href tags. Returns a deep copy
+    """Set full url paths to all href tags. Returns a deep copy
 
     [titem] = set_urls(aitem, url)
 
@@ -236,12 +245,12 @@ def set_urls(aitem, url):
     if is_tag(aitem) or is_soup(aitem):
         titem = copy.copy(aitem)
         if url:
-            results = titem.find_all('a')
+            results = titem.find_all("a")
             results.append(titem)
             for aitem in results:
-                if 'href' in aitem.attrs:
-                    if not urls.is_valid_http(aitem['href']):
-                        aitem['href'] = urls.update_relative_path(url, aitem['href'])
+                if "href" in aitem.attrs:
+                    if not urls.is_valid_http(aitem["href"]):
+                        aitem["href"] = urls.update_relative_path(url, aitem["href"])
     else:
         titem = None
     return titem
@@ -249,7 +258,7 @@ def set_urls(aitem, url):
 
 # Conversion functions
 def to_body(aitem):
-    """ Convert aitem to tag with <body>
+    """Convert aitem to tag with <body>
 
     body = to_body(aitem)
 
@@ -260,14 +269,14 @@ def to_body(aitem):
         body (tag): tag with a <body>
     """
     if is_tag(aitem):
-        if aitem.name == 'body':
+        if aitem.name == "body":
             body = aitem
         else:
-            temp = BeautifulSoup('<body>', 'html.parser').find("body")
+            temp = BeautifulSoup("<body>", "html.parser").find("body")
             temp.append(aitem)
             body = temp
     elif is_results(aitem):
-        temp = BeautifulSoup('<body>', 'html.parser').find("body")
+        temp = BeautifulSoup("<body>", "html.parser").find("body")
         for btag in aitem:
             temp.append(btag)
         body = temp
@@ -277,26 +286,26 @@ def to_body(aitem):
 
 
 def unpack_hrefs(tag):
-    """ Unpacks the href links from all a tags, and append the links as a string tag
-        The function changes the existing tag
+    """Unpacks the href links from all a tags, and append the links as a string tag
+    The function changes the existing tag
 
-        Args:
-            tag (tag): BS4 tag
+    Args:
+        tag (tag): BS4 tag
 
-        Returns:
-        """
-    results = tag.find_all('a')
+    Returns:
+    """
+    results = tag.find_all("a")
     results.append(tag)
 
     for atag in results:
-        if 'href' in atag.attrs:
-            astr = '<span>' + str(atag["href"]) + '</span>'
-            htag = BeautifulSoup(astr, 'html.parser').find("span")
+        if "href" in atag.attrs:
+            astr = "<span>" + str(atag["href"]) + "</span>"
+            htag = BeautifulSoup(astr, "html.parser").find("span")
             atag.append(htag)
 
 
 def remove_navigable_strings(results):
-    """ Remove navigable strings from ResultSet
+    """Remove navigable strings from ResultSet
     The function removes list item of type Navigable String.
     Tag items which contain navigable strings are not removed.
 
@@ -315,7 +324,7 @@ def remove_navigable_strings(results):
 
 
 def wrap_navigable_strings(tag, empty=False):
-    """ Wrap navigable strings into tags
+    """Wrap navigable strings into tags
     The function wraps navigable string into a span tag if the navigable string
     is not the only child of a tag.
     The function changes the existing tag
@@ -331,7 +340,7 @@ def wrap_navigable_strings(tag, empty=False):
     new_tags = []
     for aitem in tag.descendants:
         if is_navigable_string(aitem) and not aitem.parent.string:
-            if empty or (aitem.string is not None and aitem.string != '\n'):
+            if empty or (aitem.string is not None and aitem.string != "\n"):
                 new_tag = tag.new_tag("span")
                 aitem.wrap(new_tag)
                 new_tags.append(new_tag)
@@ -343,15 +352,15 @@ def wrap_navigable_strings(tag, empty=False):
 
 # I/O functions
 def read(filename):
-    """ Read page from file
+    """Read page from file
 
-        page = read(filename)
+    page = read(filename)
 
-        Args:
-            filename (str): file name of HTML page
+    Args:
+        filename (str): file name of HTML page
 
-        Returns:
-            page(str)
+    Returns:
+        page(str)
     """
 
     page = utils.read(filename)
@@ -359,27 +368,27 @@ def read(filename):
 
 
 def write(filename, page):
-    """ Write HTML page to file
+    """Write HTML page to file
 
-            write(filename, page)
+    write(filename, page)
 
-            Args:
-                filename (str): file name
-                page (str): HTML page
+    Args:
+        filename (str): file name
+        page (str): HTML page
 
-            Returns:
-                None
+    Returns:
+        None
 
-            Raises:
-                IOError (): error in case function cannot write to filename
-        """
+    Raises:
+        IOError (): error in case function cannot write to filename
+    """
 
     utils.write(filename, page)
 
 
 # Search functions
 def find_soup(aitem):
-    """ Find soup of aitem
+    """Find soup of aitem
 
     asoup = find_soupd(aitem)
 
@@ -398,8 +407,8 @@ def find_soup(aitem):
     return asoup
 
 
-def find_items(aitem, afilter=None, astr=''):
-    """ Find items from aitem based on filter and/or string
+def find_items(aitem, afilter=None, astr=""):
+    """Find items from aitem based on filter and/or string
 
     ritems = find_items(aitem, filter=afilter, astr='')
 
@@ -417,20 +426,20 @@ def find_items(aitem, afilter=None, astr=''):
     has_class = "class" in afilter
 
     if has_item and has_class:
-        class_ = ' '.join(afilter["class"])
+        class_ = " ".join(afilter["class"])
         ritems = aitem.find_all(afilter["elem"], class_=class_, string=astr)
     elif has_item and not has_class:
         ritems = aitem.find_all(afilter["elem"], string=astr)
     elif not has_item and has_class:
-        class_ = ' '.join(afilter["class"])
+        class_ = " ".join(afilter["class"])
         ritems = aitem.find_all(class_=class_, string=astr)
     else:
         ritems = aitem.find_all(True, string=astr)
     return ritems
 
 
-def find_item(aitem, afilter=None, astr=''):
-    """ Find single item from aitem based on filter and/or string
+def find_item(aitem, afilter=None, astr=""):
+    """Find single item from aitem based on filter and/or string
 
     ritem = find_item(aitem, filter=afilter, astr='')
 
@@ -448,20 +457,20 @@ def find_item(aitem, afilter=None, astr=''):
     has_class = "class" in afilter
 
     if has_item and has_class:
-        class_ = ' '.join(afilter["class"])
+        class_ = " ".join(afilter["class"])
         ritem = aitem.find(afilter["elem"], class_=class_, string=astr)
     elif has_item and not has_class:
         ritem = aitem.find(afilter["elem"], string=astr)
     elif not has_item and has_class:
-        class_ = ' '.join(afilter["class"])
+        class_ = " ".join(afilter["class"])
         ritem = aitem.find(class_=class_, string=astr)
     else:
         ritem = aitem.find(True, string=astr)
     return ritem
 
 
-def find_item_by_xpath(aitem, axpath='', relative=True):
-    """ Find single item from aitem based on xpath
+def find_item_by_xpath(aitem, axpath="", relative=True):
+    """Find single item from aitem based on xpath
 
     ritem = find_item_by_xpath(aitem, xpath=xpath)
 
@@ -476,7 +485,11 @@ def find_item_by_xpath(aitem, axpath='', relative=True):
 
     if not relative:
         asoup = find_soup(aitem)
-        ritem = find_item_by_xpath(asoup, axpath=axpath, relative=True) if is_soup(asoup) else None
+        ritem = (
+            find_item_by_xpath(asoup, axpath=axpath, relative=True)
+            if is_soup(asoup)
+            else None
+        )
     else:
         [names, idx] = xsplit(axpath)
         tf = True
@@ -495,15 +508,15 @@ def find_item_by_xpath(aitem, axpath='', relative=True):
                 else:
                     next_items = ritem.find_all(names_i)
                     if len(next_items) >= idx_i:
-                        ritem = next_items[idx_i-1]
+                        ritem = next_items[idx_i - 1]
                     else:
                         ritem = None
                         tf = False
     return ritem
 
 
-def find_lists(aitem, afilter=None, astr=''):
-    """ Find all lists in aitem. Lists are defined as HTML elements <dl>, <ol>, or <ul>
+def find_lists(aitem, afilter=None, astr=""):
+    """Find all lists in aitem. Lists are defined as HTML elements <dl>, <ol>, or <ul>
 
     ritems = find_lists(aitems)
 
@@ -522,8 +535,8 @@ def find_lists(aitem, afilter=None, astr=''):
     return ritems
 
 
-def find_tables(aitem, afilter=None, astr=''):
-    """ Find all tables in aitem. Tables are defined as HTML elements <table>
+def find_tables(aitem, afilter=None, astr=""):
+    """Find all tables in aitem. Tables are defined as HTML elements <table>
 
     ritems = find_tables(aitems)
 
@@ -543,7 +556,7 @@ def find_tables(aitem, afilter=None, astr=''):
 
 
 def get_filter(aitem):
-    """ Get filter for aitem
+    """Get filter for aitem
 
     afilter = get_filter(aitem)
 
@@ -553,15 +566,15 @@ def get_filter(aitem):
     Returns:
         afilter (dict): dict with keys 'elem' and 'class'
     """
-    afilter = {'elem': '', 'class': ['']}
+    afilter = {"elem": "", "class": [""]}
     if is_tag(aitem):
-        afilter['elem'] = aitem.name
-        afilter['class'] = aitem['class'] if 'class' in aitem.attrs else ['']
+        afilter["elem"] = aitem.name
+        afilter["class"] = aitem["class"] if "class" in aitem.attrs else [""]
     return afilter
 
 
 def get_filters(aitems):
-    """ Get filter for aitem
+    """Get filter for aitem
 
     alist = get_filters(aitem)
 
@@ -576,15 +589,15 @@ def get_filters(aitems):
 
 
 def get_filter_most_common(afilters):
-    """ Get filter most common returns the filter with most occurences
+    """Get filter most common returns the filter with most occurences
 
-        afilter = get_filter_most_common(afilters)
+    afilter = get_filter_most_common(afilters)
 
-        Args:
-            afilters (list): List of BS4 filters (dict)
+    Args:
+        afilters (list): List of BS4 filters (dict)
 
-        Returns:
-            afilter (dict): dict with keys 'elem' and 'class'
+    Returns:
+        afilter (dict): dict with keys 'elem' and 'class'
     """
     jfilters = dicts.dumps(afilters)
     coll = collections.Counter(jfilters)
@@ -595,21 +608,23 @@ def get_filter_most_common(afilters):
 
 
 def remove_filters(afilters, elem=None, class_=None):
-    """ Remove filter from afilters based on elem and/or class_
+    """Remove filter from afilters based on elem and/or class_
 
-        afilters = _remove_filters(afilters, elem=None,class_=None)
+    afilters = _remove_filters(afilters, elem=None,class_=None)
 
-        Args:
-            afilters(list): list of filters
-            elem (str):
-            class_ (str or list):
-        Returns:
-            afilters(list): list of filters
+    Args:
+        afilters(list): list of filters
+        elem (str):
+        class_ (str or list):
+    Returns:
+        afilters(list): list of filters
 
     """
     for afilter in afilters[:]:  # [:] creates a copy
-        do_remove = afilter['elem'] == elem if elem is not None else False
-        do_remove = do_remove or (afilter['class'] == class_ if class_ is not None else False)
+        do_remove = afilter["elem"] == elem if elem is not None else False
+        do_remove = do_remove or (
+            afilter["class"] == class_ if class_ is not None else False
+        )
         if do_remove:
             afilters.remove(afilter)
     return afilters
@@ -617,7 +632,7 @@ def remove_filters(afilters, elem=None, class_=None):
 
 # Tree functions
 def common_ancestor(aitem1, aitem2):
-    """ Find tag whose descendants contain both aitem1 and aitem2
+    """Find tag whose descendants contain both aitem1 and aitem2
 
     ritem = common_ancestor(aitem1, aitem2)
 
@@ -640,7 +655,7 @@ def common_ancestor(aitem1, aitem2):
 
 
 def common_ancestors(aitems1, aitems2):
-    """ Return a list of common ancestor for all combinations in aitems1 and aitems2
+    """Return a list of common ancestor for all combinations in aitems1 and aitems2
 
     ritem = common_ancestor(aitem1, aitem2)
 
@@ -654,21 +669,23 @@ def common_ancestors(aitems1, aitems2):
     aresults1 = aitems1 if isinstance(aitems1, list) else [aitems1]
     aresults2 = aitems2 if isinstance(aitems2, list) else [aitems2]
 
-    return [common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
+    return [
+        common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2
+    ]
 
 
 def ancestors(aitem):
-    """ Find all ancestor tags on direct line between soup and aitem (exclude both)
-       Returns an ordered list of tags
+    """Find all ancestor tags on direct line between soup and aitem (exclude both)
+    Returns an ordered list of tags
 
-       rlist = ancestors(aitem)
+    rlist = ancestors(aitem)
 
-       Args:
-           aitem (tag): BS4 tag
+    Args:
+        aitem (tag): BS4 tag
 
-       Returns:
-           rlist (list): List of BS4 tag
-       """
+    Returns:
+        rlist (list): List of BS4 tag
+    """
     alist = list(reversed(list(aitem.parents)))
     if is_soup(alist[0]):
         alist.pop(0)
@@ -676,7 +693,7 @@ def ancestors(aitem):
 
 
 def children(aitem, include_navs=False):
-    """ Find all children of aitem
+    """Find all children of aitem
     Returns an ordered list of tags
 
     rlist = children(aitem, include_navs=False)
@@ -695,7 +712,7 @@ def children(aitem, include_navs=False):
 
 
 def lineage(aancestor, adescendant):
-    """ Find all tags on direct line of descent between ancestor and descendant (exclude both)
+    """Find all tags on direct line of descent between ancestor and descendant (exclude both)
     Returns an ordered list of tags
 
     rlist = lineage(aancestor, adescendant)
@@ -711,12 +728,12 @@ def lineage(aancestor, adescendant):
     tf = False
     while not tf and len(rlist) > 0:
         curr_parent = rlist.pop(0)
-        tf = (curr_parent == aancestor)
+        tf = curr_parent == aancestor
     return rlist
 
 
 def position(aitem, include_navs=False):
-    """ Position of aitem in children list of parent
+    """Position of aitem in children list of parent
 
     idx = position(aitem, include_navs=False)
 
@@ -736,16 +753,16 @@ def position(aitem, include_navs=False):
 
 
 def get_child_of_common_ancestor(aitem1, aitem2):
-    """ Get first child of common ancestor.
+    """Get first child of common ancestor.
 
-        achild = get_child_of_common_ancestor(soup, aitem1, aitem2)
+    achild = get_child_of_common_ancestor(soup, aitem1, aitem2)
 
-        Args:
-            aitem1 (tag): BS4 object
-            aitem2 (tag): BS4 object
+    Args:
+        aitem1 (tag): BS4 object
+        aitem2 (tag): BS4 object
 
-        Returns:
-            achild (tag): First child of common ancestor
+    Returns:
+        achild (tag): First child of common ancestor
     """
     aitem = None
 
@@ -757,34 +774,38 @@ def get_child_of_common_ancestor(aitem1, aitem2):
 
 
 def get_child_of_common_ancestors(aitems1, aitems2):
-    """ Get first child of common ancestor.
-        Returns a list with all combinations of aitem1 and aitems2.
+    """Get first child of common ancestor.
+    Returns a list with all combinations of aitem1 and aitems2.
 
-        alist = get_child_of_common_ancestor(soup, aitem1, aitem2)
+    alist = get_child_of_common_ancestor(soup, aitem1, aitem2)
 
-        Args:
-            aitems1 (list): List of BS4 tags
-            aitems2 (list): List of BS4 tags
+    Args:
+        aitems1 (list): List of BS4 tags
+        aitems2 (list): List of BS4 tags
 
-        Returns:
-            alist (list): List with first child of common ancestor
+    Returns:
+        alist (list): List with first child of common ancestor
     """
     aresults1 = aitems1 if isinstance(aitems1, list) else [aitems1]
     aresults2 = aitems2 if isinstance(aitems2, list) else [aitems2]
 
-    return [get_child_of_common_ancestor(aitem1, aitem2) for aitem1 in aresults1 for aitem2 in aresults2]
+    return [
+        get_child_of_common_ancestor(aitem1, aitem2)
+        for aitem1 in aresults1
+        for aitem2 in aresults2
+    ]
 
 
 def get_ancestor_unique_filter(aitem):
-    """ Get first ancestor of aitem which has a unique filter in soup
+    """Get first ancestor of aitem which has a unique filter in soup
 
-        aancestor = get_ancestor_unique_filter(aitem)
+    aancestor = get_ancestor_unique_filter(aitem)
 
-        Args:
-            aitem (tag): BS4 object
+    Args:
+        aitem (tag): BS4 object
 
-        Returns:
-            aancestor (tag): BS4 object
+    Returns:
+        aancestor (tag): BS4 object
     """
     aancestors = ancestors(aitem)
     aancestor = None
@@ -799,37 +820,39 @@ def get_ancestor_unique_filter(aitem):
 
 
 def get_ancestors_unique_filter(aitems):
-    """ Get first ancestor of aitem which has a unique filter in soup
+    """Get first ancestor of aitem which has a unique filter in soup
 
-        aancestors = get_ancestors_unique_filter(aitems)
+    aancestors = get_ancestors_unique_filter(aitems)
 
-        Args:
-            aitems (list): BS4 object
+    Args:
+        aitems (list): BS4 object
 
-        Returns:
-            aancestors (list): BS4 object
+    Returns:
+        aancestors (list): BS4 object
     """
     aresults = aitems if isinstance(aitems, list) else [aitems]
     return [get_ancestor_unique_filter(aitem) for aitem in aresults]
 
 
 def get_parents(aitems):
-    """ Get parent for each item in aitems
+    """Get parent for each item in aitems
 
-         aparents = get_parents(aitems)
+    aparents = get_parents(aitems)
 
-         Args:
-             aitems (list): List of BS4 tags
+    Args:
+        aitems (list): List of BS4 tags
 
-         Returns:
-             aparents (list): List of BS4 tags
-     """
+    Returns:
+        aparents (list): List of BS4 tags
+    """
     return [aitem.parent for aitem in aitems]
 
 
 # Text extraction functions
-def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_missing_cols=True):
-    """ Get text from soup objects. Text consists of strings and/or links.
+def get_text(
+    aitem, cols=None, include_strings=True, include_links=False, fill_missing_cols=True
+):
+    """Get text from soup objects. Text consists of strings and/or links.
         Returns all text of descendant items if no columns are specified, or
         text of specific columns only, if columns are specified.
 
@@ -858,7 +881,9 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_m
 
         # Get string item
         if isinstance(cols, list):
-            sitem = _get_cols_as_results(atag, cols, fill_missing_cols=fill_missing_cols)
+            sitem = _get_cols_as_results(
+                atag, cols, fill_missing_cols=fill_missing_cols
+            )
             do_flatten = True
         elif isinstance(cols, str):
             # TODO stencil
@@ -877,7 +902,7 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_m
 
         # Flatten text
         if do_flatten:
-            alist_item = [[''] if lists.is_empty(val) else val for val in alist_item]
+            alist_item = [[""] if lists.is_empty(val) else val for val in alist_item]
             alist_item = lists.flatten(alist_item)
 
         alist.append(alist_item)
@@ -888,7 +913,7 @@ def get_text(aitem, cols=None, include_strings=True, include_links=False, fill_m
 
 
 def get_strings(aitem, include_links=False):
-    """ Get strings from soup objects
+    """Get strings from soup objects
 
     alist = get_strings(aitem)
 
@@ -908,7 +933,7 @@ def get_strings(aitem, include_links=False):
 
 
 def get_links(aitem):
-    """ Get links from soup objects
+    """Get links from soup objects
 
     alist = get_links(aitem)
 
@@ -933,7 +958,7 @@ def get_links(aitem):
 
 
 def stencil(aitem, amask):
-    """ Get stencil from soup or tag
+    """Get stencil from soup or tag
     # A stencil returns tag sitem with mask layout filled with strings and links content from aitem.
 
     sitem = stencil(aitem, amask)
@@ -955,13 +980,15 @@ def stencil(aitem, amask):
     xd_mask = xpaths(amask, root=amask, first_index=True)
 
     # 2. Find all tags in sitem not in amask and delete these tags from aitem
-    xpaths_redundant = xpaths_set(xd_item, xd_mask, operation='difference', relative=True)
+    xpaths_redundant = xpaths_set(
+        xd_item, xd_mask, operation="difference", relative=True
+    )
     for ax in xpaths_redundant:
         ritem = find_item_by_xpath(sitem, axpath=ax, relative=True)
         ritem.decompose() if ritem else None
 
     # 3. Find all tags in atemplate not in aitem and add in correct position with ''
-    xpaths_missing = xpaths_set(xd_mask, xd_item, operation='difference', relative=True)
+    xpaths_missing = xpaths_set(xd_mask, xd_item, operation="difference", relative=True)
     for ax in xpaths_missing:
         ditem = find_item_by_xpath(amask, axpath=ax, relative=True)
         idx = position(ditem, include_navs=True)
@@ -978,8 +1005,8 @@ def stencil(aitem, amask):
     return sitem
 
 
-def get_mask(aitem, astr='', ahref=''):
-    """ Get Mask from soup or tag
+def get_mask(aitem, astr="", ahref=""):
+    """Get Mask from soup or tag
     A mask consists of a bs4 structure without content
     Navigable strings and hrefs values are replaced
     All other attributes, except class, are stripped
@@ -1003,29 +1030,29 @@ def get_mask(aitem, astr='', ahref=''):
         # strings
         results = ritem.find_all(text=True)
         for i, atag in enumerate(results):
-            rstr = str(i) if astr == 'count' else astr
+            rstr = str(i) if astr == "count" else astr
             _ = atag.string.string.replace_with(rstr)
 
         # hrefs
-        results = ritem.find_all('a')
+        results = ritem.find_all("a")
         results.append(ritem)
         for atag in results:
-            if 'href' in atag.attrs:
-                atag['href'] = ahref
+            if "href" in atag.attrs:
+                atag["href"] = ahref
 
         # Other attributes
         results = ritem.find_all()
         for atag in results:
             for att in atag.attrs:
-                if att not in ('class', 'href'):
-                    atag[att] = ''
+                if att not in ("class", "href"):
+                    atag[att] = ""
 
     return ritem
 
 
 # Identification functions
 def is_tag(aitem):
-    """ Returns true if aitem is bs4.element.Tag
+    """Returns true if aitem is bs4.element.Tag
 
     tf = is_tag(aitem)
 
@@ -1039,7 +1066,7 @@ def is_tag(aitem):
 
 
 def is_results(aitem):
-    """ Returns true if aitem is bs4.element.ResultSet
+    """Returns true if aitem is bs4.element.ResultSet
 
     tf = is_results(aitem)
 
@@ -1053,7 +1080,7 @@ def is_results(aitem):
 
 
 def is_soup(aitem):
-    """ Returns true if aitem is bs4.BeautifulSoup
+    """Returns true if aitem is bs4.BeautifulSoup
 
     tf = is_soup(aitem)
 
@@ -1067,7 +1094,7 @@ def is_soup(aitem):
 
 
 def is_navigable_string(aitem):
-    """ Returns true if aitem is BS4 NavigableString
+    """Returns true if aitem is BS4 NavigableString
 
     tf = is_navigable_string(aitem)
 
@@ -1081,7 +1108,7 @@ def is_navigable_string(aitem):
 
 
 def is_leaf(aitem):
-    """ Returns true if aitem is a leaf bs4.element.Tag.
+    """Returns true if aitem is a leaf bs4.element.Tag.
 
     tf = is_leaf(aitem)
 
@@ -1095,7 +1122,7 @@ def is_leaf(aitem):
 
 
 def is_empty_filter(afilter):
-    """ True if filter is empty
+    """True if filter is empty
 
     tf = is_empty_filter(afilter)
 
@@ -1105,11 +1132,11 @@ def is_empty_filter(afilter):
     Returns:
         tf: True if filter is empty
     """
-    return lists.is_empty(afilter['elem']) and lists.is_empty(afilter['class'])
+    return lists.is_empty(afilter["elem"]) and lists.is_empty(afilter["class"])
 
 
 def is_filter(afilter):
-    """ Returns true if afilter is a filter
+    """Returns true if afilter is a filter
 
     tf = is_filter(afilter)
 
@@ -1119,20 +1146,20 @@ def is_filter(afilter):
     Returns:
         tf (bool): True if afilter is filter, False otherwise
     """
-    return isinstance(afilter, dict) and ('elem' in afilter and 'class' in afilter)
+    return isinstance(afilter, dict) and ("elem" in afilter and "class" in afilter)
 
 
 def is_unique_filter(afilter, aitem):
-    """ Returns true if afilter is unique in aitem
+    """Returns true if afilter is unique in aitem
 
-        tf = is_unique_filter(afilter, aitem)
+    tf = is_unique_filter(afilter, aitem)
 
-        Args:
-            afilter (dict): dict with keys 'elem' and 'class' (if True)
-            aitem(tag or soup): BS4 object
+    Args:
+        afilter (dict): dict with keys 'elem' and 'class' (if True)
+        aitem(tag or soup): BS4 object
 
-        Returns:
-            tf (bool): True if afilter is unique filter in aitem, False otherwise
+    Returns:
+        tf (bool): True if afilter is unique filter in aitem, False otherwise
     """
     tf = is_filter(afilter) and (is_tag(aitem) or is_soup(aitem))
     if tf:
@@ -1143,7 +1170,7 @@ def is_unique_filter(afilter, aitem):
 
 # Xpath functions
 def xpath(aitem, root=None, first_index=False):
-    """ Returns xpath of aitem.
+    """Returns xpath of aitem.
     Returns absolute path or relative path to root
 
     xpath = xpath(aitem, root, first_index)
@@ -1156,29 +1183,33 @@ def xpath(aitem, root=None, first_index=False):
     Returns:
         axpath (str or list): xpath of aitem
     """
-    axpath = ''
+    axpath = ""
     if is_tag(aitem) and not is_soup(aitem):
         if aitem == root:
-            axpath = '//'
+            axpath = "//"
         else:
             # Absolute
             rlist = ancestors(aitem)
             rlist.append(aitem)
             for aparent in rlist:
                 idx = _get_xpath_index(aparent, first_index=first_index)
-                sidx = '[' + str(idx) + ']' if idx > 0 else ''
-                axpath = axpath + '/' + aparent.name + sidx
+                sidx = "[" + str(idx) + "]" if idx > 0 else ""
+                axpath = axpath + "/" + aparent.name + sidx
 
             # Relative
             if is_tag(root):
                 axpath_root = xpath(root, first_index=first_index)
-                axpath = axpath.replace(axpath_root, '/') if axpath.startswith(axpath_root) else ''
+                axpath = (
+                    axpath.replace(axpath_root, "/")
+                    if axpath.startswith(axpath_root)
+                    else ""
+                )
     return axpath
 
 
 # Xpaths. Xpath set functions.
 def xpaths(aitem, root=None, first_index=False):
-    """ Returns list of xpaths of all descendant tags
+    """Returns list of xpaths of all descendant tags
 
     alist = xpaths(aitem, root, first_index)
 
@@ -1201,7 +1232,7 @@ def xpaths(aitem, root=None, first_index=False):
 
 
 def xpaths_set(aitem1, aitem2, operation=None, relative=False):
-    """ Returns an unordered list with set operation on xpaths in aitem1 and aitem2
+    """Returns an unordered list with set operation on xpaths in aitem1 and aitem2
      When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
     alist = xpaths_set(aitem1, aitem2)
@@ -1219,11 +1250,11 @@ def xpaths_set(aitem1, aitem2, operation=None, relative=False):
     xpath1 = xpaths(aitem1, root=(aitem1 if relative else None), first_index=True)
     xpath2 = xpaths(aitem2, root=(aitem2 if relative else None), first_index=True)
 
-    if operation == 'union':
+    if operation == "union":
         alist = lists.union(xpath1, xpath2)
-    elif operation == 'intersect':
+    elif operation == "intersect":
         alist = lists.intersect(xpath1, xpath2)
-    elif operation == 'difference':
+    elif operation == "difference":
         alist = lists.difference(xpath1, xpath2)
     else:
         alist = []
@@ -1232,7 +1263,7 @@ def xpaths_set(aitem1, aitem2, operation=None, relative=False):
 
 # Private xpath functions
 def _get_xpath_index(aitem, first_index=False):
-    """ Returns xpath index. A positive index represents k-th index
+    """Returns xpath index. A positive index represents k-th index
     A zero index represents first index with no further occurences of same name
 
     xpi = _get_xpath_index(aitem, first_index)
@@ -1261,31 +1292,31 @@ def _get_xpath_index(aitem, first_index=False):
 
 # Private functions
 def _get_colnames(ncols):
-    """ Get column names
+    """Get column names
 
-        [colnames] = _get_colnames(nitems)
+    [colnames] = _get_colnames(nitems)
 
-        Args:
-            ncols (int): Number of colums
-        Returns:
-            acolnames (list): Column names
-        """
-    return ['Col' + str(i + 1) for i in range(ncols)]
+    Args:
+        ncols (int): Number of colums
+    Returns:
+        acolnames (list): Column names
+    """
+    return ["Col" + str(i + 1) for i in range(ncols)]
 
 
 def _get_cols_as_results(aitem, cols, fill_missing_cols=True):
-    """ Get columns as a Resultset
+    """Get columns as a Resultset
 
-        aresults = _get_cols_as_results(aitem)
+    aresults = _get_cols_as_results(aitem)
 
-        Args:
-            aitem(soup or tag or ResultSet): BS4 object
-            cols (list): list of dicts with keys {'elem','class'}
-            fill_missing_cols (boolean): Fill missing columns if true
+    Args:
+        aitem(soup or tag or ResultSet): BS4 object
+        cols (list): list of dicts with keys {'elem','class'}
+        fill_missing_cols (boolean): Fill missing columns if true
 
-        Returns:
-            aresults (ResultSet): ResultSet
-        """
+    Returns:
+        aresults (ResultSet): ResultSet
+    """
     if not is_results(aitem):
         aitem = [aitem]
 
@@ -1294,8 +1325,8 @@ def _get_cols_as_results(aitem, cols, fill_missing_cols=True):
 
     if fill_missing_cols:
         asoup = find_soup(aitem[0])
-        stag = asoup.new_tag('i')
-        ltag = asoup.new_tag('a', href='')
+        stag = asoup.new_tag("i")
+        ltag = asoup.new_tag("a", href="")
     else:
         stag = None
         ltag = None
@@ -1306,7 +1337,7 @@ def _get_cols_as_results(aitem, cols, fill_missing_cols=True):
             if is_tag(atag):
                 aresults.append(atag)
             elif fill_missing_cols:
-                if col['elem'] == 'a':
+                if col["elem"] == "a":
                     aresults.append(ltag)
                 else:
                     aresults.append(stag)
@@ -1314,7 +1345,7 @@ def _get_cols_as_results(aitem, cols, fill_missing_cols=True):
 
 
 def _get_strings_from_results(results, include_links=False):
-    """ Get strings from results
+    """Get strings from results
 
     alist = _get_strings_from_results(results)
 
@@ -1329,7 +1360,7 @@ def _get_strings_from_results(results, include_links=False):
 
 
 def _get_links_from_results(results):
-    """ Get links from results. Links are href strings
+    """Get links from results. Links are href strings
 
     alist = _get_links_from_results(results)
 
@@ -1343,7 +1374,7 @@ def _get_links_from_results(results):
 
 
 def _get_strings_from_tag(tag, include_links=False):
-    """ Get strings from tag
+    """Get strings from tag
 
     alist = _get_strings_from_tag(tag)
 
@@ -1363,7 +1394,7 @@ def _get_strings_from_tag(tag, include_links=False):
 
 
 def _get_links_from_tag(tag):
-    """ Get links from tag. Links are href strings
+    """Get links from tag. Links are href strings
 
     alist = _get_links_from_tag(tag)
 
@@ -1373,8 +1404,8 @@ def _get_links_from_tag(tag):
     Returns:
         alist (list): List of links
     """
-    results = tag.find_all('a')
+    results = tag.find_all("a")
     results.append(tag)
-    alist = [tag['href'] if 'href' in tag.attrs else None for tag in results]
+    alist = [tag["href"] if "href" in tag.attrs else None for tag in results]
     alist = list(filter(None, alist))
     return alist

@@ -4,16 +4,18 @@
 
 import time
 
-DATE_JAPANESE = '%Y-%m-%d'
-DATETIME_JAPANESE = '%Y-%m-%d %H:%M:%S'
-DATETIME_FILE = '%Y%m%d%H%M%S'
-DATE_FILE = '%Y%m%d'
-TIME_FILE = '%H%M%S'
+DATE_JAPANESE = "%Y-%m-%d"
+DATETIME_JAPANESE = "%Y-%m-%d %H:%M:%S"
+DATETIME_FILE = "%Y%m%d%H%M%S"
+DATE_FILE = "%Y%m%d"
+TIME_FILE = "%H%M%S"
 
 
 # Strings
-def strftime(t=None, string='', sep=' ', date_format=DATETIME_JAPANESE, string_first=False):
-    """ Return a formatted string which contains date/time and a text string
+def strftime(
+    t=None, string="", sep=" ", date_format=DATETIME_JAPANESE, string_first=False
+):
+    """Return a formatted string which contains date/time and a text string
 
     str = strftime(t=None, string='', sep=' ', date_format=DATETIME_JAPANESE, string_first=True)
 
@@ -31,12 +33,16 @@ def strftime(t=None, string='', sep=' ', date_format=DATETIME_JAPANESE, string_f
         >>> strftime(t=time.time(),string='Hello World', sep=' ')
         '2021-05-01 18:08:31 Hello World'
     """
-    strdatetime = time.strftime(date_format) if t is None else time.strftime(date_format, to_struct_time(t))
+    strdatetime = (
+        time.strftime(date_format)
+        if t is None
+        else time.strftime(date_format, to_struct_time(t))
+    )
     return string + sep + strdatetime if string_first else strdatetime + sep + string
 
 
-def strfdate(t=None, string='', sep=' ', date_format=DATE_JAPANESE, string_first=False):
-    """ Return a formatted string which contains date and a text string
+def strfdate(t=None, string="", sep=" ", date_format=DATE_JAPANESE, string_first=False):
+    """Return a formatted string which contains date and a text string
 
     str = strfdate(t=None, string='', sep=' ', date_format=DATE_JAPANESE, string_first=False):
 
@@ -55,7 +61,9 @@ def strfdate(t=None, string='', sep=' ', date_format=DATE_JAPANESE, string_first
         '2021-05-01 Hello World'
     """
 
-    return strftime(t=t, string=string, sep=sep, date_format=date_format, string_first=string_first)
+    return strftime(
+        t=t, string=string, sep=sep, date_format=date_format, string_first=string_first
+    )
 
 
 # Conversion
@@ -76,11 +84,17 @@ def to_float(t=None):
 
     t = time.time() if t is None else t
 
-    if not isinstance(t, tuple) and not isinstance(t, time.struct_time) \
-            and not isinstance(t, int) and not isinstance(t, float):
+    if (
+        not isinstance(t, tuple)
+        and not isinstance(t, time.struct_time)
+        and not isinstance(t, int)
+        and not isinstance(t, float)
+    ):
         raise ValueError
 
-    ftime = time.mktime(t) if isinstance(t, tuple) or isinstance(t, time.struct_time) else t
+    ftime = (
+        time.mktime(t) if isinstance(t, tuple) or isinstance(t, time.struct_time) else t
+    )
 
     return ftime
 
@@ -124,13 +138,22 @@ def to_tuple(t=None):
     t = time.time() if t is None else t
     stime = time.localtime(t) if isinstance(t, float) else t
 
-    return (stime.tm_year, stime.tm_mon, stime.tm_mday, stime.tm_hour, stime.tm_min,
-            stime.tm_sec, stime.tm_wday, stime.tm_yday, stime.tm_isdst)
+    return (
+        stime.tm_year,
+        stime.tm_mon,
+        stime.tm_mday,
+        stime.tm_hour,
+        stime.tm_min,
+        stime.tm_sec,
+        stime.tm_wday,
+        stime.tm_yday,
+        stime.tm_isdst,
+    )
 
 
 # Sleep
 def sleep_on_count(adict, cnt):
-    """ Sleeps dict[counter] seconds if cnt+1 is a multiple of counter
+    """Sleeps dict[counter] seconds if cnt+1 is a multiple of counter
 
     Or: when iterating over cnt, sleep_on_count pauses for dict[counter] seconds every counter iterations
 
@@ -150,7 +173,7 @@ def sleep_on_count(adict, cnt):
 
 
 def sleep_until(end_time):
-    """ Sleeps until end_time
+    """Sleeps until end_time
 
     sleep_until(end_time)
 

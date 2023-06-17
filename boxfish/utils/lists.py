@@ -10,7 +10,7 @@ from boxfish.utils.utils import create_folder_if_not_exist
 
 # General
 def is_empty(alist):
-    """ Returns true if list is empty or contains '' or None only
+    """Returns true if list is empty or contains '' or None only
 
     tf = is_empty(alist)
 
@@ -32,11 +32,11 @@ def is_empty(alist):
         tf = is_empty(alist)
         >> False
     """
-    return all(item == '' or item is None for item in alist)
+    return all(item == "" or item is None for item in alist)
 
 
 def flatten(alist):
-    """ Merges a list of lists of items into a single list of items
+    """Merges a list of lists of items into a single list of items
 
     Source: https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-list-of-lists
 
@@ -57,12 +57,15 @@ def flatten(alist):
         flist
         >> [1, 1, 2, 3, 1, 2, 3, 1, 2, 3]
     """
-    def f(x): return [x] if not isinstance(x, list) else x
+
+    def f(x):
+        return [x] if not isinstance(x, list) else x
+
     return [item for sublist in alist for item in f(sublist)]
 
 
 def unique(alist):
-    """ Return list with duplicates removed
+    """Return list with duplicates removed
 
     ulist = unique(alist)
 
@@ -81,7 +84,7 @@ def unique(alist):
 
 
 def is_equal_length(*args):
-    """ Returns true if all inputs are lists and have the same length
+    """Returns true if all inputs are lists and have the same length
 
     tf = is_equal_lenght(alist,blist)
 
@@ -107,7 +110,7 @@ def is_equal_length(*args):
 
 
 def to_list(*args):
-    """ Returns a list with the items in args
+    """Returns a list with the items in args
 
     alist = to_list(*args)
 
@@ -126,7 +129,7 @@ def to_list(*args):
 
 
 def reshape(*args):
-    """ Reshape returns a tuple of lists of the same length in case
+    """Reshape returns a tuple of lists of the same length in case
     all list arguments have the same length L.
     All non-list arguments are converted to a list of length L by duplication.
     Otherwise, the function returns a tuple of None
@@ -149,14 +152,25 @@ def reshape(*args):
     lenlists = [len(i) for i in arglists]
     length = max(lenlists)
     is_valid = all(alen == length or alen == 1 for alen in lenlists)
-    return (length*alist if len(alist) == 1 else alist for alist in arglists) if is_valid \
+    return (
+        (length * alist if len(alist) == 1 else alist for alist in arglists)
+        if is_valid
         else tuple([None for _ in arglists])
+    )
+
 
 # I/O functions
 
 
-def to_csv(alist, filename, date_format='', overwrite=False, header=None, quoting=csv.QUOTE_NONNUMERIC):
-    """ Save list to csv file. Dictionaries are converted to lists without key validation.
+def to_csv(
+    alist,
+    filename,
+    date_format="",
+    overwrite=False,
+    header=None,
+    quoting=csv.QUOTE_NONNUMERIC,
+):
+    """Save list to csv file. Dictionaries are converted to lists without key validation.
 
     fullname = to_csv(alist, filename, date_format, overwrite)
 
@@ -178,10 +192,14 @@ def to_csv(alist, filename, date_format='', overwrite=False, header=None, quotin
         create_folder_if_not_exist(os.path.dirname(filename))
         fullname = filename_append_date(filename, date_format)
 
-        read_mode = 'a' if os.path.exists(fullname) and not overwrite else 'wt'
-        read_dict = True if alist and isinstance(alist, list) and isinstance(alist[0], dict) else False
+        read_mode = "a" if os.path.exists(fullname) and not overwrite else "wt"
+        read_dict = (
+            True
+            if alist and isinstance(alist, list) and isinstance(alist[0], dict)
+            else False
+        )
 
-        with open(fullname, read_mode, newline='', encoding='utf-8') as f:
+        with open(fullname, read_mode, newline="", encoding="utf-8") as f:
             csv_writer = csv.writer(f, quoting=quoting)
             if header:
                 csv_writer.writerow(header)
@@ -191,27 +209,27 @@ def to_csv(alist, filename, date_format='', overwrite=False, header=None, quotin
             else:
                 csv_writer.writerows(alist)
     else:
-        fullname = ''
+        fullname = ""
     return fullname
 
 
 def from_csv(filename, quoting=csv.QUOTE_NONNUMERIC):
-    """ Load list from csv file
+    """Load list from csv file
 
-        alist = from_csv(filename)
+    alist = from_csv(filename)
 
-        Args:
-            filename (str): Filename
-            quoting (int): CSV quoting constant
-        Returns:
-            alist (list): list of rows (lists)
+    Args:
+        filename (str): Filename
+        quoting (int): CSV quoting constant
+    Returns:
+        alist (list): list of rows (lists)
 
-        Example:
-            alist = from_csv('file.csv')
-        """
+    Example:
+        alist = from_csv('file.csv')
+    """
     alist = []
     if os.path.exists(filename):
-        with open(filename, 'r', newline='') as f:
+        with open(filename, "r", newline="") as f:
             csv_reader = csv.reader(f, quoting=quoting)
             for row in csv_reader:
                 alist.append(row)
@@ -220,7 +238,7 @@ def from_csv(filename, quoting=csv.QUOTE_NONNUMERIC):
 
 # Set functions. Set functions remove duplicates
 def intersect(alist, blist):
-    """ Return list with intersection of alist and blist
+    """Return list with intersection of alist and blist
 
     clist = intersect(alist, blist)
 
@@ -241,7 +259,7 @@ def intersect(alist, blist):
 
 
 def union(alist, blist):
-    """ Return list with union of alist and blist
+    """Return list with union of alist and blist
 
     clist = union(alist, blist)
 
@@ -262,7 +280,7 @@ def union(alist, blist):
 
 
 def difference(alist, blist):
-    """ Return list with difference of alist and blist
+    """Return list with difference of alist and blist
 
     clist = difference(alist, blist)
 
@@ -283,7 +301,7 @@ def difference(alist, blist):
 
 
 def is_subset(alist, blist):
-    """ Return true if alist is a subset of blist
+    """Return true if alist is a subset of blist
 
     tf = is_susbet(alist, blist)
 
@@ -304,7 +322,7 @@ def is_subset(alist, blist):
 
 
 def is_disjoint(alist, blist):
-    """ Return true if alist and blist are disjoint
+    """Return true if alist and blist are disjoint
 
     tf = is_disjoint(alist, blist)
 

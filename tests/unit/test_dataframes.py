@@ -5,14 +5,14 @@ from boxfish.utils import dataframes
 
 
 def test_list_to_dataframe():
-    """ Test list_to_dataframe
+    """Test list_to_dataframe
 
     Function tested:
     list_to_dataframe
 
     """
     alist = [1, 2, 3]
-    columns = ['Col1']
+    columns = ["Col1"]
     df = dataframes.list_to_dataframe(alist, columns)
 
     # Column

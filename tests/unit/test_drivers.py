@@ -6,23 +6,23 @@ import requests
 from selenium import webdriver
 import time
 
-PAGE_URL = 'http://books.toscrape.com'
-PAGE_FILE = r'.\data\bookstoscrape.html'
+PAGE_URL = "http://books.toscrape.com"
+PAGE_FILE = r".\data\bookstoscrape.html"
 
-CONFIG_SELENIUM = r'.\\configurations\config_bookstoscrape.json'
+CONFIG_SELENIUM = r".\\configurations\config_bookstoscrape.json"
 
 
 # Helper functions
 def get_config(filename=CONFIG_SELENIUM):
-    if filename is '':
-        config = boxfish.config.create('')
+    if filename is "":
+        config = boxfish.config.create("")
     else:
         config = boxfish.config.read(filename)
     return config
 
 
 def test_get_page():
-    """ Test request_page for default driver
+    """Test request_page for default driver
 
     Function tested:
     get_page
@@ -37,7 +37,7 @@ def test_get_page():
 
 
 def test_request_page():
-    """ Test request_page for specific driver
+    """Test request_page for specific driver
 
     Function tested:
     request_page
@@ -49,8 +49,8 @@ def test_request_page():
     """
     config = get_config()
 
-    params = config['driver']
-    params['package'] = 'requests'
+    params = config["driver"]
+    params["package"] = "requests"
 
     adriver = drivers.driver_start(params)
 
@@ -68,7 +68,7 @@ def test_request_page():
 
 
 def test_request_page_selenium():
-    """ Test request_page for specific driver
+    """Test request_page for specific driver
 
     Function tested:
     request_page
@@ -80,10 +80,10 @@ def test_request_page_selenium():
     """
     config = get_config()
 
-    config['driver']['package'] = 'selenium'
-    config['driver']['selenium']['headless'] = False
+    config["driver"]["package"] = "selenium"
+    config["driver"]["selenium"]["headless"] = False
 
-    params = config['driver']
+    params = config["driver"]
 
     # Test URL HTTP
     url = PAGE_URL
@@ -94,9 +94,9 @@ def test_request_page_selenium():
 def test_request_page_sleep():
     config = get_config()
 
-    params = config['driver']
-    params['package'] = 'requests'
-    params['sleep'] = {"1": 2}
+    params = config["driver"]
+    params["package"] = "requests"
+    params["sleep"] = {"1": 2}
 
     # Test URL HTTP
     url = PAGE_URL
@@ -106,7 +106,7 @@ def test_request_page_sleep():
     end = time.time()
     drivers.driver_stop(adriver)
 
-    assert end-start > 2
+    assert end - start > 2
 
 
 def test_create_params():
@@ -116,7 +116,7 @@ def test_create_params():
 
 
 def test_driver_start_stop_requests():
-    """ Test driver_start and driver_stop for package requests
+    """Test driver_start and driver_stop for package requests
 
     test_driver_start_stop_requests()
     Function tested:
@@ -130,8 +130,8 @@ def test_driver_start_stop_requests():
     """
     config = get_config()
 
-    params = config['driver']
-    params['package'] = 'requests'
+    params = config["driver"]
+    params["package"] = "requests"
 
     adriver = drivers.driver_start(params)
     assert isinstance(adriver, requests.sessions.Session)
@@ -139,7 +139,7 @@ def test_driver_start_stop_requests():
 
 
 def test_driver_start_stop_selenium():
-    """ Test driver_start and driver_stop for package selenium
+    """Test driver_start and driver_stop for package selenium
 
     Function tested:
     driver_start
@@ -152,8 +152,8 @@ def test_driver_start_stop_selenium():
     """
     config = get_config()
 
-    params = config['driver']
-    params['package'] = 'selenium'
+    params = config["driver"]
+    params["package"] = "selenium"
 
     adriver = drivers.driver_start(params)
     assert isinstance(adriver, webdriver.firefox.webdriver.WebDriver)
@@ -161,7 +161,7 @@ def test_driver_start_stop_selenium():
 
 
 def test_driver_start_stop_selenium_headless_false():
-    """ Test driver_start and driver_stop for package selenium in headless mode
+    """Test driver_start and driver_stop for package selenium in headless mode
 
     Function tested:
     driver_start
@@ -173,9 +173,9 @@ def test_driver_start_stop_selenium_headless_false():
     """
     config = get_config()
 
-    params = config['driver']
-    params['package'] = 'selenium'
-    params['selenium']['headless'] = False
+    params = config["driver"]
+    params["package"] = "selenium"
+    params["selenium"]["headless"] = False
 
     adriver = drivers.driver_start(params)
     assert isinstance(adriver, webdriver.firefox.webdriver.WebDriver)

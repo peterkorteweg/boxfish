@@ -8,7 +8,7 @@ import boxfish
 from boxfish.utils.utils import read
 
 # BS4 Default example
-FILE_DORMOUSE = r'.\data\dormouse.html'
+FILE_DORMOUSE = r".\data\dormouse.html"
 ROWS_DORMOUSE = {"elem": "a", "class": ["sister"]}
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
@@ -22,7 +22,7 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
 
     <p class="story">...</p>
     """
-PAGE_WRAP  = """<html>
+PAGE_WRAP = """<html>
 <body>
     <i>Hello </i>World.
     <b>This is Pizzicato </b>Five.
@@ -30,43 +30,32 @@ PAGE_WRAP  = """<html>
 </html>"""
 
 # BS4 Tree example
-FILE_TREE = r'.\data\tree.html'
-ID1_TREE = 'tree1'
-ID2_TREE = 'tree2'
+FILE_TREE = r".\data\tree.html"
+ID1_TREE = "tree1"
+ID2_TREE = "tree2"
 
 # BS4 Navstring example
-FILE_SCRAPETHIS = r'.\data\scrapethis.html'
+FILE_SCRAPETHIS = r".\data\scrapethis.html"
 ROWS_SCRAPETHIS = {"elem": "div", "class": ["col-md-4 country"]}
 
 
 # Books to boxfish example
-FILE_BOOKS = r'.\data\bookstoscrape.html'
-ID_BOOKS = {"elem": "body",
-            "class": ["default"]
-            }
-ROWS_PARENT_NAME_BOOKS = 'ol'
-ROWS_PARENT_CLASS_BOOKS = ['row']
-ROWS_BOOKS = {"elem": "li",
-              "class": ["col-xs-6 col-sm-4 col-md-3 col-lg-3"]
-              }
-COLS_BOOKS = [{"elem": "h3",
-               "class": [""]
-               },
-              {"elem": "p",
-               "class": ["price_color"]
-               }]
-COLS_BOOKS_NO_MATCH = [{"elem": "a",
-                        "class": ["star-rating"]
-                        },
-                       {"elem": "a",
-                        "class": ["price_color"]
-                        }]
+FILE_BOOKS = r".\data\bookstoscrape.html"
+ID_BOOKS = {"elem": "body", "class": ["default"]}
+ROWS_PARENT_NAME_BOOKS = "ol"
+ROWS_PARENT_CLASS_BOOKS = ["row"]
+ROWS_BOOKS = {"elem": "li", "class": ["col-xs-6 col-sm-4 col-md-3 col-lg-3"]}
+COLS_BOOKS = [{"elem": "h3", "class": [""]}, {"elem": "p", "class": ["price_color"]}]
+COLS_BOOKS_NO_MATCH = [
+    {"elem": "a", "class": ["star-rating"]},
+    {"elem": "a", "class": ["price_color"]},
+]
 ITEMS_ON_PAGE_BOOKS = 20
 COLUMNS_BOOKS = 4
-URL_BOOKS = 'http://books.toscrape.com'
+URL_BOOKS = "http://books.toscrape.com"
 
 # Wikipedia lists
-FILE_WIKI = r'.\data\ISO3166.html'
+FILE_WIKI = r".\data\ISO3166.html"
 LISTS_NUMBER_WIKI = 44
 
 LISTS_FILTER_WIKI = {"class": ["vector-menu-content-list"]}
@@ -80,7 +69,7 @@ TABLE_NUMBER_WIKI = 2
 
 # Helper functions
 def get_page(filename=FILE_DORMOUSE):
-    if filename is '':
+    if filename is "":
         page = PAGE_DORMOUSE
     else:
         page = boxfish.utils.utils.read(filename)
@@ -103,12 +92,12 @@ def test_get_page():
     assert isinstance(spage, str)
 
     # Get page from tag
-    atag = soup.find('a')
+    atag = soup.find("a")
     tpage = boxfish.soups.get_page(atag)
     assert isinstance(tpage, str)
 
     # Get page from ResultSet
-    rtag = soup.find_all('a')
+    rtag = soup.find_all("a")
     rpage = boxfish.soups.get_page(rtag)
     assert isinstance(rpage, str)
 
@@ -195,14 +184,14 @@ def test_to_table_single_row():
     # See also content tests test_get_text
     page = get_page(filename=FILE_DORMOUSE)
     soup = boxfish.soups.get_soup(page)
-    aitem = soup.find('a')
+    aitem = soup.find("a")
     atable = boxfish.soups.to_table(aitem, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 1
     curr_row = atable[0]
     ncols = len(curr_row)
-    assert curr_row[0] == 'Elsie'
+    assert curr_row[0] == "Elsie"
     assert ncols == 1
 
 
@@ -210,25 +199,25 @@ def test_to_table_multiple_rows():
     # See also content tests test_get_text
     page = get_page(filename=FILE_DORMOUSE)
     soup = boxfish.soups.get_soup(page)
-    aitem = soup.find_all('a')
+    aitem = soup.find_all("a")
     atable = boxfish.soups.to_table(aitem, include_strings=True, include_links=False)
 
     nrows = len(atable)
     assert nrows == 3
     curr_row = atable[0]
     ncols = len(curr_row)
-    assert curr_row[0] == 'Elsie'
+    assert curr_row[0] == "Elsie"
     assert ncols == 1
 
 
 # Editing functions
 def test_set_base():
     page = get_page(filename=FILE_DORMOUSE)
-    url = 'https://www.crummy.com/'
+    url = "https://www.crummy.com/"
     bpage = boxfish.soups.set_base(page, url)
 
     soup = boxfish.soups.get_soup(bpage)
-    abase = soup.find('base')
+    abase = soup.find("base")
     assert abase
     assert abase["href"] == url
 
@@ -248,8 +237,8 @@ def test_split_soup():
     meta.title.string = soup.title.string
 
     # Assert deep copy -- body
-    atag_soup = soup.find(id='link1')
-    atag_body = body.find(id='link1')
+    atag_soup = soup.find(id="link1")
+    atag_body = body.find(id="link1")
     assert atag_soup.string == atag_body.string
     atag_body.string = "body string"
     assert atag_soup.string != atag_body.string
@@ -261,10 +250,10 @@ def test_merge_soup():
     [meta, _] = boxfish.soups.split(soup)
 
     # Merge tag with <body>
-    body_new = BeautifulSoup('<body><p>Hello World</p>', 'html.parser').find("body")
+    body_new = BeautifulSoup("<body><p>Hello World</p>", "html.parser").find("body")
     soup_new = boxfish.soups.merge(meta, body_new)
     assert boxfish.soups.is_soup(soup_new)
-    assert str(soup_new.p) == '<p>Hello World</p>'
+    assert str(soup_new.p) == "<p>Hello World</p>"
 
     # Assert deep copy
     assert soup_new.title.string == soup.title.string
@@ -273,10 +262,10 @@ def test_merge_soup():
     soup_new.title.string = soup.title.string
 
     # Merge tag without <body>
-    body_new = BeautifulSoup('<p>Hello World</p>', 'html.parser').find("p")
+    body_new = BeautifulSoup("<p>Hello World</p>", "html.parser").find("p")
     soup_new = boxfish.soups.merge(meta, body_new)
     assert boxfish.soups.is_soup(soup_new)
-    assert str(soup_new.p) == '<p>Hello World</p>'
+    assert str(soup_new.p) == "<p>Hello World</p>"
 
     # Assert deep copy
     assert soup_new.title.string == soup.title.string
@@ -285,7 +274,7 @@ def test_merge_soup():
     soup_new.title.string = soup.title.string
 
     # Merge ResultSet
-    aset = soup.find_all('a')
+    aset = soup.find_all("a")
     soup_new = boxfish.soups.merge(meta, aset)
     assert boxfish.soups.is_soup(soup_new)
 
@@ -298,15 +287,15 @@ def test_set_urls():
     results = boxfish.soups.find_items(soup, afilter)
     aitem = results[0]
 
-    alink = aitem.find('a')
-    asouplink = soup.find('a')
+    alink = aitem.find("a")
+    asouplink = soup.find("a")
 
     # Case 1: relative links
 
     # Item
     titem = boxfish.soups.set_urls(aitem, URL_BOOKS)
-    tlink = titem.find('a')
-    assert tlink['href'] == URL_BOOKS + '/' + alink['href']
+    tlink = titem.find("a")
+    assert tlink["href"] == URL_BOOKS + "/" + alink["href"]
 
     # Results
     tresults = boxfish.soups.set_urls(results, URL_BOOKS)
@@ -314,40 +303,40 @@ def test_set_urls():
 
     # Soup
     tsoup = boxfish.soups.set_urls(soup, URL_BOOKS)
-    tsouplink = tsoup.find('a')
-    assert tsouplink['href'] == URL_BOOKS + '/' + asouplink['href']
+    tsouplink = tsoup.find("a")
+    assert tsouplink["href"] == URL_BOOKS + "/" + asouplink["href"]
 
     # Case 2: relative link with paths up
     # 'http://books.toscrape.com'
-    url_current = URL_BOOKS + '/path1/path2/index.html'
-    name_html = 'welcome.html'
+    url_current = URL_BOOKS + "/path1/path2/index.html"
+    name_html = "welcome.html"
 
     # Current folder
     ahref = name_html
-    alink['href'] = ahref
+    alink["href"] = ahref
     tlink = boxfish.soups.set_urls(alink, url_current)
-    assert tlink['href'] == URL_BOOKS + '/path1/path2/' + name_html
+    assert tlink["href"] == URL_BOOKS + "/path1/path2/" + name_html
 
     # One folder up
-    ahref = '../path3/' + name_html
-    alink['href'] = ahref
+    ahref = "../path3/" + name_html
+    alink["href"] = ahref
     tlink = boxfish.soups.set_urls(alink, url_current)
-    assert tlink['href'] == URL_BOOKS + '/path1/path3/' + name_html
+    assert tlink["href"] == URL_BOOKS + "/path1/path3/" + name_html
 
 
 # Conversion functions
 def test_to_body():
     soup = boxfish.soups.get_soup(get_page())
-    atag = soup.find('a')
+    atag = soup.find("a")
 
     # Assert body from tag
     abody = boxfish.soups.to_body(atag)
-    assert abody.name == 'body'
+    assert abody.name == "body"
 
 
 def test_unpack_hrefs():
     soup = boxfish.soups.get_soup(get_page())
-    atag = soup.find('a')
+    atag = soup.find("a")
 
     boxfish.soups.unpack_hrefs(atag)
 
@@ -376,12 +365,12 @@ def test_wrap_navigable_strings():
     astring = re.compile("Antigua and Barbuda")
 
     # Navstring cannot be found
-    tag = boxfish.soups.find_item(soup,astr=astring)
+    tag = boxfish.soups.find_item(soup, astr=astring)
     assert tag is None
 
     # Navstring tag can be found
     boxfish.soups.wrap_navigable_strings(soup)
-    tag = boxfish.soups.find_item(soup,astr=astring)
+    tag = boxfish.soups.find_item(soup, astr=astring)
     assert tag is not None
 
     ## Example with empty strings
@@ -401,9 +390,6 @@ def test_wrap_navigable_strings():
     boxfish.soups.wrap_navigable_strings(soup, empty=True)
     results_wrapped_empty = boxfish.soups.find_items(soup, astr=astring)
     assert len(results_wrapped_empty) > len(results_wrapped)
-
-
-
 
 
 # I/O functions
@@ -435,7 +421,7 @@ def test_find_items_elem_class():
 
 def test_find_items_elem():
     soup = boxfish.soups.get_soup(get_page())
-    afilter = {'elem': 'a'}
+    afilter = {"elem": "a"}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 3
@@ -443,7 +429,7 @@ def test_find_items_elem():
 
 def test_find_items_class():
     soup = boxfish.soups.get_soup(get_page())
-    afilter = {'class': ['sister']}
+    afilter = {"class": ["sister"]}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 3
@@ -451,8 +437,8 @@ def test_find_items_class():
 
 def test_find_items_elem_string():
     soup = boxfish.soups.get_soup(get_page())
-    afilter = {'elem': 'a'}
-    astr = 'Elsie'
+    afilter = {"elem": "a"}
+    astr = "Elsie"
     aresults = boxfish.soups.find_items(soup, afilter=afilter, astr=astr)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 1
@@ -460,7 +446,7 @@ def test_find_items_elem_string():
 
 def test_find_items_string():
     soup = boxfish.soups.get_soup(get_page())
-    astr = 'Elsie'
+    astr = "Elsie"
     aresults = boxfish.soups.find_items(soup, astr=astr)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 1
@@ -468,7 +454,7 @@ def test_find_items_string():
 
 def test_find_items_string_regex():
     soup = boxfish.soups.get_soup(get_page())
-    astr = re.compile('ie')
+    astr = re.compile("ie")
     aresults = boxfish.soups.find_items(soup, astr=astr)
     assert boxfish.soups.is_results(aresults)
     assert len(aresults) == 3
@@ -483,12 +469,12 @@ def test_find_item():
     assert boxfish.soups.is_tag(ritem1)
 
     # Elem
-    afilter = {'elem': 'a'}
+    afilter = {"elem": "a"}
     ritem2 = boxfish.soups.find_item(soup, afilter=afilter)
     assert boxfish.soups.is_tag(ritem2)
 
     # Class
-    afilter = {'class': ['sister']}
+    afilter = {"class": ["sister"]}
     ritem3 = boxfish.soups.find_item(soup, afilter=afilter)
     assert boxfish.soups.is_tag(ritem3)
     assert ritem1 == ritem2 == ritem3
@@ -512,7 +498,7 @@ def test_find_item_by_xpath():
     # assert fitem == soup
 
     # Absolute find item. Not exist
-    xpathn = xpath1 + '/b[1]'
+    xpathn = xpath1 + "/b[1]"
     fitem = boxfish.soups.find_item_by_xpath(soup, axpath=xpathn, relative=False)
     assert fitem is None
 
@@ -527,7 +513,7 @@ def test_find_item_by_xpath():
     xpath_self = boxfish.soups.xpath(aitem1, root=aitem1)
     xpath_level1 = boxfish.soups.xpath(alevel1, root=aitem1)
     xpath_level3 = boxfish.soups.xpath(alevel3, root=aitem1)
-    xpathn = xpath_level3 + '/b[1]'
+    xpathn = xpath_level3 + "/b[1]"
 
     # Relative find item. Exist 1 level deep
     fitem = boxfish.soups.find_item_by_xpath(aitem1, axpath=xpath_level1, relative=True)
@@ -576,12 +562,12 @@ def test_get_filter():
     # Tag with class
     tag = soup.find(id="link1")
     afilter = boxfish.soups.get_filter(tag)
-    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+    assert afilter["elem"] == "a" and afilter["class"] == ["sister"]
 
     # Tag without class
     tag = soup.find("b")
     afilter = boxfish.soups.get_filter(tag)
-    assert afilter['elem'] == 'b' and afilter['class'] == ['']
+    assert afilter["elem"] == "b" and afilter["class"] == [""]
 
 
 def get_filter_most_common():
@@ -604,20 +590,23 @@ def test_common_ancestor():
     aitem1 = results[0]
     aitem2 = results[1]
     ritem = boxfish.soups.common_ancestor(aitem1, aitem2)
-    assert ritem.name == ROWS_PARENT_NAME_BOOKS and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
+    assert (
+        ritem.name == ROWS_PARENT_NAME_BOOKS
+        and ritem["class"] == ROWS_PARENT_CLASS_BOOKS
+    )
 
     # Example same soup, parent is soup
     afilter = ROWS_BOOKS
     aitem1 = boxfish.soups.find_item(soup, afilter)
 
-    afilter = {'elem': 'title'}
+    afilter = {"elem": "title"}
     aitem2 = boxfish.soups.find_item(soup, afilter)
 
     ritem = boxfish.soups.common_ancestor(aitem1, aitem2)
-    assert ritem.name == 'html' and ritem["class"] == ['no-js']
+    assert ritem.name == "html" and ritem["class"] == ["no-js"]
 
     # Different soup
-    aitem2 = BeautifulSoup('<body>', 'html.parser').find("body")
+    aitem2 = BeautifulSoup("<body>", "html.parser").find("body")
     ritem = boxfish.soups.common_ancestor(aitem1, aitem2)
     assert ritem is None
 
@@ -716,16 +705,16 @@ def test_get_child_of_common_ancestor():
     aitem2 = soup.find(id="link2")
     achild = boxfish.soups.get_child_of_common_ancestor(aitem1, aitem2)
     afilter = boxfish.soups.get_filter(achild)
-    assert afilter['elem'] == 'a' and afilter['class'] == ['sister']
+    assert afilter["elem"] == "a" and afilter["class"] == ["sister"]
 
     # Example child of ancestor is ancestor of item
     soup = boxfish.soups.get_soup(get_page(FILE_TREE))
     atree2 = soup.find(id=ID2_TREE)
-    aitem1 = atree2.find(id='CT')
-    aitem2 = atree2.find(id='FT')
+    aitem1 = atree2.find(id="CT")
+    aitem2 = atree2.find(id="FT")
     achild = boxfish.soups.get_child_of_common_ancestor(aitem1, aitem2)
     afilter = boxfish.soups.get_filter(achild)
-    assert afilter['elem'] == 'span' and afilter['class'] == ['']
+    assert afilter["elem"] == "span" and afilter["class"] == [""]
 
 
 def test_get_child_of_common_ancestors():
@@ -758,7 +747,7 @@ def test_get_text_from_tag():
     alist = boxfish.soups.get_text(aitem, include_strings=True, include_links=False)
 
     assert len(alist) == 4
-    assert alist[0] == 'A Light in the ...'
+    assert alist[0] == "A Light in the ..."
 
 
 def test_get_text_from_tag_cols():
@@ -768,10 +757,12 @@ def test_get_text_from_tag_cols():
     cols = COLS_BOOKS
 
     aitem = boxfish.soups.find_item(soup, rows)
-    alist = boxfish.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False)
+    alist = boxfish.soups.get_text(
+        aitem, cols=cols, include_strings=True, include_links=False
+    )
 
     assert len(alist) == 2
-    assert alist[0] == 'A Light in the ...'
+    assert alist[0] == "A Light in the ..."
 
 
 def test_get_text_from_tag_cols_fill_missing():
@@ -785,9 +776,21 @@ def test_get_text_from_tag_cols_fill_missing():
     asubitem = boxfish.soups.find_item(aitem, cols[1])
     asubitem.decompose()
 
-    alist = boxfish.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False, fill_missing_cols=False)
+    alist = boxfish.soups.get_text(
+        aitem,
+        cols=cols,
+        include_strings=True,
+        include_links=False,
+        fill_missing_cols=False,
+    )
     assert len(alist) == 1
-    alist = boxfish.soups.get_text(aitem, cols=cols, include_strings=True, include_links=False, fill_missing_cols=True)
+    alist = boxfish.soups.get_text(
+        aitem,
+        cols=cols,
+        include_strings=True,
+        include_links=False,
+        fill_missing_cols=True,
+    )
     assert len(alist) == 2
 
 
@@ -804,7 +807,7 @@ def test_get_text_from_results():
     assert nrows == len(results)
     assert ncols == 4
     assert isinstance(alist[0], list)
-    assert alist[0][0] == 'A Light in the ...'
+    assert alist[0][0] == "A Light in the ..."
 
 
 def test_get_text_from_results_cols():
@@ -814,14 +817,16 @@ def test_get_text_from_results_cols():
     cols = COLS_BOOKS
 
     results = boxfish.soups.find_items(soup, rows)
-    alist = boxfish.soups.get_text(results, cols=cols, include_strings=True, include_links=False)
+    alist = boxfish.soups.get_text(
+        results, cols=cols, include_strings=True, include_links=False
+    )
 
     nrows = len(alist)
     ncols = len(alist[0])
     assert nrows == len(results)
     assert ncols == len(cols)
     assert isinstance(alist[0], list)
-    assert alist[0][0] == 'A Light in the ...'
+    assert alist[0][0] == "A Light in the ..."
 
 
 def test_get_strings_from_soup():
@@ -844,7 +849,11 @@ def test_get_strings_from_tag_include_links():
     soup = boxfish.soups.get_soup(get_page())
     tag = soup.find(id="link1")
     alist = boxfish.soups.get_strings(tag, include_links=True)
-    assert len(alist) == 2 and alist[0] == "Elsie" and alist[1] == "http://example.com/elsie"
+    assert (
+        len(alist) == 2
+        and alist[0] == "Elsie"
+        and alist[1] == "http://example.com/elsie"
+    )
 
 
 def test_get_strings_from_results():
@@ -861,7 +870,7 @@ def test_get_links_from_soup():
     soup = boxfish.soups.get_soup(get_page())
     alist = boxfish.soups.get_links(soup)
     assert len(alist) == 3
-    assert alist[0] == 'http://example.com/elsie'
+    assert alist[0] == "http://example.com/elsie"
 
 
 def test_get_links_from_tag():
@@ -870,7 +879,7 @@ def test_get_links_from_tag():
     tag = soup.find(id="link1")
     alist = boxfish.soups.get_links(tag)
     assert len(alist) == 1
-    assert alist[0] == 'http://example.com/elsie'
+    assert alist[0] == "http://example.com/elsie"
 
 
 def test_get_links_from_results():
@@ -880,7 +889,7 @@ def test_get_links_from_results():
     alist = boxfish.soups.get_links(results)
     assert len(alist) == len(results)
     assert isinstance(alist[0], list)
-    assert alist[0][0] == 'http://example.com/elsie'
+    assert alist[0][0] == "http://example.com/elsie"
 
 
 # Stencil functions
@@ -904,13 +913,13 @@ def test_get_mask():
     afilter = ROWS_DORMOUSE
     ritem = boxfish.soups.find_item(soup, afilter=afilter)
     titem = boxfish.soups.get_mask(ritem)
-    assert titem.string == '' and titem['href'] == ''
+    assert titem.string == "" and titem["href"] == ""
 
     # Tag with child tags
     afilter = ROWS_DORMOUSE
     titem = boxfish.soups.get_mask(soup)
     ritem = boxfish.soups.find_item(titem, afilter=afilter)
-    assert ritem.string == '' and ritem['href'] == ''
+    assert ritem.string == "" and ritem["href"] == ""
 
     # Results
     afilter = ROWS_DORMOUSE
@@ -978,29 +987,29 @@ def test_is_leaf():
 
 
 def test_is_empty_filter():
-    afilter = {'elem': '', 'class': ['']}
+    afilter = {"elem": "", "class": [""]}
     tf = boxfish.soups.is_empty_filter(afilter)
     assert tf
 
-    afilter = {'elem': '', 'class': ['o']}
+    afilter = {"elem": "", "class": ["o"]}
     tf = boxfish.soups.is_empty_filter(afilter)
     assert not tf
 
-    afilter = {'elem': 'o', 'class': ['']}
+    afilter = {"elem": "o", "class": [""]}
     tf = boxfish.soups.is_empty_filter(afilter)
     assert not tf
 
 
 def test_is_filter():
-    afilter = {'elem': 'ul', 'class': ['list']}
+    afilter = {"elem": "ul", "class": ["list"]}
     tf = boxfish.soups.is_filter(afilter)
     assert tf
 
-    afilter = {'elem': 'ul'}
+    afilter = {"elem": "ul"}
     tf = boxfish.soups.is_filter(afilter)
     assert not tf
 
-    afilter = {'class': ['list']}
+    afilter = {"class": ["list"]}
     tf = boxfish.soups.is_filter(afilter)
     assert not tf
 
@@ -1010,12 +1019,12 @@ def test_is_unique_filter():
     soup = boxfish.soups.get_soup(page)
 
     afilter = ROWS_DORMOUSE
-    nonfilter = {'elem': 'hello'}
-    afilter_zero = {'elem': 'a', 'class': ['brother']}
-    afilter_one = {'elem': 'p', 'class': ['title']}
+    nonfilter = {"elem": "hello"}
+    afilter_zero = {"elem": "a", "class": ["brother"]}
+    afilter_one = {"elem": "p", "class": ["title"]}
     results = boxfish.soups.find_items(soup, afilter)
 
-    aitem = soup.find('body')
+    aitem = soup.find("body")
 
     # False, filter is not a filter
     assert not boxfish.soups.is_unique_filter(nonfilter, soup)
@@ -1041,45 +1050,45 @@ def test_xpath():
     soup = boxfish.soups.get_soup(get_page())
 
     # Test soup
-    assert boxfish.soups.xpath(soup) == ''
+    assert boxfish.soups.xpath(soup) == ""
 
     # Test single item
-    afilter = {'elem': 'b'}
+    afilter = {"elem": "b"}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
-    assert boxfish.soups.xpath(aitem1) == '/html/body/p[1]/b'
+    assert boxfish.soups.xpath(aitem1) == "/html/body/p[1]/b"
 
     # Test multiple items
-    afilter = {'elem': 'a'}
+    afilter = {"elem": "a"}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
-    assert boxfish.soups.xpath(aitem1) == '/html/body/p[2]/a[1]'
+    assert boxfish.soups.xpath(aitem1) == "/html/body/p[2]/a[1]"
     aitem2 = aresults[1]
-    assert boxfish.soups.xpath(aitem2) == '/html/body/p[2]/a[2]'
+    assert boxfish.soups.xpath(aitem2) == "/html/body/p[2]/a[2]"
 
     # test single item relative
-    afilter = {'elem': 'a'}
+    afilter = {"elem": "a"}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
     aparent = aitem1.parent
     agrandparent = aparent.parent
     # self
-    assert boxfish.soups.xpath(aitem1, root=aitem1) == '//'
+    assert boxfish.soups.xpath(aitem1, root=aitem1) == "//"
     # parent
-    assert boxfish.soups.xpath(aitem1, root=aparent) == '//a[1]'
+    assert boxfish.soups.xpath(aitem1, root=aparent) == "//a[1]"
     # grandparent
-    assert boxfish.soups.xpath(aitem1, root=agrandparent) == '//p[2]/a[1]'
+    assert boxfish.soups.xpath(aitem1, root=agrandparent) == "//p[2]/a[1]"
 
     # test first_index= True
-    afilter = {'elem': 'body'}
+    afilter = {"elem": "body"}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
-    assert boxfish.soups.xpath(aitem1, first_index=True) == '/html[1]/body[1]'
+    assert boxfish.soups.xpath(aitem1, first_index=True) == "/html[1]/body[1]"
 
     # test single item relative, first_index= True
-    afilter = {'elem': 'body'}
+    afilter = {"elem": "body"}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
     aparent = aitem1.parent
-    assert boxfish.soups.xpath(aitem1, root=aparent, first_index=True) == '//body[1]'
+    assert boxfish.soups.xpath(aitem1, root=aparent, first_index=True) == "//body[1]"
 
 
 def test_xpaths():
@@ -1090,7 +1099,7 @@ def test_xpaths():
     assert len(alist) == 11
 
     # Test item
-    afilter = {'elem': 'p', 'class': ['story']}
+    afilter = {"elem": "p", "class": ["story"]}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
 
     # Absolute
@@ -1109,7 +1118,7 @@ def test_xpaths_set_union():
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = boxfish.soups.xpaths_set(aitem1, aitem2, operation='union', relative=True)
+    ulist = boxfish.soups.xpaths_set(aitem1, aitem2, operation="union", relative=True)
     assert len(ulist) == 6  # 6 Nodes
 
 
@@ -1119,7 +1128,9 @@ def test_xpaths_set_intersect():
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist = boxfish.soups.xpaths_set(aitem1, aitem2, operation='intersect', relative=True)
+    ulist = boxfish.soups.xpaths_set(
+        aitem1, aitem2, operation="intersect", relative=True
+    )
     assert len(ulist) == 4  # 4 nodes
 
 
@@ -1129,8 +1140,12 @@ def test_xpaths_set_difference():
     # Compare two trees
     aitem1 = soup.find(id=ID1_TREE)
     aitem2 = soup.find(id=ID2_TREE)
-    ulist1 = boxfish.soups.xpaths_set(aitem1, aitem2, operation='difference', relative=True)
-    ulist2 = boxfish.soups.xpaths_set(aitem2, aitem1, operation='difference', relative=True)
+    ulist1 = boxfish.soups.xpaths_set(
+        aitem1, aitem2, operation="difference", relative=True
+    )
+    ulist2 = boxfish.soups.xpaths_set(
+        aitem2, aitem1, operation="difference", relative=True
+    )
     assert len(ulist1) == 1  # 1 node
     assert len(ulist2) == 1  # 1 node
 
@@ -1143,17 +1158,17 @@ def test_get_xpath_index():
     assert boxfish.soups._get_xpath_index(soup) == 0
 
     # Test single item
-    afilter = {'elem': 'b'}
+    afilter = {"elem": "b"}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
     assert boxfish.soups._get_xpath_index(aitem1) == 0
 
     # Test single item, first_index = True
-    afilter = {'elem': 'b'}
+    afilter = {"elem": "b"}
     aitem1 = boxfish.soups.find_item(soup, afilter=afilter)
     assert boxfish.soups._get_xpath_index(aitem1, first_index=True) == 1
 
     # Test multiple items
-    afilter = {'elem': 'a'}
+    afilter = {"elem": "a"}
     aresults = boxfish.soups.find_items(soup, afilter=afilter)
     aitem1 = aresults[0]
     assert boxfish.soups._get_xpath_index(aitem1) == 1

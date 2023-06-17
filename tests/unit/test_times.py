@@ -6,14 +6,14 @@ import time
 
 # Strings
 def test_strftime():
-    """ Test strftime
+    """Test strftime
 
     Function tested:
     strftime()
     """
 
     t = time.time()
-    sep = ' '
+    sep = " "
 
     # 1. Default settings
     date_format = times.DATETIME_JAPANESE
@@ -26,28 +26,30 @@ def test_strftime():
     # 2. Custom settings
     date_format = times.DATETIME_FILE
     strdate = time.strftime(date_format, time.localtime(t))
-    astr = 'Hello World'
-    sep = '.'
+    astr = "Hello World"
+    sep = "."
 
     date_and_str = times.strftime(t=t, string=astr, sep=sep, date_format=date_format)
     date_and_str_expected = strdate + sep + astr
     assert date_and_str == date_and_str_expected
 
     # 3. Custom settings, string first
-    date_and_str = times.strftime(t=t, string=astr, sep=sep, date_format=date_format, string_first=True)
+    date_and_str = times.strftime(
+        t=t, string=astr, sep=sep, date_format=date_format, string_first=True
+    )
     date_and_str_expected = astr + sep + strdate
     assert date_and_str == date_and_str_expected
 
 
 def test_strfdate():
-    """ Test strfdate
+    """Test strfdate
 
     Function tested:
     strfdate()
     """
 
     t = time.time()
-    sep = ' '
+    sep = " "
 
     # Default settings
     date_format = times.DATE_JAPANESE
@@ -59,7 +61,7 @@ def test_strfdate():
 
 
 def test_to_float():
-    """ Test to_float
+    """Test to_float
 
     Function tested:
     to_float()
@@ -78,7 +80,7 @@ def test_to_float():
 
     # 3. Incorrect input
     try:
-        times.to_float(t='abc')
+        times.to_float(t="abc")
         error_raised = False
     except Exception:
         error_raised = True
@@ -86,7 +88,7 @@ def test_to_float():
 
 
 def test_to_struct_time():
-    """ Test to_struct_time
+    """Test to_struct_time
 
     Function tested:
     to_struct_time()
@@ -105,7 +107,7 @@ def test_to_struct_time():
 
     # 3. Incorrect input
     try:
-        times.to_struct_time(t='abc')
+        times.to_struct_time(t="abc")
         error_raised = False
     except Exception:
         error_raised = True
@@ -113,7 +115,7 @@ def test_to_struct_time():
 
 
 def test_to_tuple():
-    """ Test to_tuple
+    """Test to_tuple
 
     Function tested:
     to_tuple()
@@ -132,7 +134,7 @@ def test_to_tuple():
 
     # 3. Incorrect input
     try:
-        times.to_tuple(t='abc')
+        times.to_tuple(t="abc")
         error_raised = False
     except Exception:
         error_raised = True
@@ -141,7 +143,7 @@ def test_to_tuple():
 
 # Sleep
 def test_sleep_on_count():
-    """ Test sleep_on_count
+    """Test sleep_on_count
 
     Function tested:
     sleep_on_count
@@ -169,7 +171,7 @@ def test_sleep_on_count():
 
 
 def test_sleep_until():
-    """ Test sleep_until
+    """Test sleep_until
 
     Function tested:
     sleep_until

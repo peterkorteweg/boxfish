@@ -6,7 +6,7 @@ import os
 
 # General
 def test_is_empty_true():
-    """ Test is_empty, input True
+    """Test is_empty, input True
 
     Function tested:
     is_empty
@@ -18,14 +18,14 @@ def test_is_empty_true():
     """
     alist = []
     assert lists.is_empty(alist) is True
-    alist.append('')
+    alist.append("")
     assert lists.is_empty(alist) is True
     alist.append(None)
     assert lists.is_empty(alist) is True
 
 
 def test_is_empty_false():
-    """ Test is_empty, input False
+    """Test is_empty, input False
 
     Function tested:
     is_empty
@@ -35,14 +35,14 @@ def test_is_empty_false():
     Returns:
         assert
     """
-    alist = ['Hello']
+    alist = ["Hello"]
     assert lists.is_empty(alist) is False
-    alist = ['', 'Hello']
+    alist = ["", "Hello"]
     assert lists.is_empty(alist) is False
 
 
 def test_flatten():
-    """ Test flatten
+    """Test flatten
 
     Function tested:
     flatten
@@ -54,15 +54,15 @@ def test_flatten():
     """
     alist = []
     blist = [1, 2, 3]
-    clist = ['Hello', 'World']
+    clist = ["Hello", "World"]
     alist.append(blist)
     alist.append(clist)
     flist = lists.flatten(alist)
-    assert (flist[0:len(blist)] == blist) and (flist[len(blist):] == clist)
+    assert (flist[0 : len(blist)] == blist) and (flist[len(blist) :] == clist)
 
 
 def test_unique():
-    """ Test unique
+    """Test unique
 
     Function tested:
     unique
@@ -79,7 +79,7 @@ def test_unique():
 
 
 def test_is_equal_length():
-    """ Test is_equal_length
+    """Test is_equal_length
 
     Function tested:
     is_equal_length
@@ -102,7 +102,7 @@ def test_is_equal_length():
 
 # Sets
 def test_intersect():
-    """ Test intersect
+    """Test intersect
 
     Function tested:
     intersect
@@ -120,7 +120,7 @@ def test_intersect():
 
 
 def test_union():
-    """ Test union
+    """Test union
 
     Function tested:
     union
@@ -138,7 +138,7 @@ def test_union():
 
 
 def test_difference():
-    """ Test difference
+    """Test difference
 
     Function tested:
     difference
@@ -156,7 +156,7 @@ def test_difference():
 
 
 def test_is_subset():
-    """ Test is_subset
+    """Test is_subset
 
     Function tested:
     is_subset
@@ -177,7 +177,7 @@ def test_is_subset():
 
 
 def test_is_disjoint():
-    """ Test is_disjoint
+    """Test is_disjoint
 
     Function tested:
     is_disjoint
@@ -201,14 +201,14 @@ def test_is_disjoint():
 def test_to_csv_from_csv():
     alist = []
     blist = [1, 2, 3]
-    clist = ['Hello', 'World']
+    clist = ["Hello", "World"]
     alist.append(blist)
     alist.append(clist)
-    header = ['Col1', 'Col2', 'Col3']
-    filename = r'.\results\test_to_csv.csv'
+    header = ["Col1", "Col2", "Col3"]
+    filename = r".\results\test_to_csv.csv"
 
     # 1A. Write data. Example without date and header
-    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=[])
+    fullname = lists.to_csv(alist, filename, date_format="", overwrite=True, header=[])
     assert fullname == filename
     assert os.path.exists(fullname)
 
@@ -217,7 +217,9 @@ def test_to_csv_from_csv():
     assert alist_read == alist
 
     # 2A. Write data. Example without date and with header
-    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
+    fullname = lists.to_csv(
+        alist, filename, date_format="", overwrite=True, header=header
+    )
     # 2B. Read data
     alist_read = lists.from_csv(filename)
     header_read = alist_read.pop(0)
@@ -225,23 +227,27 @@ def test_to_csv_from_csv():
     assert header_read == header
 
     # 3A. Write data. Append.
-    fullname = lists.to_csv(alist, filename, date_format='', overwrite=False, header=[])
+    fullname = lists.to_csv(alist, filename, date_format="", overwrite=False, header=[])
     # 3B. Read data
     alist_read = lists.from_csv(filename)
     alist_read.pop(0)
-    assert len(alist_read) == 2* len(alist)
+    assert len(alist_read) == 2 * len(alist)
 
     # 4A. Write list of dicts based on internal header
     alist = []
-    blist = {'Col1':1,'Col2':2,'Col3':3}
-    clist = {'Col1':2,'Col2':4,'Col3':6}
+    blist = {"Col1": 1, "Col2": 2, "Col3": 3}
+    clist = {"Col1": 2, "Col2": 4, "Col3": 6}
     alist.append(blist)
     alist.append(clist)
-    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
+    fullname = lists.to_csv(
+        alist, filename, date_format="", overwrite=True, header=header
+    )
 
     # 4A. Write list of dicts based with extended header
-    header = ['Col1', 'Col2', 'Col3', 'Col4']
-    fullname = lists.to_csv(alist, filename, date_format='', overwrite=True, header=header)
+    header = ["Col1", "Col2", "Col3", "Col4"]
+    fullname = lists.to_csv(
+        alist, filename, date_format="", overwrite=True, header=header
+    )
 
     # Clean up
     if os.path.exists(fullname):

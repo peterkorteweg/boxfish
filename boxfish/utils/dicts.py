@@ -6,7 +6,7 @@ import json
 
 
 def get_subset(adict, akeys):
-    """ Get a dict subset consisting of akeys. Missing akeys are ignored
+    """Get a dict subset consisting of akeys. Missing akeys are ignored
 
     bdict = get_subset(adict, akeys)
 
@@ -26,7 +26,7 @@ def get_subset(adict, akeys):
 
 
 def extract_values(adict, akeys):
-    """ Extract values from adict for akeys
+    """Extract values from adict for akeys
 
     [values1, values2, ...] = extract_values(adict, alist)
 
@@ -44,7 +44,7 @@ def extract_values(adict, akeys):
         >> val3 = None
     """
 
-    klist = [None]*len(akeys)
+    klist = [None] * len(akeys)
     for i, val in enumerate(akeys):
         if val in adict:
             klist[i] = adict[val]
@@ -52,7 +52,7 @@ def extract_values(adict, akeys):
 
 
 def append(adict, bdict):
-    """ Append bdict to adict
+    """Append bdict to adict
 
     Duplicate entries in bdict overwrite entries from adict
 
@@ -74,7 +74,7 @@ def append(adict, bdict):
 
 
 def remove_nones(adict):
-    """ Remove key-vlaue pairs with a None Value
+    """Remove key-vlaue pairs with a None Value
 
     [values1, values2, ...] = extract_values(adict, alist)
 
@@ -92,16 +92,16 @@ def remove_nones(adict):
 
 
 def dumps(adict):
-    """ Dumps dictionary into Json string. Generalizes to lists
+    """Dumps dictionary into Json string. Generalizes to lists
 
-        ajson = dumps(adict)
+    ajson = dumps(adict)
 
-        Args:
-            adict (dict or list): Dictionary
-        Returns:
-            ajson (str or list): Json strings
-        """
-    ajson = ''
+    Args:
+        adict (dict or list): Dictionary
+    Returns:
+        ajson (str or list): Json strings
+    """
+    ajson = ""
     if isinstance(adict, dict):
         ajson = json.dumps(adict)
     elif isinstance(adict, list):
@@ -110,15 +110,15 @@ def dumps(adict):
 
 
 def loads(ajson):
-    """ Loads Json string into a dictionary. Generalizes to lists
+    """Loads Json string into a dictionary. Generalizes to lists
 
-        adict = loads(ajson)
+    adict = loads(ajson)
 
-        Args:
-            ajson (str or list): Json strings
-        Returns:
-            adict (dict or list): Dictionary
-        """
+    Args:
+        ajson (str or list): Json strings
+    Returns:
+        adict (dict or list): Dictionary
+    """
     adict = {}
     if isinstance(ajson, str):
         adict = json.loads(ajson)
@@ -128,15 +128,15 @@ def loads(ajson):
 
 
 def set_(alist):
-    """ Return a set of unique dictionaries in alist
+    """Return a set of unique dictionaries in alist
 
-        aset = set_(alist)
+    aset = set_(alist)
 
-        Args:
-            alist (list): List of dictionary
-        Returns:
-            aset (list): List of dictionary
-        """
+    Args:
+        alist (list): List of dictionary
+    Returns:
+        aset (list): List of dictionary
+    """
     aset = []
     if isinstance(alist, list):
         ajson = dumps(alist)

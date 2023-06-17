@@ -12,7 +12,7 @@ from boxfish.utils.utils import create_folder_if_not_exist
 
 
 def list_to_dataframe(alist, columns):
-    """ Convert list to dataframe with single column
+    """Convert list to dataframe with single column
 
     df = list_to_dataframe(alist,columns)
 
@@ -39,8 +39,8 @@ def list_to_dataframe(alist, columns):
     return df
 
 
-def save(df, filename, date_format='', overwrite=False, quoting=csv.QUOTE_NONNUMERIC):
-    """ Save dataframe to csv file
+def save(df, filename, date_format="", overwrite=False, quoting=csv.QUOTE_NONNUMERIC):
+    """Save dataframe to csv file
 
     fullname = save(df, filename, date_format, overwrite, quoting)
 
@@ -61,9 +61,9 @@ def save(df, filename, date_format='', overwrite=False, quoting=csv.QUOTE_NONNUM
         fullname = filename_append_date(filename, date_format)
 
         if os.path.exists(fullname) and not overwrite:
-            df.to_csv(fullname, mode='a', header=False, quoting=quoting)
+            df.to_csv(fullname, mode="a", header=False, quoting=quoting)
         else:
-            df.to_csv(fullname, mode='w', quoting=quoting)
+            df.to_csv(fullname, mode="w", quoting=quoting)
     else:
-        fullname = ''
+        fullname = ""
     return fullname

@@ -24,11 +24,9 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
-
+        "Development Status :: 3 - Alpha",
         # Pick your license as you wish
         "License :: OSI Approved :: MIT License",
-
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
@@ -40,19 +38,15 @@ setup(
     ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
-    keywords='beautifulsoup html pandas scraping tables',
-
+    keywords="beautifulsoup html pandas scraping tables",
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    #package_dir={'': 'boxfish'},  # Required
+    # package_dir={'': 'boxfish'},  # Required
     packages=find_packages(),  # Required
-
-    package_data={'boxfish': ['VERSION']},
-
-    python_requires='>=3.6',
-
+    package_data={"boxfish": ["VERSION"]},
+    python_requires=">=3.6",
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
-    install_requires=['requests','beautifulsoup4','selenium','lxml'],  # Optional
+    install_requires=["requests", "beautifulsoup4", "selenium", "lxml"],  # Optional
 )

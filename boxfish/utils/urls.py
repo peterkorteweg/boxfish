@@ -8,7 +8,7 @@ from boxfish.utils.lists import reshape
 
 
 def set_components(url, **kwargs):
-    """ Set url components based on dict or key value pairs
+    """Set url components based on dict or key value pairs
 
     url = set_components(url, scheme=scheme, netloc=netloc, path=path, query=query, fragment=fragment)
 
@@ -24,9 +24,15 @@ def set_components(url, **kwargs):
         url (str)
     """
 
-    kwargs = get_subset(remove_nones(kwargs), ['scheme', 'netloc', 'path', 'query', 'fragment'])
-    if 'query' in kwargs:
-        kwargs['query'] = _dict_to_query(kwargs['query']) if isinstance(kwargs['query'], dict) else kwargs['query']
+    kwargs = get_subset(
+        remove_nones(kwargs), ["scheme", "netloc", "path", "query", "fragment"]
+    )
+    if "query" in kwargs:
+        kwargs["query"] = (
+            _dict_to_query(kwargs["query"])
+            if isinstance(kwargs["query"], dict)
+            else kwargs["query"]
+        )
 
     pr = urlsplit(url)
     pr = pr._replace(**kwargs)
@@ -35,7 +41,7 @@ def set_components(url, **kwargs):
 
 
 def get_components(url):
-    """ Set url components based on dict or key value pairs
+    """Set url components based on dict or key value pairs
 
     url = set(url, query=query, path=path, )
 
@@ -51,16 +57,16 @@ def get_components(url):
     """
     pr = urlsplit(url)
     components = dict()
-    components['scheme'] = pr.scheme
-    components['netloc'] = pr.netloc
-    components['path'] = pr.path
-    components['query'] = pr.query
-    components['fragment'] = pr.fragment
+    components["scheme"] = pr.scheme
+    components["netloc"] = pr.netloc
+    components["path"] = pr.path
+    components["query"] = pr.query
+    components["fragment"] = pr.fragment
     return components
 
 
 def replace_subpath(url, subpath, index):
-    """ Replace subpath replaces a single subpath of the path of an url
+    """Replace subpath replaces a single subpath of the path of an url
 
     url = replace_subpath(url, subpath, index=0)
 
@@ -74,10 +80,10 @@ def replace_subpath(url, subpath, index):
 
     aurl = url
     adict = get_components(url)
-    dictpath = _path_to_dict(adict['path'])
+    dictpath = _path_to_dict(adict["path"])
     keys = list(dictpath.keys())
 
-    if len(keys)==0:
+    if len(keys) == 0:
         aurl = set_components(url, path=subpath)
     else:
         if -len(keys) <= index < len(keys):
@@ -87,7 +93,7 @@ def replace_subpath(url, subpath, index):
 
 
 def replace_subquery(url, subquery):
-    """ Replace subquery replaces part of a query of an url
+    """Replace subquery replaces part of a query of an url
 
     url = replace_subquery(url, subquery)
 
@@ -99,7 +105,7 @@ def replace_subquery(url, subquery):
     """
 
     adict = get_components(url)
-    dictquery = _query_to_dict(adict['query'])
+    dictquery = _query_to_dict(adict["query"])
     dictsubquery = _query_to_dict(subquery) if isinstance(subquery, str) else subquery
 
     dictquery = dict(dictquery, **dictsubquery)
@@ -108,7 +114,7 @@ def replace_subquery(url, subquery):
 
 
 def update_relative_path(url, newpath):
-    """ Update url with a relative newpath.
+    """Update url with a relative newpath.
     Existing path and query are overwritten by newpath
 
     url = update_path(url, newpath)
@@ -119,12 +125,12 @@ def update_relative_path(url, newpath):
     Returns:
         aurl (str) : url
     """
-    aurl = urljoin(url,newpath)
+    aurl = urljoin(url, newpath)
     return aurl
 
 
 def create_url_list(url, query=None, path=None):
-    """ Create a list of urls based on a url, a query and/or path
+    """Create a list of urls based on a url, a query and/or path
 
     url_list = create_url_list(url, query=query, path=path)
 
@@ -145,7 +151,7 @@ def create_url_list(url, query=None, path=None):
 
 
 def is_valid_http(url):
-    """ Validate url syntax for http and https
+    """Validate url syntax for http and https
 
     url = valid(url)
 
@@ -155,43 +161,43 @@ def is_valid_http(url):
         tf (bool) : True if url is a valid url
     """
     pr = urlsplit(url)
-    return (pr.scheme == 'http') or (pr.scheme == 'https')
+    return (pr.scheme == "http") or (pr.scheme == "https")
 
 
 # Private functions
 def _dict_to_path(adict):
-    """ Convert a dict to a url path
+    """Convert a dict to a url path
 
-        path = _dict_to_path(adict)
+    path = _dict_to_path(adict)
 
-        Args:
-            adict (dict): key-value pairs
+    Args:
+        adict (dict): key-value pairs
 
-        Returns:
-            path (str): url path /value1/value2 based on values in adict
+    Returns:
+        path (str): url path /value1/value2 based on values in adict
     """
-    path = ''
+    path = ""
     if type(adict) == dict:
         for value in adict.values():
-            path = path + '/' + value.lstrip('/')
+            path = path + "/" + value.lstrip("/")
     return path
 
 
 def _path_to_dict(path, keys=None):
-    """ Convert a url path to a dict
+    """Convert a url path to a dict
 
-        adict = _path_to_dict(path, keys=None)
+    adict = _path_to_dict(path, keys=None)
 
-        Args:
-            path (str): url path /value1/value2
-            keys (list): list of key strings or None
+    Args:
+        path (str): url path /value1/value2
+        keys (list): list of key strings or None
 
-        Returns:
-            adict (dict): key-value pairs for each element in path
+    Returns:
+        adict (dict): key-value pairs for each element in path
     """
     adict = {}
     if type(path) == str:
-        values = list(filter(None, path.split('/')))
+        values = list(filter(None, path.split("/")))
         elems = len(values)
 
         if keys is None:

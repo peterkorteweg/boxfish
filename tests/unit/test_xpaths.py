@@ -4,7 +4,7 @@ from boxfish.utils.utils import read
 from boxfish.utils import xpaths
 
 # BS4 Default example
-FILE_DORMOUSE = r'.\data\dormouse.html'
+FILE_DORMOUSE = r".\data\dormouse.html"
 ROWS_DORMOUSE = {"elem": "a", "class": "sister"}
 PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
     <body>
@@ -22,7 +22,7 @@ PAGE_DORMOUSE = """<html><head><title>The Dormouse's story</title></head>
 
 # Helper functions
 def get_page(filename=FILE_DORMOUSE):
-    if filename is '':
+    if filename is "":
         page = PAGE_DORMOUSE
     else:
         page = read(filename)
@@ -30,10 +30,10 @@ def get_page(filename=FILE_DORMOUSE):
 
 
 def test_is_child():
-    pxpath = '/html/body/p[2]'
-    npxpath = '/html/body/p[1]'
-    npxpath2 = '/html/body/b[1]'
-    axpath = pxpath + '/a[2]'
+    pxpath = "/html/body/p[2]"
+    npxpath = "/html/body/p[1]"
+    npxpath2 = "/html/body/b[1]"
+    axpath = pxpath + "/a[2]"
 
     # Xpath is child
     axpaths = [npxpath, pxpath]
@@ -50,13 +50,13 @@ def test_is_child():
 
 def test_is_descendant():
 
-    gxpath = '/html/body'
-    pxpath = gxpath + '/p[2]'
-    axpath = pxpath + '/a[2]'
+    gxpath = "/html/body"
+    pxpath = gxpath + "/p[2]"
+    axpath = pxpath + "/a[2]"
 
-    pxpaths1 = ['/html/body/p[2]/a[1]', axpath, '/html/body/p[2]/a[3]']
-    pxpaths2 = ['/html/body/p[1]', pxpath, '/html/body/p[3]']
-    pxpaths3 = ['/html/head', '/html/head/title', gxpath]
+    pxpaths1 = ["/html/body/p[2]/a[1]", axpath, "/html/body/p[2]/a[3]"]
+    pxpaths2 = ["/html/body/p[1]", pxpath, "/html/body/p[3]"]
+    pxpaths3 = ["/html/head", "/html/head/title", gxpath]
 
     # Xpath is descendant (level 1)
     axpaths = [pxpath]
@@ -81,9 +81,9 @@ def test_is_descendant():
 
 
 def test_parent():
-    gxpath = '/html/body'
-    pxpath = gxpath + '/p[2]'
-    axpath = pxpath + '/a[2]'
+    gxpath = "/html/body"
+    pxpath = gxpath + "/p[2]"
+    axpath = pxpath + "/a[2]"
 
     # Parent 1
     aparent = xpaths.parent(axpath)
@@ -94,23 +94,23 @@ def test_parent():
     assert aparent == gxpath
 
     # Invalid xpath ending in /
-    aparent = xpaths.parent(axpath + '/')
+    aparent = xpaths.parent(axpath + "/")
     assert aparent == axpath
 
     # Invalid xpath without /
-    aparent = xpaths.parent('Hello World')
-    assert aparent == ''
+    aparent = xpaths.parent("Hello World")
+    assert aparent == ""
 
 
 def test_split():
     # Test single item
-    axpath = '/html/body/p[1]/b'
+    axpath = "/html/body/p[1]/b"
     [names, indices] = xpaths.split(axpath)
-    assert names == ['html', 'body', 'p', 'b']
+    assert names == ["html", "body", "p", "b"]
     assert indices == [1, 1, 1, 1]
 
     # Test multiple items
-    axpath = '/html/body/p[2]/a[2]'
+    axpath = "/html/body/p[2]/a[2]"
     [names, indices] = xpaths.split(axpath)
-    assert names == ['html', 'body', 'p', 'a']
+    assert names == ["html", "body", "p", "a"]
     assert indices == [1, 1, 2, 2]

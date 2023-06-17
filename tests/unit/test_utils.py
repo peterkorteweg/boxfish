@@ -15,7 +15,7 @@ def test_create_folder_if_not_exist():
 
 
 def test_read_file_text():
-    """ Test read_file
+    """Test read_file
 
     Function tested:
     read_file
@@ -25,17 +25,17 @@ def test_read_file_text():
     Returns:
         assert
     """
-    filename = r'.\data\read_text.txt'
+    filename = r".\data\read_text.txt"
     text = utils.read(filename)
     assert isinstance(text, str)
     assert len(text) > 0
 
 
 def test_read_json():
-    filename = r'.\data\read_json.json'
+    filename = r".\data\read_json.json"
 
     # General
-    text = utils.read(filename, filetype='json')
+    text = utils.read(filename, filetype="json")
     assert isinstance(text, dict)
 
     # Specific function
@@ -44,7 +44,7 @@ def test_read_json():
 
 
 def test_write_file_text():
-    """ Test write_file
+    """Test write_file
 
     Function tested:
     read_file
@@ -54,12 +54,12 @@ def test_write_file_text():
     Returns:
         assert
     """
-    filename = r'.\data\read_text.txt'
+    filename = r".\data\read_text.txt"
     text = utils.read(filename)
     assert isinstance(text, str)
     assert len(text) > 0
 
-    filename_to = r'.\data\write_text.txt'
+    filename_to = r".\data\write_text.txt"
     if os.path.exists(filename_to):
         os.remove(filename_to)
         time.sleep(2)

@@ -9,17 +9,17 @@ from boxfish.utils.strings import to_int
 
 # Xpath list functions
 def is_child(axpath, axpaths):
-    """ Returns true is axpath is a child from an item in axpaths
+    """Returns true is axpath is a child from an item in axpaths
 
-        tf = is_child(axpath, axpaths)
+    tf = is_child(axpath, axpaths)
 
-        Args:
-            axpath(str): xpath
-            axpaths(str or list): xpath list
+    Args:
+        axpath(str): xpath
+        axpaths(str or list): xpath list
 
-        Returns:
-            tf (bool): true if axpath is a child of item in axpaths
-        """
+    Returns:
+        tf (bool): true if axpath is a child of item in axpaths
+    """
     axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
     tf = False
     i = 0
@@ -30,17 +30,17 @@ def is_child(axpath, axpaths):
 
 
 def is_descendant(axpath, axpaths):
-    """ Returns true is axpath is a descdendant from an item in axpaths
+    """Returns true is axpath is a descdendant from an item in axpaths
 
-        tf = is_child(axpath, axpaths)
+    tf = is_child(axpath, axpaths)
 
-        Args:
-            axpath(str): xpath
-            axpaths(str or list): xpath list
+    Args:
+        axpath(str): xpath
+        axpaths(str or list): xpath list
 
-        Returns:
-            tf (bool): true if axpath is a descendant of item in axpaths
-        """
+    Returns:
+        tf (bool): true if axpath is a descendant of item in axpaths
+    """
     axpaths = to_list(axpaths) if not isinstance(axpaths, list) else axpaths
     tf = False
     i = 0
@@ -51,23 +51,23 @@ def is_descendant(axpath, axpaths):
 
 
 def parent(axpath):
-    """ Returns xpath of parent of axpath
+    """Returns xpath of parent of axpath
 
-        pxpath = parent(axpath)
+    pxpath = parent(axpath)
 
-        Args:
-            axpath(str): xpath
+    Args:
+        axpath(str): xpath
 
-        Returns:
-            pxpath(str): xpath parent
-        """
-    sep  = '/'
-    stripped = axpath.split(sep,-1)
+    Returns:
+        pxpath(str): xpath parent
+    """
+    sep = "/"
+    stripped = axpath.split(sep, -1)
     return sep.join(stripped[:-1])
 
 
 def split(axpath):
-    """ Returns two lists with xpath name attributes and indices
+    """Returns two lists with xpath name attributes and indices
 
     [anames aindices] = split(xpath)
 
@@ -78,14 +78,14 @@ def split(axpath):
         anames (list): list with names
         aindices (list): list with indices
     """
-    anames = axpath.split('/')
+    anames = axpath.split("/")
     aindices = [1] * len(anames)
-    for i in range(len(anames)-1, -1, -1):
-        if anames[i] == '':
+    for i in range(len(anames) - 1, -1, -1):
+        if anames[i] == "":
             anames.pop(i)
             aindices.pop(i)
         else:
-            tlist = anames[i].replace('[', ']').split(sep=']')
+            tlist = anames[i].replace("[", "]").split(sep="]")
             anames[i] = tlist[0]
             if len(tlist) > 1:
                 index = to_int(tlist[1])
@@ -95,18 +95,19 @@ def split(axpath):
 
 # Private functions
 
+
 def _is_child(axpath, bxpath):
-    """ Returns true if axpath is a child of bxpath
+    """Returns true if axpath is a child of bxpath
 
-     tf = _is_child(axpath, bxpath)
+    tf = _is_child(axpath, bxpath)
 
-     Args:
-         axpath(str): xpath
-         bxpath(str): xpath
+    Args:
+        axpath(str): xpath
+        bxpath(str): xpath
 
-     Returns:
-         tf (bool): true if axpath is a child of bxpath
-     """
+    Returns:
+        tf (bool): true if axpath is a child of bxpath
+    """
 
     [anames, aidx] = split(axpath)
     [bnames, bidx] = split(bxpath)
@@ -118,17 +119,17 @@ def _is_child(axpath, bxpath):
 
 
 def _is_descendant(axpath, bxpath):
-    """ Returns true if axpath is a descendant of bxpath
+    """Returns true if axpath is a descendant of bxpath
 
-     tf = _is_descendant(axpath, bxpath)
+    tf = _is_descendant(axpath, bxpath)
 
-     Args:
-         axpath(str): xpath
-         bxpath(str): xpath
+    Args:
+        axpath(str): xpath
+        bxpath(str): xpath
 
-     Returns:
-         tf (bool): true if axpath is a desdendant of bxpath
-     """
+    Returns:
+        tf (bool): true if axpath is a desdendant of bxpath
+    """
 
     [anames, aidx] = split(axpath)
     [bnames, bidx] = split(bxpath)
