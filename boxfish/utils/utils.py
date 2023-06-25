@@ -7,9 +7,11 @@ import os
 import shutil
 from pathlib import Path
 
+from typing import Union
+
 
 # Files
-def makedir(spath):
+def makedir(spath: str) -> None:
     """Make a new directory
 
     Args:
@@ -25,7 +27,7 @@ def makedir(spath):
         print("Parent folder does not exist")
 
 
-def create_folder_if_not_exist(folder):
+def create_folder_if_not_exist(folder: str) -> None:
     """Create folder
 
     Args:
@@ -39,7 +41,7 @@ def create_folder_if_not_exist(folder):
         os.makedirs(folder)
 
 
-def read(filename, filetype="text", encoding="utf-8"):
+def read(filename: str, filetype: str = "text", encoding: str = "utf-8") -> Union[dict, str]:
     """Read text from file
 
     text = read(filename)
@@ -50,7 +52,7 @@ def read(filename, filetype="text", encoding="utf-8"):
         encoding (str): file encoding
 
     Returns:
-        text (str or json):
+        text (str or json dict):
     """
 
     text = {} if filetype == "json" else ""
@@ -67,7 +69,7 @@ def read(filename, filetype="text", encoding="utf-8"):
     return text
 
 
-def read_json(filename, encoding="utf-8"):
+def read_json(filename: str, encoding: str = "utf-8") -> dict:
     """Read json from file
 
     ajson = read(filename)
@@ -82,7 +84,8 @@ def read_json(filename, encoding="utf-8"):
     return read(filename, filetype="json", encoding=encoding)
 
 
-def write(filename, text, filetype="text", encoding="utf-8", indent=4):
+def write(filename: str, text: Union[dict, str], filetype: str = "text", encoding: str = "utf-8",
+          indent: int = 4) -> None:
     """Write text to file
 
     write(filename)
@@ -111,7 +114,7 @@ def write(filename, text, filetype="text", encoding="utf-8", indent=4):
         print("Error: Cannot write to file.")
 
 
-def write_json(filename, ajson, encoding="utf-8", indent=4):
+def write_json(filename: str, ajson: dict, encoding: str = "utf-8", indent: int = 4) -> None:
     """Write json to file
 
     write_json(filename, text, indent=4)
@@ -131,7 +134,7 @@ def write_json(filename, ajson, encoding="utf-8", indent=4):
     write(filename, ajson, filetype="json", encoding=encoding, indent=indent)
 
 
-def flip(filename1, filename2):
+def flip(filename1: str, filename2: str) -> None:
     """Flips two files.
 
     flip(filename1, filename2)

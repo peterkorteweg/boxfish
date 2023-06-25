@@ -7,8 +7,10 @@ from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit
 from boxfish.utils.dicts import get_subset, remove_nones
 from boxfish.utils.lists import reshape
 
+from typing import Any, List, Optional, Union
 
-def set_components(url, **kwargs):
+
+def set_components(url: str, **kwargs) -> str:
     """Set url components based on dict or key value pairs
 
     url = set_components(url, scheme=scheme, netloc=netloc, path=path, query=query, fragment=fragment)
@@ -41,7 +43,7 @@ def set_components(url, **kwargs):
     return url
 
 
-def get_components(url):
+def get_components(url: str) -> dict:
     """Set url components based on dict or key value pairs
 
     url = set(url, query=query, path=path, )
@@ -66,7 +68,7 @@ def get_components(url):
     return components
 
 
-def replace_subpath(url, subpath, index):
+def replace_subpath(url: str, subpath: str, index: int) -> str:
     """Replace subpath replaces a single subpath of the path of an url
 
     url = replace_subpath(url, subpath, index=0)
@@ -93,7 +95,7 @@ def replace_subpath(url, subpath, index):
     return aurl
 
 
-def replace_subquery(url, subquery):
+def replace_subquery(url: str, subquery: Union[dict, str]) -> str:
     """Replace subquery replaces part of a query of an url
 
     url = replace_subquery(url, subquery)
@@ -114,7 +116,7 @@ def replace_subquery(url, subquery):
     return aurl
 
 
-def update_relative_path(url, newpath):
+def update_relative_path(url: str, newpath: str) -> str:
     """Update url with a relative newpath.
     Existing path and query are overwritten by newpath
 
@@ -130,7 +132,7 @@ def update_relative_path(url, newpath):
     return aurl
 
 
-def create_url_list(url, query=None, path=None):
+def create_url_list(url: str, query: Union[list, str, None] = None, path: Union[list, str, None] = None) -> List[str]:
     """Create a list of urls based on a url, a query and/or path
 
     url_list = create_url_list(url, query=query, path=path)
@@ -151,7 +153,7 @@ def create_url_list(url, query=None, path=None):
     return url_list
 
 
-def is_valid_http(url):
+def is_valid_http(url: str) -> bool:
     """Validate url syntax for http and https
 
     url = valid(url)
@@ -166,7 +168,7 @@ def is_valid_http(url):
 
 
 # Private functions
-def _dict_to_path(adict):
+def _dict_to_path(adict: dict) -> str:
     """Convert a dict to a url path
 
     path = _dict_to_path(adict)
@@ -184,7 +186,7 @@ def _dict_to_path(adict):
     return path
 
 
-def _path_to_dict(path, keys=None):
+def _path_to_dict(path: str, keys: Optional[list] = None):
     """Convert a url path to a dict
 
     adict = _path_to_dict(path, keys=None)
@@ -209,9 +211,9 @@ def _path_to_dict(path, keys=None):
     return adict
 
 
-def _query_to_dict(query):
+def _query_to_dict(query: Any) -> dict:
     return dict(parse_qsl(query))
 
 
-def _dict_to_query(adict):
+def _dict_to_query(adict: dict) -> Any:
     return urlencode(adict)

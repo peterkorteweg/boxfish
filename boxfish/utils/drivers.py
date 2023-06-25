@@ -8,14 +8,15 @@ import requests
 from selenium import webdriver
 
 from boxfish.utils import dicts, times, urls, utils
+from typing import Any, Final, Optional
 
-DRIVERKEYS = ["package", "sleep", "requests", "selenium"]
-REQUESTSKEYS = ["headers", "timeout"]
-SELENIUMKEYS = ["filename", "log", "headless"]
-MIN_TIMEOUT = 10
+DRIVERKEYS: Final = ["package", "sleep", "requests", "selenium"]
+REQUESTSKEYS: Final = ["headers", "timeout"]
+SELENIUMKEYS: Final = ["filename", "log", "headless"]
+MIN_TIMEOUT: Final = 10
 
 
-def get_page(url="", params=None, count=0):
+def get_page(url: str = "", params: Optional[dict] = None, count: int = 0) -> str:
     """Get single HTTP page from an url with the default driver
 
     page = get_page(url):
@@ -38,7 +39,8 @@ def get_page(url="", params=None, count=0):
     return page
 
 
-def request_page(driver, url="", params=None, count=0):
+def request_page(driver: Any, url: str = "", params: Optional[dict] = None,
+                 count: int = 0) -> str:
     """Request a single HTTP page from an url with driver
 
     page = request_page(driver, url):
@@ -100,14 +102,14 @@ def request_page(driver, url="", params=None, count=0):
 
 
 def create_params(
-    package="requests",
-    headers=None,
-    timeout=1,
-    filename="",
-    log="",
-    sleep=None,
-    headless=True,
-):
+    package: str = "requests",
+    headers: Optional[dict] = None,
+    timeout: int = 1,
+    filename: str = "",
+    log: str = "",
+    sleep: Optional[dict] = None,
+    headless: bool = True,
+) -> dict:
     """Create driver parameters
 
     params = create_params(package='requests', headers='', timeout=1, filename='', log='', headless=True):
@@ -142,7 +144,7 @@ def create_params(
     return params
 
 
-def driver_start(params=None):
+def driver_start(params: Optional[dict] = None) -> Any:
     """Start driver
 
     driver = driver_start(params)
@@ -186,7 +188,7 @@ def driver_start(params=None):
     return driver
 
 
-def driver_stop(driver):
+def driver_stop(driver: Any) -> None:
     """Stop driver
 
     driver_stop(driver)

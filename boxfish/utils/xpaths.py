@@ -6,9 +6,11 @@
 from boxfish.utils.lists import to_list
 from boxfish.utils.strings import to_int
 
+from typing import Tuple, Union
+
 
 # Xpath list functions
-def is_child(axpath, axpaths):
+def is_child(axpath: str, axpaths: Union[list, str]) -> bool:
     """Returns true is axpath is a child from an item in axpaths
 
     tf = is_child(axpath, axpaths)
@@ -29,7 +31,7 @@ def is_child(axpath, axpaths):
     return tf
 
 
-def is_descendant(axpath, axpaths):
+def is_descendant(axpath: str, axpaths: Union[list, str]) -> bool:
     """Returns true is axpath is a descdendant from an item in axpaths
 
     tf = is_child(axpath, axpaths)
@@ -50,7 +52,7 @@ def is_descendant(axpath, axpaths):
     return tf
 
 
-def parent(axpath):
+def parent(axpath: str) -> str:
     """Returns xpath of parent of axpath
 
     pxpath = parent(axpath)
@@ -66,7 +68,7 @@ def parent(axpath):
     return sep.join(stripped[:-1])
 
 
-def split(axpath):
+def split(axpath: str) -> Tuple[list, list]:
     """Returns two lists with xpath name attributes and indices
 
     [anames aindices] = split(xpath)
@@ -96,7 +98,7 @@ def split(axpath):
 # Private functions
 
 
-def _is_child(axpath, bxpath):
+def _is_child(axpath: str, bxpath: str) -> bool:
     """Returns true if axpath is a child of bxpath
 
     tf = _is_child(axpath, bxpath)
@@ -118,7 +120,7 @@ def _is_child(axpath, bxpath):
     return tf
 
 
-def _is_descendant(axpath, bxpath):
+def _is_descendant(axpath: str, bxpath: str) -> bool:
     """Returns true if axpath is a descendant of bxpath
 
     tf = _is_descendant(axpath, bxpath)

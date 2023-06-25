@@ -8,9 +8,11 @@ import os
 from boxfish.utils.strings import filename_append_date
 from boxfish.utils.utils import create_folder_if_not_exist
 
+from typing import Optional
+
 
 # General
-def is_empty(alist):
+def is_empty(alist: Optional[list]) -> bool:
     """Returns true if list is empty or contains '' or None only
 
     tf = is_empty(alist)
@@ -36,7 +38,7 @@ def is_empty(alist):
     return all(item == "" or item is None for item in alist)
 
 
-def flatten(alist):
+def flatten(alist: list) -> list:
     """Merges a list of lists of items into a single list of items
 
     Source: https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-list-of-lists
@@ -46,7 +48,7 @@ def flatten(alist):
     Args:
         alist (list): List of lists of items
     Returns:
-        flist (bool): List of items
+        flist (list): List of items
 
     Example:
         alist = [1,2,3]
@@ -65,7 +67,7 @@ def flatten(alist):
     return [item for sublist in alist for item in f(sublist)]
 
 
-def unique(alist):
+def unique(alist: list) -> list:
     """Return list with duplicates removed
 
     ulist = unique(alist)
@@ -164,13 +166,13 @@ def reshape(*args):
 
 
 def to_csv(
-    alist,
-    filename,
-    date_format="",
-    overwrite=False,
-    header=None,
-    quoting=csv.QUOTE_NONNUMERIC,
-):
+    alist: list,
+    filename: str,
+    date_format: str = "",
+    overwrite: bool = False,
+    header: Optional[list] = None,
+    quoting: int = csv.QUOTE_NONNUMERIC,
+) -> str:
     """Save list to csv file. Dictionaries are converted to lists without key validation.
 
     fullname = to_csv(alist, filename, date_format, overwrite)
@@ -184,7 +186,7 @@ def to_csv(
         header (list): Column headers
         quoting (int): CSV quoting constant
     Returns:
-        fullname: Full filename including date
+        fullname (str): Full filename including date
 
     Example:
         fullname = to_csv(alist, 'file.csv', date_format='%Y%m%d, overwrite=True)
@@ -214,7 +216,7 @@ def to_csv(
     return fullname
 
 
-def from_csv(filename, quoting=csv.QUOTE_NONNUMERIC):
+def from_csv(filename: str, quoting: int = csv.QUOTE_NONNUMERIC) -> list:
     """Load list from csv file
 
     alist = from_csv(filename)
@@ -238,7 +240,7 @@ def from_csv(filename, quoting=csv.QUOTE_NONNUMERIC):
 
 
 # Set functions. Set functions remove duplicates
-def intersect(alist, blist):
+def intersect(alist: list, blist: list) -> list:
     """Return list with intersection of alist and blist
 
     clist = intersect(alist, blist)
@@ -259,7 +261,7 @@ def intersect(alist, blist):
     return list(set(alist) & set(blist))
 
 
-def union(alist, blist):
+def union(alist: list, blist: list) -> list:
     """Return list with union of alist and blist
 
     clist = union(alist, blist)
@@ -280,7 +282,7 @@ def union(alist, blist):
     return list(set(alist) | set(blist))
 
 
-def difference(alist, blist):
+def difference(alist: list, blist: list) -> list:
     """Return list with difference of alist and blist
 
     clist = difference(alist, blist)
@@ -301,7 +303,7 @@ def difference(alist, blist):
     return list(set(alist) - set(blist))
 
 
-def is_subset(alist, blist):
+def is_subset(alist: list, blist: list) -> bool:
     """Return true if alist is a subset of blist
 
     tf = is_susbet(alist, blist)
@@ -322,7 +324,7 @@ def is_subset(alist, blist):
     return set(alist).issubset(set(blist))
 
 
-def is_disjoint(alist, blist):
+def is_disjoint(alist: list, blist: list) -> bool:
     """Return true if alist and blist are disjoint
 
     tf = is_disjoint(alist, blist)

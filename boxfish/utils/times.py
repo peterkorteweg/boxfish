@@ -3,18 +3,19 @@
 """Times is a module that contains functions that interact with times and dates"""
 
 import time
+from typing import Any, Final
 
-DATE_JAPANESE = "%Y-%m-%d"
-DATETIME_JAPANESE = "%Y-%m-%d %H:%M:%S"
-DATETIME_FILE = "%Y%m%d%H%M%S"
-DATE_FILE = "%Y%m%d"
-TIME_FILE = "%H%M%S"
+DATE_JAPANESE: Final = "%Y-%m-%d"
+DATETIME_JAPANESE: Final = "%Y-%m-%d %H:%M:%S"
+DATETIME_FILE: Final = "%Y%m%d%H%M%S"
+DATE_FILE: Final = "%Y%m%d"
+TIME_FILE: Final = "%H%M%S"
 
 
 # Strings
 def strftime(
-    t=None, string="", sep=" ", date_format=DATETIME_JAPANESE, string_first=False
-):
+    t: Any = None, string: str = "", sep: str = " ", date_format: str = DATETIME_JAPANESE, string_first: bool = False
+) -> str:
     """Return a formatted string which contains date/time and a text string
 
     str = strftime(t=None, string='', sep=' ', date_format=DATETIME_JAPANESE, string_first=True)
@@ -41,7 +42,8 @@ def strftime(
     return string + sep + strdatetime if string_first else strdatetime + sep + string
 
 
-def strfdate(t=None, string="", sep=" ", date_format=DATE_JAPANESE, string_first=False):
+def strfdate(t: Any = None, string: str = "", sep: str = " ", date_format: str = DATE_JAPANESE,
+             string_first: bool = False):
     """Return a formatted string which contains date and a text string
 
     str = strfdate(t=None, string='', sep=' ', date_format=DATE_JAPANESE, string_first=False):
@@ -67,7 +69,7 @@ def strfdate(t=None, string="", sep=" ", date_format=DATE_JAPANESE, string_first
 
 
 # Conversion
-def to_float(t=None):
+def to_float(t: Any = None) -> float:
     """Convert time t to type float. Returns current time if no time is provided
 
         t = to_float()
@@ -99,7 +101,7 @@ def to_float(t=None):
     return ftime
 
 
-def to_struct_time(t=None):
+def to_struct_time(t: Any = None) -> tuple:
     """Convert time t to type time.struct_time. Returns current time if no time is provided
 
         t = to_struct_time()
@@ -120,7 +122,7 @@ def to_struct_time(t=None):
     return stime
 
 
-def to_tuple(t=None):
+def to_tuple(t: Any = None) -> tuple:
     """Convert time t to type tuple. Returns current time if no time is provided
 
         t = to_tuple()
@@ -152,7 +154,7 @@ def to_tuple(t=None):
 
 
 # Sleep
-def sleep_on_count(adict, cnt):
+def sleep_on_count(adict: dict, cnt: int) -> None:
     """Sleeps dict[counter] seconds if cnt+1 is a multiple of counter
 
     Or: when iterating over cnt, sleep_on_count pauses for dict[counter] seconds every counter iterations
@@ -172,7 +174,7 @@ def sleep_on_count(adict, cnt):
             time.sleep(sec)
 
 
-def sleep_until(end_time):
+def sleep_until(end_time: int) -> None:
     """Sleeps until end_time
 
     sleep_until(end_time)

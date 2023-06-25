@@ -13,7 +13,7 @@ from boxfish.utils.strings import filename_append_date
 from boxfish.utils.utils import create_folder_if_not_exist
 
 
-def list_to_dataframe(alist, columns):
+def list_to_dataframe(alist: list, columns: list) -> pd.DataFrame:
     """Convert list to dataframe with single column
 
     df = list_to_dataframe(alist,columns)
@@ -22,7 +22,7 @@ def list_to_dataframe(alist, columns):
         alist (list): List of items
         columns (list): List with column name
     Returns:
-        df (pandas.core.frame.DataFrame): Dataframe with list as column
+        df (pandas.DataFrame): Dataframe with list as column
 
     Example:
         alist = [1, 2, 3]
@@ -41,19 +41,20 @@ def list_to_dataframe(alist, columns):
     return df
 
 
-def save(df, filename, date_format="", overwrite=False, quoting=csv.QUOTE_NONNUMERIC):
+def save(df: pd.DataFrame, filename: str, date_format: str = "", overwrite: bool = False,
+         quoting: int = csv.QUOTE_NONNUMERIC) -> str:
     """Save dataframe to csv file
 
     fullname = save(df, filename, date_format, overwrite, quoting)
 
     Args:
-        df (pandas.core.frame.DataFrame): Dataframe
+        df (pandas.DataFrame): Dataframe
         filename (str): Filename
         date_format (str): Date format in strftime formats
         overwrite (bool): Overwrite existing file if True else append
         quoting (int): CSV quoting constant
     Returns:
-        fullname: Full filename including date
+        fullname (str): Full filename including date
 
     Example:
         fullname = save(df, 'filename.txt', date_format='%Y%m%d', overwrite=True, quoting=csv.QUOTE_NONNUMERIC)

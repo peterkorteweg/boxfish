@@ -3,9 +3,10 @@
 """Dicts is a module that contains functions for dictionaries"""
 
 import json
+from typing import List, Union
 
 
-def get_subset(adict, akeys):
+def get_subset(adict: dict, akeys: List[str]) -> dict:
     """Get a dict subset consisting of akeys. Missing akeys are ignored
 
     bdict = get_subset(adict, akeys)
@@ -25,7 +26,7 @@ def get_subset(adict, akeys):
     return {key: value for key, value in adict.items() if key in akeys}
 
 
-def extract_values(adict, akeys):
+def extract_values(adict: dict, akeys: List[str]) -> list:
     """Extract values from adict for akeys
 
     [values1, values2, ...] = extract_values(adict, alist)
@@ -51,7 +52,7 @@ def extract_values(adict, akeys):
     return [*klist]
 
 
-def append(adict, bdict):
+def append(adict: dict, bdict: dict) -> dict:
     """Append bdict to adict
 
     Duplicate entries in bdict overwrite entries from adict
@@ -73,7 +74,7 @@ def append(adict, bdict):
     return dict(adict, **bdict) if isinstance(bdict, dict) else adict
 
 
-def remove_nones(adict):
+def remove_nones(adict: dict) -> dict:
     """Remove key-vlaue pairs with a None Value
 
     [values1, values2, ...] = extract_values(adict, alist)
@@ -91,7 +92,7 @@ def remove_nones(adict):
     return {k: v for k, v in adict.items() if v is not None}
 
 
-def dumps(adict):
+def dumps(adict: Union[dict, list]) -> Union[list, str]:
     """Dumps dictionary into Json string. Generalizes to lists
 
     ajson = dumps(adict)
@@ -109,7 +110,7 @@ def dumps(adict):
     return ajson
 
 
-def loads(ajson):
+def loads(ajson: Union[list, str]) -> Union[dict, list]:
     """Loads Json string into a dictionary. Generalizes to lists
 
     adict = loads(ajson)
@@ -127,7 +128,7 @@ def loads(ajson):
     return adict
 
 
-def set_(alist):
+def set_(alist: List[dict]) -> List[dict]:
     """Return a set of unique dictionaries in alist
 
     aset = set_(alist)

@@ -5,11 +5,13 @@
 import os
 import time
 
+from typing import Any, Optional
+
 DATE_FILE = "%Y%m%d"
 
 
 # General
-def rstrip_endswith(string, endswith):
+def rstrip_endswith(string: str, endswith: str) -> str:
     """Strip the right-most characters endswith from string
 
     str = rstrip_endswith(string, endswith):
@@ -24,7 +26,7 @@ def rstrip_endswith(string, endswith):
     return string[: -len(endswith)] if string.endswith(endswith) else string
 
 
-def replace_newlines(string, replace_string=""):
+def replace_newlines(string: str, replace_string: str = "") -> str:
     """Replace any new line characters (\\r, \\n, \\r\\n) with replace_string
 
     str = replace_newlines(string, replace_string='')
@@ -39,7 +41,7 @@ def replace_newlines(string, replace_string=""):
     return replace_string.join(string.splitlines())
 
 
-def is_int(string):
+def is_int(string: str) -> bool:
     """Returns true if string represents an integer
 
     tf = is_int(string)
@@ -57,7 +59,7 @@ def is_int(string):
         return False
 
 
-def is_float(string):
+def is_float(string: str) -> bool:
     """Returns true if string represents a float
 
     tf = is_float(string)
@@ -75,7 +77,7 @@ def is_float(string):
         return False
 
 
-def to_int(string):
+def to_int(string: str) -> Optional[int]:
     """Converts a string to int
 
     aint = to_int(string)
@@ -89,7 +91,7 @@ def to_int(string):
     return int(float(string)) if is_float(string) else None
 
 
-def to_float(string):
+def to_float(string: str) -> Optional[float]:
     """Converts a string to float
 
     afloat = to_float(string)
@@ -103,7 +105,7 @@ def to_float(string):
     return float(string) if is_float(string) else None
 
 
-def get_type(obj):
+def get_type(obj: Any) -> str:
     """Return type as string
 
     astr = get_type(obj)
@@ -126,7 +128,7 @@ def get_type(obj):
 # Regex
 
 
-def re_literals(string):
+def re_literals(string: str) -> str:
     """Regex conversion of string creating literals for regex meta characters
 
     restring = re_literals(string)
@@ -147,7 +149,7 @@ def re_literals(string):
 
 
 # Filenames
-def filename_append_date(filename, date_format=DATE_FILE):
+def filename_append_date(filename: str, date_format: str = DATE_FILE) -> str:
     """Filename with current date appended
 
     filename_date = filename_append_date(filename, date_format)
@@ -168,7 +170,7 @@ def filename_append_date(filename, date_format=DATE_FILE):
     return file_pre + time.strftime(date_format) + file_extension
 
 
-def filename_append_extension(filename, default_extension):
+def filename_append_extension(filename: str, default_extension: str) -> str:
     """Filename with default extension appended
 
     filename_ext = filename_append_extension(filename, default_extension)
