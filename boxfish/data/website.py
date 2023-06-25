@@ -6,9 +6,11 @@ from boxfish.data import config, soups
 from boxfish.utils import drivers, lists, urls
 from boxfish.utils.dicts import extract_values, get_subset
 
+from typing import Any, List, Optional, Tuple, Union
+
 
 # Main functions
-def extract(url, config):
+def extract(url: Union[list, str], config: dict) -> Union[List[list],List[str]]:
     """Get data from a website based on config and url
 
     data = extract(url=url, config=config):
@@ -28,7 +30,7 @@ def extract(url, config):
     return data
 
 
-def extract_data(url, config):
+def extract_data(url: Union[list, str], config: dict) -> Union[List[list],List[str]]:
     """Extract data from url to list
 
     data = extract_data(url, config)
@@ -54,7 +56,7 @@ def extract_data(url, config):
 
 
 # Beautiful Soup functions
-def extract_table(page, ptable, url=""):
+def extract_table(page: str, ptable: dict, url: str = "") -> Union[List[list],List[str]]:
     """Extract table from an HTML page
 
     atable = extract_table(page, ptable, url)
@@ -85,7 +87,7 @@ def extract_table(page, ptable, url=""):
     return atable
 
 
-def extract_url_next_page(page, pnext_page, url):
+def extract_url_next_page(page: str, pnext_page: dict, url: str) -> str:
     """Extract url that refers to next page
 
     url_next = extract_url_next_page(page,pnext_page,url)
@@ -116,13 +118,13 @@ def extract_url_next_page(page, pnext_page, url):
 
 
 # File functions
-def save(data, fileconfig):
+def save(data: list, fileconfig: dict) -> None:
     """Save data to CSV file
 
     save(data, fileconfig)
 
     Args:
-        data(dataframe or list): Data from HTML
+        data(list): Data from HTML
         fileconfig(dict): Parameter with keys {'filename','date_format','replace'}
 
     Returns:
@@ -138,7 +140,7 @@ def save(data, fileconfig):
 
 
 # Private functions
-def _extract_data_from_driver(url, config, adriver):
+def _extract_data_from_driver(url: Union[List[str], str], config: dict, adriver) -> Union[List[list],List[str]]:
     """Extract data from url to list
 
     data = _extract_data_from_driver(url, config, adriver)

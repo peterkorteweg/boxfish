@@ -2,32 +2,35 @@
 
 """Config is a module that contains functions for boxfish configuration"""
 
+
 import csv
 import os
 import pathlib
 import re
 import shutil
+from typing import Final, Tuple
 
 from boxfish import utils
 from boxfish.data import soups
+from bs4 import BeautifulSoup
 
-SEARCH_NAIVE = "naive"
-SEARCH_STENCIL = "tree"
-SEARCH_NONE = "none"
+SEARCH_NAIVE: Final = "naive"
+SEARCH_STENCIL: Final = "tree"
+SEARCH_NONE: Final = "none"
 
-VERSION = (pathlib.Path(__file__).parent.parent / "VERSION").read_text()
+VERSION: Final = (pathlib.Path(__file__).parent.parent / "VERSION").read_text()
 
-CONFIGKEYS = ["driver", "html", "output", "boxfish"]
-HTMLKEYS = ["url", "parser", "table", "page"]
-TABLEKEYS = ["id", "rows", "cols", "include_strings", "include_links"]
-CONFIGTABLEKEYS = TABLEKEYS + ["search"]
-PAGEKEYS = ["id", "rows", "index"]
-OUTPUTKEYS = ["filename", "date_format", "overwrite", "quoting"]
-SEARCHTYPES = [SEARCH_NAIVE, SEARCH_STENCIL, SEARCH_NONE]
+CONFIGKEYS: Final = ["driver", "html", "output", "boxfish"]
+HTMLKEYS: Final = ["url", "parser", "table", "page"]
+TABLEKEYS: Final = ["id", "rows", "cols", "include_strings", "include_links"]
+CONFIGTABLEKEYS: Final = TABLEKEYS + ["search"]
+PAGEKEYS: Final = ["id", "rows", "index"]
+OUTPUTKEYS: Final = ["filename", "date_format", "overwrite", "quoting"]
+SEARCHTYPES: Final = [SEARCH_NAIVE, SEARCH_STENCIL, SEARCH_NONE]
 
-BACKUP_EXT = ".bak"
+BACKUP_EXT: Final = ".bak"
 
-HEADERS = {
+HEADERS: Final = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "accept-language": "nl,en-US;q=0.7,en;q=0.3",
@@ -36,7 +39,7 @@ HEADERS = {
 
 
 # Initialization
-def create(url=""):
+def create(url: str = "") -> dict:
     """Creates a boxfish configuration dictionary
 
     config = create(url)
@@ -95,7 +98,7 @@ def create(url=""):
 
 
 # I/O
-def read(filename):
+def read(filename: str) -> dict:
     """Read a boxfish configuration from file
 
     config = read(filename)
@@ -115,7 +118,7 @@ def read(filename):
     return config
 
 
-def write(filename, config):
+def write(filename: str, config: dict) -> None:
     """Write a boxfish configuration to file. Save current configuration to backup if exists
 
     write(filename, config)
@@ -136,7 +139,7 @@ def write(filename, config):
     utils.utils.write_json(filename, config)
 
 
-def revert(filename):
+def revert(filename: str) -> None:
     """Revert a boxfish configuration file to backup.
     Flips current configuration with backup configuration if both exist
     Backup is determined by filename + BACKUP_EXT
@@ -157,8 +160,8 @@ def revert(filename):
 
 # Editing configurations
 def build(
-    config=None, url="", rows=None, cols=None, search=SEARCH_STENCIL, next_page=""
-):
+    config: dict = None, url: str = "", rows: list = None, cols: list = None,
+        search: str = SEARCH_STENCIL, next_page: str = "") -> dict:
     """Build configuration
 
     config = build(config, url= '', rows=[], cols=[], search='none')
@@ -180,7 +183,8 @@ def build(
         # 2. Columns, no rows
         config = build(config=config, url='', cols=[colstring1, colstring2], search='tree')
         # 3. Rows and columns
-        config = build(config=config, url='', rows=[rowstring1,rowstring2], cols=[colstring1, colstring2], search='tree')
+        config = build(config=config, url='', rows=[rowstring1,rowstring2], cols=[colstring1, colstring2]
+        , search='tree')
 
     """
     if config is None:
@@ -203,7 +207,7 @@ def build(
 
 
 # Private functions
-def _process(config):
+def _process(config: dict) -> None:
     """Processes a configuration.
     The function removes non-config keys
     The function adds missing config keys with default values, two levels deep
@@ -233,13 +237,14 @@ def _process(config):
                     config[key][ckey] = dconfig[key][ckey]
 
 
-def _build_table(soup, config, url="", rows=None, cols=None, search=SEARCH_STENCIL):
+def _build_table(soup: BeautifulSoup, config: dict, url: str = "", rows: list = None, cols: list = None,
+                 search: str = SEARCH_STENCIL) -> dict:
     """Build table configuration
 
     config = _build_table(soup, config, url= '', rows=[], cols=[], search='none')
 
     Args:
-        soup (bs4.BeautifulSoup): A BS4 object of an HTML page
+        soup (bs4.BeautifulSoup): A bs4 object of an HTML page
         config (dict): configuration
         url (str): url
         rows (list): list of strings from two rows
@@ -303,7 +308,7 @@ def _build_table(soup, config, url="", rows=None, cols=None, search=SEARCH_STENC
     return config
 
 
-def _build_table_items(aitem, rows, cols):
+def _build_table_items(aitem, rows: list, cols: list) -> Tuple[list, list]:
     """Build table items
 
     aitems1, aitems2 = _build_table_items(aitem, rows, cols)
@@ -331,13 +336,13 @@ def _build_table_items(aitem, rows, cols):
     return aitems1, aitems2
 
 
-def _build_next_page(soup, config, next_page=""):
+def _build_next_page(soup: BeautifulSoup, config: dict, next_page: str = "") -> dict:
     """Build next page configuration
 
     config = _build_next_page(soup, config, url= '', next_page=None)
 
     Args:
-        soup (bs4.BeautifulSoup): A BS4 object of an HTML page
+        soup (bs4.BeautifulSoup): A bs4 object of an HTML page
         config (dict): configuration
         next_page (str): next page url
 
