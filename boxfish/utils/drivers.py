@@ -3,12 +3,12 @@
 """Drivers is a module that contains functions to access HTML pages via HTTP."""
 
 import os
+from typing import Any, Final, Optional
 
 import requests
 from selenium import webdriver
 
 from boxfish.utils import dicts, times, urls, utils
-from typing import Any, Final, Optional
 
 DRIVERKEYS: Final = ["package", "sleep", "requests", "selenium"]
 REQUESTSKEYS: Final = ["headers", "timeout"]
@@ -39,8 +39,9 @@ def get_page(url: str = "", params: Optional[dict] = None, count: int = 0) -> st
     return page
 
 
-def request_page(driver: Any, url: str = "", params: Optional[dict] = None,
-                 count: int = 0) -> str:
+def request_page(
+    driver: Any, url: str = "", params: Optional[dict] = None, count: int = 0
+) -> str:
     """Request a single HTTP page from an url with driver
 
     page = request_page(driver, url):

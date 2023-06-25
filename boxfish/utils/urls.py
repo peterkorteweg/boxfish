@@ -2,12 +2,11 @@
 
 """ urls contains functions to parse url strings """
 
+from typing import Any, List, Optional, Union
 from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit
 
 from boxfish.utils.dicts import get_subset, remove_nones
 from boxfish.utils.lists import reshape
-
-from typing import Any, List, Optional, Union
 
 
 def set_components(url: str, **kwargs) -> str:
@@ -132,7 +131,9 @@ def update_relative_path(url: str, newpath: str) -> str:
     return aurl
 
 
-def create_url_list(url: str, query: Union[list, str, None] = None, path: Union[list, str, None] = None) -> List[str]:
+def create_url_list(
+    url: str, query: Union[list, str, None] = None, path: Union[list, str, None] = None
+) -> List[str]:
     """Create a list of urls based on a url, a query and/or path
 
     url_list = create_url_list(url, query=query, path=path)

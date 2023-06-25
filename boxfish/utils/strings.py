@@ -4,7 +4,6 @@
 
 import os
 import time
-
 from typing import Any, Optional
 
 DATE_FILE = "%Y%m%d"

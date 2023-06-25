@@ -3,10 +3,10 @@
 """Xpaths is a module that contains functions for working with xpaths
 """
 
+from typing import Tuple, Union
+
 from boxfish.utils.lists import to_list
 from boxfish.utils.strings import to_int
-
-from typing import Tuple, Union
 
 
 # Xpath list functions

@@ -10,9 +10,10 @@ import re
 import shutil
 from typing import Final, Tuple
 
+from bs4 import BeautifulSoup
+
 from boxfish import utils
 from boxfish.data import soups
-from bs4 import BeautifulSoup
 
 SEARCH_NAIVE: Final = "naive"
 SEARCH_STENCIL: Final = "tree"
@@ -160,8 +161,13 @@ def revert(filename: str) -> None:
 
 # Editing configurations
 def build(
-    config: dict = None, url: str = "", rows: list = None, cols: list = None,
-        search: str = SEARCH_STENCIL, next_page: str = "") -> dict:
+    config: dict = None,
+    url: str = "",
+    rows: list = None,
+    cols: list = None,
+    search: str = SEARCH_STENCIL,
+    next_page: str = "",
+) -> dict:
     """Build configuration
 
     config = build(config, url= '', rows=[], cols=[], search='none')
@@ -237,8 +243,14 @@ def _process(config: dict) -> None:
                     config[key][ckey] = dconfig[key][ckey]
 
 
-def _build_table(soup: BeautifulSoup, config: dict, url: str = "", rows: list = None, cols: list = None,
-                 search: str = SEARCH_STENCIL) -> dict:
+def _build_table(
+    soup: BeautifulSoup,
+    config: dict,
+    url: str = "",
+    rows: list = None,
+    cols: list = None,
+    search: str = SEARCH_STENCIL,
+) -> dict:
     """Build table configuration
 
     config = _build_table(soup, config, url= '', rows=[], cols=[], search='none')

@@ -2,15 +2,15 @@
 
 """ Website is a module that contains functions for extracting tables from websites. """
 
+from typing import Any, List, Optional, Tuple, Union
+
 from boxfish.data import config, soups
 from boxfish.utils import drivers, lists, urls
 from boxfish.utils.dicts import extract_values, get_subset
 
-from typing import Any, List, Optional, Tuple, Union
-
 
 # Main functions
-def extract(url: Union[list, str], config: dict) -> Union[List[list],List[str]]:
+def extract(url: Union[list, str], config: dict) -> Union[List[list], List[str]]:
     """Get data from a website based on config and url
 
     data = extract(url=url, config=config):
@@ -30,7 +30,7 @@ def extract(url: Union[list, str], config: dict) -> Union[List[list],List[str]]:
     return data
 
 
-def extract_data(url: Union[list, str], config: dict) -> Union[List[list],List[str]]:
+def extract_data(url: Union[list, str], config: dict) -> Union[List[list], List[str]]:
     """Extract data from url to list
 
     data = extract_data(url, config)
@@ -56,7 +56,9 @@ def extract_data(url: Union[list, str], config: dict) -> Union[List[list],List[s
 
 
 # Beautiful Soup functions
-def extract_table(page: str, ptable: dict, url: str = "") -> Union[List[list],List[str]]:
+def extract_table(
+    page: str, ptable: dict, url: str = ""
+) -> Union[List[list], List[str]]:
     """Extract table from an HTML page
 
     atable = extract_table(page, ptable, url)
@@ -140,7 +142,9 @@ def save(data: list, fileconfig: dict) -> None:
 
 
 # Private functions
-def _extract_data_from_driver(url: Union[List[str], str], config: dict, adriver) -> Union[List[list],List[str]]:
+def _extract_data_from_driver(
+    url: Union[List[str], str], config: dict, adriver
+) -> Union[List[list], List[str]]:
     """Extract data from url to list
 
     data = _extract_data_from_driver(url, config, adriver)

@@ -18,6 +18,7 @@ FILTERKEYS = ['elem', 'class']
 
 import collections
 import copy
+from typing import Any, List, Optional, Tuple, Union
 
 import bs4
 from bs4 import BeautifulSoup
@@ -25,7 +26,6 @@ from bs4.element import ResultSet, Tag
 
 from boxfish.utils import dicts, lists, urls, utils
 from boxfish.utils.xpaths import split as xsplit
-from typing import Any, List, Optional, Tuple, Union
 
 
 # Main functions
@@ -72,8 +72,12 @@ def get_soup(page: str) -> BeautifulSoup:
 
 
 def extract_table(
-        soup: BeautifulSoup, id: Optional[dict] = None, rows: Optional[dict] = None, cols: Optional[List[dict]] = None,
-        include_strings: bool = True, include_links: bool = False
+    soup: BeautifulSoup,
+    id: Optional[dict] = None,
+    rows: Optional[dict] = None,
+    cols: Optional[List[dict]] = None,
+    include_strings: bool = True,
+    include_links: bool = False,
 ) -> List[Union[list, str]]:
     """Extract table from soup
 
@@ -108,8 +112,12 @@ def extract_table(
     return atable
 
 
-def to_table(aitem: Union[ResultSet, Tag], cols: Optional[List[dict]] = None,
-             include_strings: bool = True, include_links: bool = False) -> List[Union[list, str]]:
+def to_table(
+    aitem: Union[ResultSet, Tag],
+    cols: Optional[List[dict]] = None,
+    include_strings: bool = True,
+    include_links: bool = False,
+) -> List[Union[list, str]]:
     """Convert aitem to a table
 
     [atable] = to_table(aitem, cols=None, include_strings=True, include_links=False)
@@ -233,7 +241,9 @@ def merge(meta: BeautifulSoup, body: Union[ResultSet, Tag]) -> Optional[Beautifu
     return soup
 
 
-def set_urls(aitem: Union[BeautifulSoup, Tag], url: str) -> Union[Optional[BeautifulSoup], Optional[Tag]]:
+def set_urls(
+    aitem: Union[BeautifulSoup, Tag], url: str
+) -> Union[Optional[BeautifulSoup], Optional[Tag]]:
     """Set full url paths to all href tags. Returns a deep copy
 
     [titem] = set_urls(aitem, url)
@@ -411,8 +421,11 @@ def find_soup(aitem: Union[BeautifulSoup, Tag]) -> BeautifulSoup:
     return asoup
 
 
-def find_items(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[dict] = None,
-               astr: str = "") -> ResultSet:
+def find_items(
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    afilter: Optional[dict] = None,
+    astr: str = "",
+) -> ResultSet:
     """Find items from aitem based on filter and/or string
 
     ritems = find_items(aitem, filter=afilter, astr='')
@@ -443,8 +456,11 @@ def find_items(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[di
     return ritems
 
 
-def find_item(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[dict] = None,
-              astr: str = "") -> Tag:
+def find_item(
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    afilter: Optional[dict] = None,
+    astr: str = "",
+) -> Tag:
     """Find single item from aitem based on filter and/or string
 
     ritem = find_item(aitem, filter=afilter, astr='')
@@ -521,8 +537,11 @@ def find_item_by_xpath(aitem: Tag, axpath: str = "", relative: bool = True) -> T
     return ritem
 
 
-def find_lists(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[dict] = None,
-               astr: str = "") -> ResultSet:
+def find_lists(
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    afilter: Optional[dict] = None,
+    astr: str = "",
+) -> ResultSet:
     """Find all lists in aitem. Lists are defined as HTML elements <dl>, <ol>, or <ul>
 
     ritems = find_lists(aitems)
@@ -542,8 +561,11 @@ def find_lists(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[di
     return ritems
 
 
-def find_tables(aitem: Union[BeautifulSoup, ResultSet, Tag], afilter: Optional[dict] = None,
-                astr: str = "") -> ResultSet:
+def find_tables(
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    afilter: Optional[dict] = None,
+    astr: str = "",
+) -> ResultSet:
     """Find all tables in aitem. Tables are defined as HTML elements <table>
 
     ritems = find_tables(aitems)
@@ -615,8 +637,11 @@ def get_filter_most_common(afilters: List[dict]) -> dict:
     return afilter
 
 
-def remove_filters(afilters: List[dict], elem: Optional[str] = None, class_: Union[str, list, None] = None) \
-        -> List[dict]:
+def remove_filters(
+    afilters: List[dict],
+    elem: Optional[str] = None,
+    class_: Union[str, list, None] = None,
+) -> List[dict]:
     """Remove filter from afilters based on elem and/or class_
 
     afilters = _remove_filters(afilters, elem=None,class_=None)
@@ -663,7 +688,9 @@ def common_ancestor(aitem1: Tag, aitem2: Tag) -> Tag:
     return aitem
 
 
-def common_ancestors(aitems1: Union[ResultSet, Tag], aitems2: Union[ResultSet, Tag]) -> List[Tag]:
+def common_ancestors(
+    aitems1: Union[ResultSet, Tag], aitems2: Union[ResultSet, Tag]
+) -> List[Tag]:
     """Return a list of common ancestor for all combinations in aitems1 and aitems2
 
     ritem = common_ancestor(aitem1, aitem2)
@@ -859,8 +886,11 @@ def get_parents(aitems: List[Tag]) -> List[Tag]:
 
 # Text extraction functions
 def get_text(
-        aitem: Union[BeautifulSoup, ResultSet, Tag], cols: Union[list, str, None] = None, include_strings: bool = True,
-        include_links: bool = False, fill_missing_cols: bool = True
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    cols: Union[list, str, None] = None,
+    include_strings: bool = True,
+    include_links: bool = False,
+    fill_missing_cols: bool = True,
 ) -> List[Union[ResultSet, Tag]]:
     """Get text from soup objects. Text consists of strings and/or links.
         Returns all text of descendant items if no columns are specified, or
@@ -922,8 +952,9 @@ def get_text(
     return alist
 
 
-def get_strings(aitem: Union[BeautifulSoup, ResultSet, Tag], include_links: bool = False) \
-        -> List[Union[ResultSet, Tag]]:
+def get_strings(
+    aitem: Union[BeautifulSoup, ResultSet, Tag], include_links: bool = False
+) -> List[Union[ResultSet, Tag]]:
     """Get strings from soup objects
 
     alist = get_strings(aitem)
@@ -1180,7 +1211,9 @@ def is_unique_filter(afilter: dict, aitem: Union[BeautifulSoup, Tag]) -> bool:
 
 
 # Xpath functions
-def xpath(aitem: Tag, root: Optional[Tag] = None, first_index: bool = False) -> Union[list, str]:
+def xpath(
+    aitem: Tag, root: Optional[Tag] = None, first_index: bool = False
+) -> Union[list, str]:
     """Returns xpath of aitem.
     Returns absolute path or relative path to root
 
@@ -1242,8 +1275,12 @@ def xpaths(aitem: Tag, root: Optional[Tag] = None, first_index: bool = False) ->
     return alist
 
 
-def xpaths_set(aitem1: Union[List[Tag], Tag], aitem2: Union[List[Tag], Tag],
-               operation: Optional[str] = None, relative: bool = False) -> list:
+def xpaths_set(
+    aitem1: Union[List[Tag], Tag],
+    aitem2: Union[List[Tag], Tag],
+    operation: Optional[str] = None,
+    relative: bool = False,
+) -> list:
     """Returns an unordered list with set operation on xpaths in aitem1 and aitem2
      When relative is true relative xpaths are relative to root of aitem1 and aitem2
 
@@ -1316,7 +1353,11 @@ def _get_colnames(ncols: int) -> list:
     return ["Col" + str(i + 1) for i in range(ncols)]
 
 
-def _get_cols_as_results(aitem: Union[BeautifulSoup, ResultSet, Tag], cols: List[dict], fill_missing_cols: bool = True):
+def _get_cols_as_results(
+    aitem: Union[BeautifulSoup, ResultSet, Tag],
+    cols: List[dict],
+    fill_missing_cols: bool = True,
+):
     """Get columns as a Resultset
 
     aresults = _get_cols_as_results(aitem)
@@ -1356,7 +1397,9 @@ def _get_cols_as_results(aitem: Union[BeautifulSoup, ResultSet, Tag], cols: List
     return aresults
 
 
-def _get_strings_from_results(results: ResultSet, include_links: bool = False) -> List[str]:
+def _get_strings_from_results(
+    results: ResultSet, include_links: bool = False
+) -> List[str]:
     """Get strings from results
 
     alist = _get_strings_from_results(results)

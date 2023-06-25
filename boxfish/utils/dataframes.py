@@ -41,8 +41,13 @@ def list_to_dataframe(alist: list, columns: list) -> pd.DataFrame:
     return df
 
 
-def save(df: pd.DataFrame, filename: str, date_format: str = "", overwrite: bool = False,
-         quoting: int = csv.QUOTE_NONNUMERIC) -> str:
+def save(
+    df: pd.DataFrame,
+    filename: str,
+    date_format: str = "",
+    overwrite: bool = False,
+    quoting: int = csv.QUOTE_NONNUMERIC,
+) -> str:
     """Save dataframe to csv file
 
     fullname = save(df, filename, date_format, overwrite, quoting)

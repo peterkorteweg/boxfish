@@ -14,7 +14,11 @@ TIME_FILE: Final = "%H%M%S"
 
 # Strings
 def strftime(
-    t: Any = None, string: str = "", sep: str = " ", date_format: str = DATETIME_JAPANESE, string_first: bool = False
+    t: Any = None,
+    string: str = "",
+    sep: str = " ",
+    date_format: str = DATETIME_JAPANESE,
+    string_first: bool = False,
 ) -> str:
     """Return a formatted string which contains date/time and a text string
 
@@ -42,8 +46,13 @@ def strftime(
     return string + sep + strdatetime if string_first else strdatetime + sep + string
 
 
-def strfdate(t: Any = None, string: str = "", sep: str = " ", date_format: str = DATE_JAPANESE,
-             string_first: bool = False):
+def strfdate(
+    t: Any = None,
+    string: str = "",
+    sep: str = " ",
+    date_format: str = DATE_JAPANESE,
+    string_first: bool = False,
+):
     """Return a formatted string which contains date and a text string
 
     str = strfdate(t=None, string='', sep=' ', date_format=DATE_JAPANESE, string_first=False):

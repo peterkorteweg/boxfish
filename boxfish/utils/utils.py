@@ -6,7 +6,6 @@ import json
 import os
 import shutil
 from pathlib import Path
-
 from typing import Union
 
 
@@ -41,7 +40,9 @@ def create_folder_if_not_exist(folder: str) -> None:
         os.makedirs(folder)
 
 
-def read(filename: str, filetype: str = "text", encoding: str = "utf-8") -> Union[dict, str]:
+def read(
+    filename: str, filetype: str = "text", encoding: str = "utf-8"
+) -> Union[dict, str]:
     """Read text from file
 
     text = read(filename)
@@ -84,8 +85,13 @@ def read_json(filename: str, encoding: str = "utf-8") -> dict:
     return read(filename, filetype="json", encoding=encoding)
 
 
-def write(filename: str, text: Union[dict, str], filetype: str = "text", encoding: str = "utf-8",
-          indent: int = 4) -> None:
+def write(
+    filename: str,
+    text: Union[dict, str],
+    filetype: str = "text",
+    encoding: str = "utf-8",
+    indent: int = 4,
+) -> None:
     """Write text to file
 
     write(filename)
@@ -114,7 +120,9 @@ def write(filename: str, text: Union[dict, str], filetype: str = "text", encodin
         print("Error: Cannot write to file.")
 
 
-def write_json(filename: str, ajson: dict, encoding: str = "utf-8", indent: int = 4) -> None:
+def write_json(
+    filename: str, ajson: dict, encoding: str = "utf-8", indent: int = 4
+) -> None:
     """Write json to file
 
     write_json(filename, text, indent=4)
