@@ -7,7 +7,8 @@
 [![PyPI - License](https://img.shields.io/pypi/l/boxfish)](https://img.shields.io/pypi/l/boxfish)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/boxfish)](https://img.shields.io/pypi/pyversions/boxfish)
 
-[![GitHub top language](https://img.shields.io/github/languages/top/peterkorteweg/peterkorteweg)](https://img.shields.io/github/languages/top/peterkorteweg/boxfish)
+[![GitHub top language](https://img.shields.io/github/languages/top/peterkorteweg/boxfish)](https://img.shields.io/github/languages/top/peterkorteweg/boxfish)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ### What is it?
 Boxfish is a lightweight tool for table extraction from HTML pages. 
@@ -26,9 +27,9 @@ import boxfish as bf
 import pandas as pd
 
 # Define table layout of an url with strings from two rows.
-aurl = ''
-row1 = ''
-row2 = ''
+aurl = ""
+row1 = ""
+row2 = ""
 
 # Build a configuration 
 aconfig = bf.build(url=aurl, rows = [row1, row2])

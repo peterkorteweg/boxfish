@@ -23,9 +23,9 @@ import boxfish as bf
 import pandas as pd
 
 # Define table layout of an url with strings from two rows.
-aurl = ''
-row1 = ''
-row2 = ''
+aurl = ""
+row1 = ""
+row2 = ""
 
 # Build a configuration 
 aconfig = bf.build(url=aurl, rows = [row1, row2])
@@ -60,7 +60,7 @@ aconfig = bf.build(url=aurl)
 Most parameters can be set directly as values in a dictionary. 
 
 ``` python
-aconfig['driver']['package'] = 'requests'
+aconfig["driver"]["package"] = "requests"
 ```
 
 Keys that cannot be set directly, should be set with <code>build</code>. See
@@ -82,14 +82,14 @@ Driver contains parameters for the driver to access the HTML page. Boxfish suppo
 Driver package name. The options are `requests` and `selenium`. 
 
 ``` python
-aconfig['driver']['package'] = 'requests'
+aconfig["driver"]["package"] = "requests"
 ```
 
 **sleep : dict**   
 A dictionary with key-value pairs. Each key represents a number of calls, and each value represents a number of seconds boxfish sleeps, after key driver calls.
 
 ``` python
-aconfig['driver']['sleep'] = {'1': 1, '200' : 3600}
+aconfig["driver"]["sleep"] = {"1": 1, "200" : 3600}
 ```
 
 ### requests : dict
@@ -105,7 +105,7 @@ A dictionary with parameters for the `requests` driver.
 A dictionary with HTTP headers. If no header is set boxfish uses a default header. 
 
 ``` python
-aconfig['driver']['headers'] = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
+aconfig["driver"]["headers"] = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "accept-language": "nl,en-US;q=0.7,en;q=0.3",
             "accept-encoding": "gzip, deflate, br"}
@@ -116,7 +116,7 @@ Timeout for requests, in seconds. If no response is received before timeout, the
 request is cancelled.
 
 ``` python
-aconfig['driver']['timeout'] = 10
+aconfig["driver"]["timeout"] = 10
 ```
 
 ### selenium  : dict
@@ -134,14 +134,14 @@ A dictionary with parameters for the `selenium` driver.
 Location of the selenium driver file. Boxfish supports the Chrome driver and Gecko driver. 
 
 ``` python
-aconfig['driver']['selenium']['filename'] = r'..\\..\\drivers\\geckodriver.exe'
+aconfig["driver"]["selenium"]["filename"] = r"..\\..\\drivers\\geckodriver.exe"
 ```
 
 **log : str**    
 Location of the log file of the selenium driver.
 
 ``` python
-aconfig['driver']['selenium']['log'] = r'..\\..\\drivers\\geckodriver.log'
+aconfig["driver"]["selenium"]["log"] = r"..\\..\\drivers\\geckodriver.log"
 ```
 
 **headless : bool**    
@@ -149,7 +149,7 @@ If False, set Windows driver to visible.\
 If True, set Windows driver to invisible (i.e. headless)
 
 ``` python
-aconfig['driver']['selenium']['headless'] = True
+aconfig["driver"]["selenium"]["headless"] = True
 ```
 
 ## Html
@@ -167,14 +167,14 @@ Html contains parameters to access table data on an HTML page.
 The url which contains a default page for table extraction.
 
 ``` python
-aconfig['html']['url'] = aurl
+aconfig["html"]["url"] = aurl
 ```
 
 **parser: str**  
 The html parser. Boxfish uses a parser to access HTML with BeautifulSoup. For more information on parser options see [BS4 parsers](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser).
 
 ``` python
-aconfig['html']['parser'] = 'html.parser'
+aconfig["html"]["parsee"] = "html.parser"
 ```
 
 Parameters for [table](#Build a table configuration) and [page](#Build a next page configuration) are set with <code>build</code>. 
@@ -190,9 +190,9 @@ Output contains parameters to save results to csv files.
 | overwrite     | Overwrite existing file       |
 
 ``` python
-aconfig['output']['filename'] = 
-aconfig['output']['date_format'] = '%Y%m%d'
-aconfig['output']['overwrite'] = True
+aconfig["output"]["filename"] = 
+aconfig["output"]["date_format"] = "%Y%m%d"
+aconfig["output"]["overwrite"] = True
 ```
 
 **filename : str**    
@@ -273,8 +273,8 @@ import pandas as pd
 ### Single page 
 
 ``` python
-aurl = 'https://www.scrapethissite.com/pages/simple/'
-arows = ['Andorra', 'Antigua and Barbuda']
+aurl = "https://www.scrapethissite.com/pages/simple/"
+arows = ["Andorra", "Antigua and Barbuda"]
 
 aconfig = bf.build(url=aurl, rows=arows)
 
@@ -286,11 +286,11 @@ df.head()
 ### Multiple pages 
 
 ``` python
-aurl = 'https://www.scrapethissite.com/pages/forms/?page_num=1'
-arows = ['Boston Bruins', 'Buffalo Sabres']
+aurl = "https://www.scrapethissite.com/pages/forms/?page_num=1"
+arows = ["Boston Bruins", "Buffalo Sabres"]
 aconfig = bf.build(url=aurl, rows=arows)
 
-next_page = 'https://www.scrapethissite.com/pages/forms/?page_num=2'
+next_page = "https://www.scrapethissite.com/pages/forms/?page_num=2"
 aconfig = bf.build(config=aconfig, next_page=next_page)
 
 data = bf.extract(url=aurl, config=aconfig)
@@ -304,13 +304,13 @@ df.head()
 
 ``` python
 # Use homepage to build configuration
-aurl = 'https://books.toscrape.com/'
-arows = ['A Light in the ...', 'Tipping the Velvet']
+aurl = "https://books.toscrape.com/"
+arows = ["A Light in the ...", "Tipping the Velvet"]
 
 aconfig = bf.build(url=aurl, rows=arows)
 
 # Extract table from another page
-aurl = 'https://books.toscrape.com/catalogue/category/books/nonfiction_13/index.html' 
+aurl = "https://books.toscrape.com/catalogue/category/books/nonfiction_13/index.html" 
 
 data = bf.extract(url=aurl, config=aconfig)
 df = pd.DataFrame(data)
@@ -323,8 +323,8 @@ Wikipedia offers free access to its content. See [Wikipedia](https://en.wikipedi
 
 ``` python
 # Use homepage to build configuration
-aurl = 'https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3'
-arows = ['ABW', 'AFG']
+aurl = "https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3"
+arows = ["ABW", "AFG"]
 
 aconfig = bf.build(config=aconfig, url=aurl, rows=arows)
 
